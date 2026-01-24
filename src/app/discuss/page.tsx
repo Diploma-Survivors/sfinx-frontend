@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { PenSquare, Search, Trophy } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DiscussPage() {
     return (
@@ -32,10 +33,12 @@ export default function DiscussPage() {
                         </div>
 
                         {/* Create Button */}
-                        <Button className="w-full gap-2 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg shadow-accent/20 transition-all hover:shadow-xl hover:shadow-accent/30" size="lg">
-                            <PenSquare className="w-4 h-4" />
-                            New Post
-                        </Button>
+                        <Link href="/discuss/create">
+                            <Button className="w-full gap-2 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg shadow-accent/20 transition-all hover:shadow-xl hover:shadow-accent/30" size="lg">
+                                <PenSquare className="w-4 h-4" />
+                                New Post
+                            </Button>
+                        </Link>
 
                         {/* Trending / Info Card */}
                         <Card className="bg-card/50 border-border/60 backdrop-blur-sm">
