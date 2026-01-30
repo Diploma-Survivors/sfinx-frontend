@@ -51,7 +51,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
-              href={user.isPremium ? "/settings/billing" : "/pricing"}
+              href="/pricing"
               className={cn(
                 "cursor-pointer w-full flex items-center py-2.5 transition-colors",
                 user.isPremium

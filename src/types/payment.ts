@@ -9,6 +9,14 @@ export enum PaymentStatus {
     FAILED = 'FAILED',
 }
 
+export interface SubscriptionFeature {
+    id: number;
+    key: string;
+    name: string;
+    description?: string;
+    isActive: boolean;
+}
+
 export interface SubscriptionPlan {
     id: number;
     name: string;
@@ -16,8 +24,8 @@ export interface SubscriptionPlan {
     priceUsd: number;
     durationMonths: number;
     isActive: boolean;
-    features: string[]; // JSON array of features
-    type: string; // 'FREE', 'PREMIUM'
+    features: SubscriptionFeature[]; // Array of feature objects
+    type: string; // 'FREE', 'PREMIUM', 'MONTHLY', 'YEARLY'
 }
 
 export interface PaymentTransaction {

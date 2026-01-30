@@ -1,3 +1,5 @@
+'use client';
+
 import { DiscussList } from '@/components/discuss/discuss-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +27,7 @@ export default function DiscussPage() {
 
                 {/* Sidebar */}
                 <div className="hidden lg:flex flex-col gap-6">
-                    <div className="sticky top-24 space-y-6">
+                    <div className="sticky top-24 space-y-8">
                         {/* Search */}
                         <div className="relative">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -63,16 +65,6 @@ export default function DiscussPage() {
                                         <span className="text-muted-foreground text-xs">500 posts</span>
                                     </div>
                                 </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Community Guidelines or Promo */}
-                        <Card className="bg-primary/5 border-primary/10">
-                            <CardContent className="pt-6">
-                                <h4 className="font-semibold text-sm mb-2 text-primary">Join the Community</h4>
-                                <p className="text-xs text-muted-foreground">
-                                    Share your interview experiences, ask questions, and help others grow.
-                                </p>
                             </CardContent>
                         </Card>
                     </div>

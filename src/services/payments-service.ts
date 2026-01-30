@@ -1,10 +1,17 @@
 import clientApi from '@/lib/apis/axios-client';
-import { PaymentTransaction, SubscriptionPlan, Currency, PaymentStatus } from '@/types/payment';
+import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, Currency, PaymentStatus } from '@/types/payment';
 import { ApiResponse } from '@/types/api';
 
 export const PaymentService = {
     getSubscriptionPlans: async (lang?: string): Promise<SubscriptionPlan[]> => {
         const response = await clientApi.get<ApiResponse<SubscriptionPlan[]>>('/subscription-plans', {
+            params: { lang }
+        });
+        return response.data.data;
+    },
+
+    getSubscriptionFeatures: async (lang?: string): Promise<SubscriptionFeature[]> => {
+        const response = await clientApi.get<ApiResponse<SubscriptionFeature[]>>('/subscription-features', {
             params: { lang }
         });
         return response.data.data;
@@ -39,8 +46,12 @@ export const PaymentService = {
                             priceUsd: 299,
                             durationMonths: 12,
                             isActive: true,
-                            features: [],
-                            type: 'PREMIUM'
+                            features: [
+                                { id: 1, key: 'unlimited_submissions', name: 'Unlimited Submissions', description: 'Submit code without daily limits', isActive: true },
+                                { id: 2, key: 'ai_analysis', name: 'AI Analysis', description: 'Get detailed AI code analysis', isActive: true },
+                                { id: 3, key: 'premium_problems', name: 'Premium Problems', description: 'Access to exclusive premium problems', isActive: true }
+                            ],
+                            type: 'YEARLY'
                         }
                     },
                     {
@@ -61,8 +72,11 @@ export const PaymentService = {
                             priceUsd: 29,
                             durationMonths: 1,
                             isActive: true,
-                            features: [],
-                            type: 'PREMIUM'
+                            features: [
+                                { id: 1, key: 'unlimited_submissions', name: 'Unlimited Submissions', description: 'Submit code without daily limits', isActive: true },
+                                { id: 2, key: 'ai_analysis', name: 'AI Analysis', description: 'Get detailed AI code analysis', isActive: true }
+                            ],
+                            type: 'MONTHLY'
                         }
                     }
                 ]);

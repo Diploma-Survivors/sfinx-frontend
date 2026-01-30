@@ -34,7 +34,25 @@ export default function PricingPage() {
         const fetchPlans = async () => {
             setLoading(true);
             try {
-                const data = await PaymentService.getSubscriptionPlans(i18n.language);
+                // Fetch both plans and features in parallel
+                const [plansData, featuresData] = await Promise.all([
+                    PaymentService.getSubscriptionPlans(i18n.language),
+                    PaymentService.getSubscriptionFeatures(i18n.language)
+                ]);
+
+                // Transform features to extract name and description from translations
+                const transformedFeatures = featuresData.map(feature => {
+                    const translation = (feature as any).translations?.[0];
+                    return {
+                        id: feature.id,
+                        key: feature.key,
+                        name: translation?.name || feature.key,
+                        description: translation?.description,
+                        isActive: feature.isActive
+                    };
+                });
+
+                // Create free plan with hardcoded features
                 const freePlan: SubscriptionPlan = {
                     id: 0,
                     name: t('free', { defaultValue: 'Free' }),
@@ -43,14 +61,27 @@ export default function PricingPage() {
                     durationMonths: 0,
                     isActive: true,
                     features: [
-                        t('feature_unlimited_practice', { defaultValue: 'Unlimited practice problems' }),
-                        t('feature_basic_eval', { defaultValue: 'Basic code evaluation' }),
-                        t('feature_community', { defaultValue: 'Community support' }),
-                        t('feature_limited_metrics', { defaultValue: 'Limited performance insights' })
+                        { id: 0, key: 'unlimited_practice', name: t('feature_unlimited_practice', { defaultValue: 'Unlimited practice problems' }), isActive: true },
+                        { id: 0, key: 'basic_eval', name: t('feature_basic_eval', { defaultValue: 'Basic code evaluation' }), isActive: true },
+                        { id: 0, key: 'community', name: t('feature_community', { defaultValue: 'Community support' }), isActive: true },
+                        { id: 0, key: 'limited_metrics', name: t('feature_limited_metrics', { defaultValue: 'Limited performance insights' }), isActive: true }
                     ],
                     type: 'FREE'
                 };
-                setPlans([freePlan, ...data]);
+
+                // Assign all features to premium plans (MONTHLY and YEARLY)
+                const plansWithFeatures = plansData.map(plan => {
+                    // If plan is premium (MONTHLY or YEARLY), assign all features
+                    if (plan.type === 'MONTHLY' || plan.type === 'YEARLY') {
+                        return {
+                            ...plan,
+                            features: transformedFeatures
+                        };
+                    }
+                    return plan;
+                });
+
+                setPlans([freePlan, ...plansWithFeatures]);
             } catch (error) {
                 console.error('Failed to load plans', error);
                 toastService.error('Failed to load subscription plans');
@@ -230,16 +261,23 @@ export default function PricingPage() {
 
                                         <div className="space-y-4">
                                             {plan.features?.map((feature, index) => (
-                                                <div key={index} className="flex items-start group">
+                                                <div key={feature.id || index} className="flex items-start group">
                                                     <div className={cn(
                                                         "flex-shrink-0 mt-0.5 rounded-full p-0.5",
                                                         isPremiumPlan ? "text-green-500 bg-green-500/10" : "text-muted-foreground bg-muted"
                                                     )}>
                                                         <Check className="h-3.5 w-3.5" />
                                                     </div>
-                                                    <span className="ml-3 text-sm text-foreground/80 group-hover:text-foreground transition-colors">
-                                                        {feature}
-                                                    </span>
+                                                    <div className="ml-3">
+                                                        <span className="text-sm font-medium text-foreground/90 group-hover:text-foreground transition-colors">
+                                                            {feature.name}
+                                                        </span>
+                                                        {feature.description && (
+                                                            <p className="text-xs text-muted-foreground mt-0.5">
+                                                                {feature.description}
+                                                            </p>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
