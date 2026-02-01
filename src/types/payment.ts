@@ -45,3 +45,15 @@ export interface PaymentTransaction {
 export interface CreatePaymentResponse {
     url: string;
 }
+
+export interface CurrentPlan {
+    planId: number;
+    name: string;
+    description: string;
+    price: string;
+    type: string; // 'MONTHLY', 'YEARLY', etc.
+    startDate: string;
+    expiresAt: string;
+    daysRemaining: number;
+    status: string; // 'ACTIVE', 'EXPIRED', etc.
+}

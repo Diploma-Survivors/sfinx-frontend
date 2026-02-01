@@ -127,6 +127,5 @@ export class DiscussService {
 
     static async votePost(id: string, type: 'up' | 'down'): Promise<void> {
         await new Promise((resolve) => setTimeout(resolve, 200));
-        console.log(`Voted ${type} on post ${id}`);
     }
 }

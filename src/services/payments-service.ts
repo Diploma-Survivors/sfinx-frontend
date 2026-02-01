@@ -1,5 +1,5 @@
 import clientApi from '@/lib/apis/axios-client';
-import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, Currency, PaymentStatus } from '@/types/payment';
+import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, Currency, PaymentStatus, CurrentPlan } from '@/types/payment';
 import { ApiResponse } from '@/types/api';
 
 export const PaymentService = {
@@ -49,5 +49,15 @@ export const PaymentService = {
                 type: 'MONTHLY'
             }
         }));
+    },
+
+    async getCurrentPlan(): Promise<CurrentPlan | null> {
+        try {
+            const response = await clientApi.get<ApiResponse<CurrentPlan>>('/payments/current-plan');
+            return response.data.data;
+        } catch (error) {
+            // Return null if no active plan (e.g., 404 or other error)
+            return null;
+        }
     }
 };

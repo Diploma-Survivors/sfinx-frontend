@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { useApp } from '@/contexts/app-context';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toastService } from '@/services/toasts-service';
 
 // Track verification promises globally to prevent double-verification
 // and ensure all component instances get the result
@@ -33,10 +34,8 @@ export default function VerifyEmailPage() {
         let promise = verificationPromises.get(token);
 
         if (!promise) {
-            console.log('Starting verification for token:', token);
             promise = AuthService.verifyEmail({ token })
                 .then(async () => {
-                    console.log('Verification successful.');
                     // Refresh user data to update the banner immediately
                     try {
                         await refreshUser();
@@ -46,14 +45,12 @@ export default function VerifyEmailPage() {
                     return 'success' as const;
                 })
                 .catch(async (error: any) => {
-                    console.error('Verification failed:', error);
                     // If the error is 409 (Conflict), it means the email is already verified.
                     if (error.response?.status === 409) {
-                        console.log('409 Conflict detected, treating as success.');
                         try {
                             await refreshUser();
                         } catch (e) {
-                            console.error('Failed to refresh user data:', e);
+                            toastService.error('Failed to refresh user data');
                         }
                         return 'success' as const;
                     }
@@ -62,7 +59,6 @@ export default function VerifyEmailPage() {
 
             verificationPromises.set(token, promise);
         } else {
-            console.log('Reusing existing verification promise for token:', token);
         }
 
         // Wait for the result

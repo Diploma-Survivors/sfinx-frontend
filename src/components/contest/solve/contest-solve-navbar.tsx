@@ -28,7 +28,6 @@ export default function ContestSolveNavbar({
     hasNext,
     endTime,
 }: ContestNavbarProps) {
-    console.log(endTime);
     const { t } = useTranslation('contests');
     const { t: tCommon } = useTranslation('common');
     const { user, clearUserData } = useApp();

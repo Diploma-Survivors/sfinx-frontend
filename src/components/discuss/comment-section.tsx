@@ -18,7 +18,6 @@ export function CommentSection({ comments = [], postId }: CommentSectionProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submit comment for post', postId, commentText);
         setCommentText('');
         // Here we would call the service to add comment
     };

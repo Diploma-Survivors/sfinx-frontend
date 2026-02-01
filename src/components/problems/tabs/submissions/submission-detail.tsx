@@ -58,7 +58,6 @@ export default function SubmissionDetail({
   }, []);
 
   const currentProblem = useSelector(selectProblem);
-  console.log(currentProblem);
 
   // Calculate code height based on number of lines
   const getCodeHeight = () => {
