@@ -39,7 +39,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 
     const raw = await response.json();
     const data = raw.data;
-    
+
 
     if (!response.ok) {
       throw data;
@@ -163,6 +163,19 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
