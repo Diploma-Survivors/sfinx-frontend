@@ -9,8 +9,7 @@ const ProblemSlice = createSlice({
   name: 'problem',
   initialState,
   reducers: {
-    setProblem: (state, action: PayloadAction<Problem>) =>
-      action.payload,
+    setProblem: (state, action: PayloadAction<Problem>) => action.payload,
   },
 });
 

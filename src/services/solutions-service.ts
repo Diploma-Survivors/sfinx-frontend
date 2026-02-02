@@ -29,8 +29,12 @@ async function getSolutionsList(
   );
 }
 
-async function getAllSolutions(userId: number): Promise<AxiosResponse<ApiResponse<Solution[]>>> {
-  return await clientApi.get<ApiResponse<Solution[]>>(`/users/${userId}/solutions`);
+async function getAllSolutions(
+  userId: number
+): Promise<AxiosResponse<ApiResponse<Solution[]>>> {
+  return await clientApi.get<ApiResponse<Solution[]>>(
+    `/users/${userId}/solutions`
+  );
 }
 
 async function getSolutionDetail(

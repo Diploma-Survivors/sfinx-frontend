@@ -24,7 +24,8 @@ export default function SubmissionDetailPage() {
   useEffect(() => {
     const fetchSubmission = async () => {
       try {
-        const response = await SubmissionsService.getSubmissionById(submissionId);
+        const response =
+          await SubmissionsService.getSubmissionById(submissionId);
         setSubmission(response.data.data);
       } catch (error) {
         console.error('Failed to fetch submission', error);
@@ -45,7 +46,11 @@ export default function SubmissionDetailPage() {
   }
 
   if (!submission) {
-    return <div className="p-6 text-center text-muted-foreground">Submission not found</div>;
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        Submission not found
+      </div>
+    );
   }
 
   return (
@@ -60,7 +65,9 @@ export default function SubmissionDetailPage() {
           <ArrowLeft className="w-4 h-4" />
           {t('back_to_list')}
         </Button>
-        <span className="font-semibold text-foreground">Submission #{submission.id}</span>
+        <span className="font-semibold text-foreground">
+          Submission #{submission.id}
+        </span>
       </div>
       <div className="flex-1 overflow-y-auto">
         <SubmissionDetail submission={submission} />
@@ -68,4 +75,3 @@ export default function SubmissionDetailPage() {
     </div>
   );
 }
-

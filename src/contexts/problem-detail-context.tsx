@@ -59,9 +59,9 @@ interface ProblemDetailContextType {
   clearSubmitResults: () => void;
 }
 
-const ProblemDetailContext = createContext<ProblemDetailContextType | undefined>(
-  undefined
-);
+const ProblemDetailContext = createContext<
+  ProblemDetailContextType | undefined
+>(undefined);
 
 export function ProblemDetailProvider({ children }: { children: ReactNode }) {
   const params = useParams();
@@ -113,7 +113,8 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
           languages: [],
           ...problemDescriptionState, // This contains the dummy problem state
           problem: null, // Override with null for consumers
-          testCases: problemDescriptionState.testCases as unknown as SampleTestCase[],
+          testCases:
+            problemDescriptionState.testCases as unknown as SampleTestCase[],
           testResults: problemDescriptionState.testResults,
           submitResults: problemDescriptionState.submitResults,
           runError: problemDescriptionState.runError,
@@ -131,7 +132,8 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
         languages,
         ...problemDescriptionState,
         problem,
-        testCases: problemDescriptionState.testCases as unknown as SampleTestCase[],
+        testCases:
+          problemDescriptionState.testCases as unknown as SampleTestCase[],
       }}
     >
       {children}

@@ -1,16 +1,16 @@
-import { Problem } from "./problems";
-import { UserProfile } from "./user";
+import { Problem } from './problems';
+import { UserProfile } from './user';
 
 export enum SubmissionStatus {
-  PENDING = "PENDING",
-  RUNNING = "RUNNING",
-  ACCEPTED = "ACCEPTED",
-  WRONG_ANSWER = "WRONG_ANSWER",
-  TIME_LIMIT_EXCEEDED = "TIME_LIMIT_EXCEEDED",
-  MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED",
-  RUNTIME_ERROR = "RUNTIME_ERROR",
-  COMPILATION_ERROR = "COMPILATION_ERROR",
-  UNKNOWN_ERROR = "UNKNOWN_ERROR"
+  PENDING = 'PENDING',
+  RUNNING = 'RUNNING',
+  ACCEPTED = 'ACCEPTED',
+  WRONG_ANSWER = 'WRONG_ANSWER',
+  TIME_LIMIT_EXCEEDED = 'TIME_LIMIT_EXCEEDED',
+  MEMORY_LIMIT_EXCEEDED = 'MEMORY_LIMIT_EXCEEDED',
+  RUNTIME_ERROR = 'RUNTIME_ERROR',
+  COMPILATION_ERROR = 'COMPILATION_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
 
 export interface Language {
@@ -109,7 +109,6 @@ export interface Submission {
   sourceCode?: string;
   contestId?: number;
 }
-
 
 // Map language names to Highlight.js language keys
 export const languageMap: Record<string, string> = {

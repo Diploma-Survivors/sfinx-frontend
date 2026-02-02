@@ -75,9 +75,13 @@ export default function SolutionDetailPanel({
           ...prev,
           userVote: null,
           upvoteCount:
-            type === SolutionVoteType.UPVOTE ? prev.upvoteCount - 1 : prev.upvoteCount,
+            type === SolutionVoteType.UPVOTE
+              ? prev.upvoteCount - 1
+              : prev.upvoteCount,
           downvoteCount:
-            type === SolutionVoteType.DOWNVOTE ? prev.downvoteCount - 1 : prev.downvoteCount,
+            type === SolutionVoteType.DOWNVOTE
+              ? prev.downvoteCount - 1
+              : prev.downvoteCount,
         }));
       } else {
         await SolutionsService.reactSolution(solution.id, type);
@@ -126,8 +130,6 @@ export default function SolutionDetailPanel({
     <div className="h-full overflow-y-auto p-6 space-y-6">
       {/* Header */}
       <div className="space-y-4">
-
-
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar
@@ -184,14 +186,18 @@ export default function SolutionDetailPanel({
               variant="outline"
               size="sm"
               onClick={() => handleVote(SolutionVoteType.UPVOTE)}
-              className={`gap-2 ${solution.userVote === SolutionVoteType.UPVOTE
-                ? 'bg-green-50 text-green-600 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800'
-                : ''
-                }`}
+              className={`gap-2 ${
+                solution.userVote === SolutionVoteType.UPVOTE
+                  ? 'bg-green-50 text-green-600 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800'
+                  : ''
+              }`}
             >
               <ArrowBigUp
-                className={`w-5 h-5 ${solution.userVote === SolutionVoteType.UPVOTE ? 'fill-current' : ''
-                  }`}
+                className={`w-5 h-5 ${
+                  solution.userVote === SolutionVoteType.UPVOTE
+                    ? 'fill-current'
+                    : ''
+                }`}
               />
               {solution.upvoteCount}
             </Button>
@@ -199,14 +205,18 @@ export default function SolutionDetailPanel({
               variant="outline"
               size="sm"
               onClick={() => handleVote(SolutionVoteType.DOWNVOTE)}
-              className={`gap-2 ${solution.userVote === SolutionVoteType.DOWNVOTE
-                ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
-                : ''
-                }`}
+              className={`gap-2 ${
+                solution.userVote === SolutionVoteType.DOWNVOTE
+                  ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                  : ''
+              }`}
             >
               <ArrowBigDown
-                className={`w-5 h-5 ${solution.userVote === SolutionVoteType.DOWNVOTE ? 'fill-current' : ''
-                  }`}
+                className={`w-5 h-5 ${
+                  solution.userVote === SolutionVoteType.DOWNVOTE
+                    ? 'fill-current'
+                    : ''
+                }`}
               />
               {solution.downvoteCount}
             </Button>

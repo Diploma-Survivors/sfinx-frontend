@@ -1,92 +1,130 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { useTranslation } from 'react-i18next';
+import {
+  Clock,
+  CheckCircle2,
+  Lightbulb,
+  ArrowRight,
+  RotateCcw,
+} from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface InterviewFeedbackProps {
-  interviewTime: number
+  interviewTime: number;
+  onStartNew?: () => void;
 }
 
-export function InterviewFeedback({ interviewTime }: InterviewFeedbackProps) {
+export function InterviewFeedback({
+  interviewTime,
+  onStartNew,
+}: InterviewFeedbackProps) {
+  const { t } = useTranslation('interview');
+
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const scores = [
+    { key: 'problemSolving', score: 88, color: 'text-purple-500' },
+    { key: 'communication', score: 85, color: 'text-blue-500' },
+    { key: 'codeQuality', score: 92, color: 'text-green-500' },
+  ];
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <Card className="p-8 border-border/40 bg-gradient-to-br from-accent/10 to-background rounded-xl shadow-lg">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Interview Feedback</h1>
-          <p className="text-muted-foreground">Interview duration: {formatTime(interviewTime)}</p>
-        </Card>
-
-        <Card className="p-8 border-border/40 bg-card rounded-xl shadow-sm">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Overall Evaluation</h2>
-          <p className="text-muted-foreground leading-relaxed text-pretty">
-            Great job on your interview! You demonstrated solid problem-solving skills and communicated your approach
-            clearly. Your code was clean and efficient, showing good understanding of data structures and algorithms.
-          </p>
-        </Card>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { label: "Problem Solving", score: 88 },
-            { label: "Communication", score: 85 },
-            { label: "Code Quality", score: 92 },
-          ].map((item, idx) => (
-            <Card key={idx} className="p-6 border-border/40 bg-card rounded-xl shadow-sm">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-accent mb-2">{item.score}</div>
-                <div className="text-sm font-medium text-muted-foreground">{item.label}</div>
+    <div className="h-full w-full flex items-center justify-center p-4 bg-muted/30">
+      <div className="w-full max-w-md">
+        <Card className="overflow-hidden">
+          <div className="p-5 border-b bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-xl font-bold">{t('feedback.title')}</h1>
+                <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>{formatTime(interviewTime)}</span>
+                </div>
               </div>
-            </Card>
-          ))}
-        </div>
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+          </div>
 
-        <Card className="p-8 border-border/40 bg-card rounded-xl shadow-sm">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Strengths</h2>
-          <ul className="space-y-3">
-            {[
-              "Clear explanation of your approach before coding",
-              "Good use of hash maps for optimization",
-              "Considered edge cases and potential improvements",
-              "Communicated effectively with the interviewer",
-            ].map((strength, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                <span className="flex-none w-2 h-2 rounded-full bg-accent mt-2" />
-                <span className="text-muted-foreground text-pretty">{strength}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="p-5 space-y-5">
+            <div className="grid grid-cols-3 gap-2">
+              {scores.map((item) => (
+                <div
+                  key={item.key}
+                  className="text-center p-3 rounded-lg bg-muted/50 border"
+                >
+                  <div className={`text-xl font-bold ${item.color}`}>
+                    {item.score}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">
+                    {t(`feedback.${item.key}`)}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                {t('feedback.strengths')}
+              </h3>
+              <ul className="space-y-1.5">
+                {[1, 2, 3, 4].map((i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-xs text-foreground/80"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                    <span className="leading-relaxed">
+                      {t(`strengths.${i}`)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-yellow-500" />
+                {t('feedback.improvements')}
+              </h3>
+              <ul className="space-y-1.5">
+                {[1, 2, 3].map((i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-xs text-foreground/80"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-yellow-500 mt-1.5 flex-shrink-0" />
+                    <span className="leading-relaxed">
+                      {t(`improvements.${i}`)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            <div className="flex gap-2">
+              <Button className="flex-1 text-xs">
+                {t('feedback.viewReport')}
+                <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              </Button>
+              <Button variant="outline" onClick={onStartNew}>
+                <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                {t('feedback.newInterview')}
+              </Button>
+            </div>
+          </div>
         </Card>
-
-        <Card className="p-8 border-border/40 bg-card rounded-xl shadow-sm">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Areas for Improvement</h2>
-          <ul className="space-y-3">
-            {[
-              "Consider testing your code with edge cases before submission",
-              "Could have discussed space-time trade-offs in more detail",
-              "Practice verbalizing your thought process while coding",
-            ].map((improvement, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                <span className="flex-none w-2 h-2 rounded-full bg-[oklch(0.65_0.2_25)] mt-2" />
-                <span className="text-muted-foreground text-pretty">{improvement}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-
-        <div className="flex gap-4">
-          <Button className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 transition-all duration-300">
-            View Detailed Report
-          </Button>
-          <Button variant="outline" className="flex-1">
-            Schedule Another Interview
-          </Button>
-        </div>
       </div>
     </div>
-  )
+  );
 }

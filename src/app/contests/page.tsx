@@ -76,14 +76,20 @@ export default function ContestsPage() {
                 />
 
                 {/* Mobile Filter Trigger */}
-                <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+                <Sheet
+                  open={isMobileFilterOpen}
+                  onOpenChange={setIsMobileFilterOpen}
+                >
                   <SheetTrigger asChild>
                     <Button variant="outline" className="lg:hidden">
                       <Filter className="mr-2 h-4 w-4" />
                       {t('filters')}
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-[300px] sm:w-[400px] p-6">
+                  <SheetContent
+                    side="left"
+                    className="w-[300px] sm:w-[400px] p-6"
+                  >
                     <div className="mt-6">
                       <ContestFilter
                         search={search}

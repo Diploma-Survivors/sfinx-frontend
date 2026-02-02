@@ -13,7 +13,16 @@ import {
   INITIAL_CONTEST,
 } from '@/types/contests';
 import { getDifficultyColor } from '@/types/problems';
-import { CheckCircle, Clock, FileText, Play, Trophy, AlertCircle, Loader2, Eye } from 'lucide-react';
+import {
+  CheckCircle,
+  Clock,
+  FileText,
+  Play,
+  Trophy,
+  AlertCircle,
+  Loader2,
+  Eye,
+} from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -92,12 +101,18 @@ export default function ContestInfoPage() {
     }
 
     // 2. Ended + Not Joined: Hide button
-    if (contest.status === ContestStatus.ENDED && contest.userStatus === ContestUserStatus.NOT_JOINED) {
+    if (
+      contest.status === ContestStatus.ENDED &&
+      contest.userStatus === ContestUserStatus.NOT_JOINED
+    ) {
       return null;
     }
 
     // 3. Ended + Joined: Show View Result
-    if (contest.status === ContestStatus.ENDED && contest.userStatus === ContestUserStatus.JOINED) {
+    if (
+      contest.status === ContestStatus.ENDED &&
+      contest.userStatus === ContestUserStatus.JOINED
+    ) {
       return (
         <Button
           size="lg"
@@ -124,8 +139,6 @@ export default function ContestInfoPage() {
       );
     }
 
-
-
     // 4. Running (implied): Show Join Contest
     return (
       <Button
@@ -142,7 +155,6 @@ export default function ContestInfoPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="grid grid-cols-1 gap-8">
-
         {/* Hero Card */}
         <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden relative">
           {/* Decorative glow */}
@@ -150,7 +162,10 @@ export default function ContestInfoPage() {
 
           <div className="p-8 relative z-10 text-center space-y-6">
             <div className="inline-flex">
-              <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 gap-2 px-3 py-1">
+              <Badge
+                variant="secondary"
+                className="bg-primary/10 text-primary hover:bg-primary/20 gap-2 px-3 py-1"
+              >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
@@ -166,11 +181,16 @@ export default function ContestInfoPage() {
             <div className="flex justify-center w-full max-w-2xl mx-auto items-center text-muted-foreground gap-8 text-sm font-medium">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary" />
-                <span>{t('duration')}: {contest.durationMinutes} {t('minutes', { defaultValue: 'mins' })}</span>
+                <span>
+                  {t('duration')}: {contest.durationMinutes}{' '}
+                  {t('minutes', { defaultValue: 'mins' })}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-yellow-500" />
-                <span>{t('prize_pool')}: {t('none', { defaultValue: 'None' })}</span>
+                <span>
+                  {t('prize_pool')}: {t('none', { defaultValue: 'None' })}
+                </span>
               </div>
             </div>
 
@@ -178,41 +198,48 @@ export default function ContestInfoPage() {
             <div className="max-w-3xl mx-auto pt-4">
               <Timeline
                 timelineEvents={[
-                  { id: 'start', name: t('start_time'), timestamp: contest.startTime },
-                  { id: 'end', name: t('end_time'), timestamp: contest.endTime },
+                  {
+                    id: 'start',
+                    name: t('start_time'),
+                    timestamp: contest.startTime,
+                  },
+                  {
+                    id: 'end',
+                    name: t('end_time'),
+                    timestamp: contest.endTime,
+                  },
                 ]}
               />
             </div>
 
-            <div className="pt-6">
-              {renderActionButton()}
-            </div>
+            <div className="pt-6">{renderActionButton()}</div>
           </div>
         </div>
 
         {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Rules */}
-          <div className={cn(
-            "bg-card rounded-xl border border-border p-6 shadow-sm md:col-span-3",
-          )}>
+          <div
+            className={cn(
+              'bg-card rounded-xl border border-border p-6 shadow-sm md:col-span-3'
+            )}
+          >
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
               {t('contest_rules')}
             </h3>
             <div className="space-y-4 text-sm text-muted-foreground">
-              <p>
-                {t('contest_rules_desc')}
-              </p>
+              <p>{t('contest_rules_desc')}</p>
               {contest.description && (
                 <div className="mt-4 pt-4 border-t border-border/50">
-                  <h4 className="font-medium text-foreground mb-2">{t('description')}</h4>
+                  <h4 className="font-medium text-foreground mb-2">
+                    {t('description')}
+                  </h4>
                   <MarkdownRenderer content={contest.description} />
                 </div>
               )}
             </div>
           </div>
-
         </div>
 
         {/* Problem List Preview */}
@@ -222,15 +249,22 @@ export default function ContestInfoPage() {
           </div>
           <div className="divide-y divide-border">
             {contest.contestProblems?.map((cp, idx) => (
-              <div key={cp.problem.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+              <div
+                key={cp.problem.id}
+                className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+              >
                 <div className="flex items-center gap-4">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium">
                     {idx + 1}
                   </span>
                   <div>
-                    <h4 className="font-medium text-foreground">{cp.problem.title}</h4>
+                    <h4 className="font-medium text-foreground">
+                      {cp.problem.title}
+                    </h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge className={`${getDifficultyColor(cp.problem.difficulty)} text-[10px] h-5`}>
+                      <Badge
+                        className={`${getDifficultyColor(cp.problem.difficulty)} text-[10px] h-5`}
+                      >
                         {cp.problem.difficulty}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
@@ -247,14 +281,14 @@ export default function ContestInfoPage() {
                 )} */}
               </div>
             ))}
-            {(!contest.contestProblems || contest.contestProblems.length === 0) && (
+            {(!contest.contestProblems ||
+              contest.contestProblems.length === 0) && (
               <div className="p-8 text-center text-muted-foreground">
                 {t('no_problems_available')}
               </div>
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -151,14 +151,18 @@ export function SubmitResultTab({
                 </div>
               </div> */}
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
-                <div className="text-xs text-slate-500">{t('runtime').toUpperCase()}</div>
+                <div className="text-xs text-slate-500">
+                  {t('runtime').toUpperCase()}
+                </div>
                 <div className="text-xl font-semibold">
                   {result?.runtime ? Number(result.runtime).toFixed(2) : '0.00'}{' '}
                   ms
                 </div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
-                <div className="text-xs text-slate-500">{t('memory').toUpperCase()}</div>
+                <div className="text-xs text-slate-500">
+                  {t('memory').toUpperCase()}
+                </div>
                 <div className="text-xl font-semibold">
                   {result?.memory ?? 0} KB
                 </div>

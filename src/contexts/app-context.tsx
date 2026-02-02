@@ -61,7 +61,10 @@ export function AppProvider({
       const userData = response.data.data;
       setUser(userData);
 
-      if (userData.preferredLanguage && i18n.language !== userData.preferredLanguage) {
+      if (
+        userData.preferredLanguage &&
+        i18n.language !== userData.preferredLanguage
+      ) {
         i18n.changeLanguage(userData.preferredLanguage);
       }
     } catch (error) {

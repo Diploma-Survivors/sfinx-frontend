@@ -18,7 +18,8 @@ interface UserMenuProps {
   user?: UserProfile;
   onLogout: () => void;
 }
-const PLACEHOLDER_AVATAR = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
+const PLACEHOLDER_AVATAR =
+  'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
 export function UserMenu({ user, onLogout }: UserMenuProps) {
   const { t } = useTranslation('common');
@@ -28,7 +29,10 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Avatar className="cursor-pointer hover:opacity-80 transition-opacity border border-border">
-            <AvatarImage src={user.avatarUrl || PLACEHOLDER_AVATAR} alt={user.fullName} />
+            <AvatarImage
+              src={user.avatarUrl || PLACEHOLDER_AVATAR}
+              alt={user.fullName}
+            />
             <AvatarFallback className="bg-muted p-0 overflow-hidden">
               <img
                 src={PLACEHOLDER_AVATAR}
@@ -90,7 +94,11 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
 
   return (
     <Link href="/login">
-      <Button className="flex items-center gap-2 rounded-lg" variant="default" size="sm">
+      <Button
+        className="flex items-center gap-2 rounded-lg"
+        variant="default"
+        size="sm"
+      >
         <LogIn size={16} />
         {t('go_to_login')}
       </Button>

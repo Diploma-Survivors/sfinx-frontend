@@ -2,30 +2,28 @@ import type { Problem, ProblemDifficulty, ProblemStatus } from './problems';
 import type { Solution } from './solutions';
 import type { Submission, SubmissionStatus } from './submissions';
 
-
-
 export interface UserProfile {
-  id: number,
-  email: string,
-  username: string,
-  fullName: string,
-  avatarUrl?: string,
-  bio?: string,
-  address?: string,
-  phone?: string,
-  rank?: number,
-  websiteUrl?: string,
-  githubUsername?: string,
-  linkedinUrl?: string,
-  preferredLanguage: string,
-  googleId?: string,
-  emailVerified: boolean,
-  isActive: boolean,
-  isPremium: boolean,
-  premiumStartedAt?: string,
-  premiumExpiresAt?: string,
-  lastLoginAt?: string,
-  lastActiveAt?: string
+  id: number;
+  email: string;
+  username: string;
+  fullName: string;
+  avatarUrl?: string;
+  bio?: string;
+  address?: string;
+  phone?: string;
+  rank?: number;
+  websiteUrl?: string;
+  githubUsername?: string;
+  linkedinUrl?: string;
+  preferredLanguage: string;
+  googleId?: string;
+  emailVerified: boolean;
+  isActive: boolean;
+  isPremium: boolean;
+  premiumStartedAt?: string;
+  premiumExpiresAt?: string;
+  lastLoginAt?: string;
+  lastActiveAt?: string;
 }
 
 export interface UpdateUserProfileRequest {
@@ -134,4 +132,3 @@ export interface UserSolutionsResponse {
     totalPages: number;
   };
 }
-

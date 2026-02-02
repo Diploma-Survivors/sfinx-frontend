@@ -5,7 +5,17 @@ import { Badge } from '@/components/ui/badge';
 import { Contest, ContestStatus, ContestUserStatus } from '@/types/contests';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Clock, Timer, History, Calendar, User, Zap, CheckCircle, CalendarClock, CircleDashed } from 'lucide-react';
+import {
+  Clock,
+  Timer,
+  History,
+  Calendar,
+  User,
+  Zap,
+  CheckCircle,
+  CalendarClock,
+  CircleDashed,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface ContestTableRowProps {
@@ -16,18 +26,28 @@ export default function ContestTableRow({ contest }: ContestTableRowProps) {
   const router = useRouter();
   const { t, i18n } = useTranslation('contests');
 
-  const getStatusIcon = (status: ContestUserStatus, contestStatus: ContestStatus) => {
+  const getStatusIcon = (
+    status: ContestUserStatus,
+    contestStatus: ContestStatus
+  ) => {
     // 1. User has joined and contest is currently live (Active)
-    if (status === ContestUserStatus.JOINED && contestStatus === ContestStatus.RUNNING) {
-      return <CircleDashed className="w-4 h-4 text-yellow-500 fill-yellow-500" />;
+    if (
+      status === ContestUserStatus.JOINED &&
+      contestStatus === ContestStatus.RUNNING
+    ) {
+      return (
+        <CircleDashed className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+      );
       // Alternatively: <PlayCircle className="w-4 h-4 text-green-500" />
     }
 
     // 2. User joined and contest is over (Completed)
-    if (status === ContestUserStatus.JOINED && contestStatus === ContestStatus.ENDED) {
+    if (
+      status === ContestUserStatus.JOINED &&
+      contestStatus === ContestStatus.ENDED
+    ) {
       return <CheckCircle className="w-4 h-4 text-green-600" />;
     }
-
 
     // 4. Default / Not Joined
     if (status === ContestUserStatus.NOT_JOINED) {
@@ -111,14 +131,18 @@ export default function ContestTableRow({ contest }: ContestTableRowProps) {
              <span>1,234</span>
          </div> */}
         {/* Assuming participant count isn't in ListItem yet, leaving blank or simple status text */}
-        <Badge variant="outline" className={cn(
-          "font-normal text-xs",
-          contest.status === ContestStatus.RUNNING ? "text-green-600 border-green-200 bg-green-50" : "text-muted-foreground"
-        )}>
+        <Badge
+          variant="outline"
+          className={cn(
+            'font-normal text-xs',
+            contest.status === ContestStatus.RUNNING
+              ? 'text-green-600 border-green-200 bg-green-50'
+              : 'text-muted-foreground'
+          )}
+        >
           {getStatusLabel(contest.status)}
         </Badge>
       </TableCell>
     </TableRow>
   );
 }
-

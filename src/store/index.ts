@@ -43,10 +43,7 @@ const appReducer = combineReducers({
 type AppState = ReturnType<typeof appReducer>;
 
 // 4. Create the Root Reducer (Wrapper to handle Reset)
-const rootReducer: Reducer<AppState, AnyAction> = (
-  state,
-  action
-) => {
+const rootReducer: Reducer<AppState, AnyAction> = (state, action) => {
   if (action.type === 'USER_LOGOUT') {
     storage.removeItem('persist:root');
     return appReducer(undefined, action);

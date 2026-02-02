@@ -61,7 +61,6 @@ export interface SolutionMeta {
   hasNextPage: boolean;
 }
 
-
 export interface SolutionListResponse {
   data: Solution[];
   meta: SolutionMeta;

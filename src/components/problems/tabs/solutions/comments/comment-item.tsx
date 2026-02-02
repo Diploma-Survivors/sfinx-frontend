@@ -58,9 +58,13 @@ export default function CommentItem({
           ...prev,
           userVote: null,
           upvoteCount:
-            voteType === SolutionCommentVoteType.UPVOTE ? prev.upvoteCount - 1 : prev.upvoteCount,
+            voteType === SolutionCommentVoteType.UPVOTE
+              ? prev.upvoteCount - 1
+              : prev.upvoteCount,
           downvoteCount:
-            voteType === SolutionCommentVoteType.DOWNVOTE ? prev.downvoteCount - 1 : prev.downvoteCount,
+            voteType === SolutionCommentVoteType.DOWNVOTE
+              ? prev.downvoteCount - 1
+              : prev.downvoteCount,
         }));
       } else {
         await SolutionsService.reactComment(comment.id, voteType);
@@ -215,12 +219,18 @@ export default function CommentItem({
           <div className="flex items-center gap-1">
             <button
               onClick={() => handleVote(SolutionCommentVoteType.UPVOTE)}
-              className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${comment.userVote === SolutionCommentVoteType.UPVOTE ? 'text-green-600' : ''
-                }`}
+              className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${
+                comment.userVote === SolutionCommentVoteType.UPVOTE
+                  ? 'text-green-600'
+                  : ''
+              }`}
             >
               <ArrowBigUp
-                className={`w-4 h-4 ${comment.userVote === SolutionCommentVoteType.UPVOTE ? 'fill-current' : ''
-                  }`}
+                className={`w-4 h-4 ${
+                  comment.userVote === SolutionCommentVoteType.UPVOTE
+                    ? 'fill-current'
+                    : ''
+                }`}
               />
               <span>{comment.upvoteCount}</span>
             </button>
@@ -229,12 +239,18 @@ export default function CommentItem({
           <div className="flex items-center gap-1">
             <button
               onClick={() => handleVote(SolutionCommentVoteType.DOWNVOTE)}
-              className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${comment.userVote === SolutionCommentVoteType.DOWNVOTE ? 'text-red-600' : ''
-                }`}
+              className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${
+                comment.userVote === SolutionCommentVoteType.DOWNVOTE
+                  ? 'text-red-600'
+                  : ''
+              }`}
             >
               <ArrowBigDown
-                className={`w-4 h-4 ${comment.userVote === SolutionCommentVoteType.DOWNVOTE ? 'fill-current' : ''
-                  }`}
+                className={`w-4 h-4 ${
+                  comment.userVote === SolutionCommentVoteType.DOWNVOTE
+                    ? 'fill-current'
+                    : ''
+                }`}
               />
               <span>{comment.downvoteCount}</span>
             </button>

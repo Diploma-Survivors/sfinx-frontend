@@ -1,0 +1,67 @@
+{
+  "title": "Live Interview",
+  "subtitle": "Practice coding interviews with AI feedback in real-time.",
+  "duration": "Takes about 15-20 minutes",
+  "noPressure": "No pressure, practice at your own pace",
+  "steps": {
+    "solve": "Solve coding problems in real-time",
+    "explain": "Explain your approach and thinking",
+    "feedback": "Get instant AI feedback and guidance",
+    "scores": "Receive detailed performance scores"
+  },
+  "voice": {
+    "title": "Voice Interaction",
+    "description": "Speak your answers aloud",
+    "on": "Voice On",
+    "off": "Voice"
+  },
+  "start": "Start Interview",
+  "header": {
+    "problem": "Problem",
+    "difficulty": "Medium",
+    "category": "Arrays",
+    "run": "Run",
+    "running": "Running",
+    "submit": "Submit"
+  },
+  "chat": {
+    "title": "AI Interviewer",
+    "placeholder": "Type a message..."
+  },
+  "editor": {
+    "title": "Solution"
+  },
+  "testcase": {
+    "title": "Testcase",
+    "result": "Test Result",
+    "input": "Input",
+    "inputPlaceholder": "Enter test input...",
+    "expected": "Expected Output",
+    "output": "Output",
+    "error": "Error",
+    "noResults": "No results yet",
+    "runHint": "Run your code to see results"
+  },
+  "feedback": {
+    "title": "Interview Complete",
+    "overall": "Overall",
+    "problemSolving": "Problem Solving",
+    "communication": "Communication",
+    "codeQuality": "Code Quality",
+    "strengths": "Strengths",
+    "improvements": "Areas to Improve",
+    "viewReport": "View Full Report",
+    "newInterview": "New"
+  },
+  "strengths": {
+    "1": "Clear explanation of your approach before coding",
+    "2": "Good use of hash maps for optimization",
+    "3": "Considered edge cases and potential improvements",
+    "4": "Communicated effectively with the interviewer"
+  },
+  "improvements": {
+    "1": "Consider testing your code with edge cases before submission",
+    "2": "Could have discussed space-time trade-offs in more detail",
+    "3": "Practice verbalizing your thought process while coding"
+  }
+}

@@ -56,7 +56,9 @@ export function EditorPanel({
   const currentLanguageId = workspace?.currentLanguage?.[problem.id] ?? 46;
   const currentCode =
     workspace?.currentCode?.[problem.id]?.[currentLanguageId] ??
-    workspace?.languages?.find((lang) => lang.id === currentLanguageId)?.starterCode ?? 'Write your code here';
+    workspace?.languages?.find((lang) => lang.id === currentLanguageId)
+      ?.starterCode ??
+    'Write your code here';
 
   const handleRunClick = () => {
     onRun(currentCode, currentLanguageId);
@@ -73,7 +75,9 @@ export function EditorPanel({
     : true;
 
   const onLanguageIdChange = (languageId: number) => {
-    dispatch(updateCurrentLanguage({ problemId: problem.id.toString(), languageId }));
+    dispatch(
+      updateCurrentLanguage({ problemId: problem.id.toString(), languageId })
+    );
   };
 
   const onCurrentCodeChange = (code: string) => {

@@ -33,11 +33,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const openToast = useCallback(
-    (
-      message: ReactNode,
-      type: ToastType = ToastType.INFO,
-      duration = 5000
-    ) => {
+    (message: ReactNode, type: ToastType = ToastType.INFO, duration = 5000) => {
       const id = Date.now();
       const newToast = { id, message, type };
 

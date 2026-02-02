@@ -14,16 +14,11 @@ import { SubmissionsService } from '@/services/submissions-service';
 import { toastService } from '@/services/toasts-service';
 import type { RootState } from '@/store/index';
 import { resetDraft, setDraft } from '@/store/slides/create-solution-slice';
-import {
-  type Submission,
-  SubmissionStatus,
-} from '@/types/submissions';
+import { type Submission, SubmissionStatus } from '@/types/submissions';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-
-
 
 export default function CreateSolutionPage() {
   const { t } = useTranslation('problems');
@@ -43,9 +38,7 @@ export default function CreateSolutionPage() {
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
   const [content, setContent] = useState('');
-  const [submission, setSubmission] = useState<Submission | null>(
-    null
-  );
+  const [submission, setSubmission] = useState<Submission | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const drafts = useSelector((state: RootState) => state.createSolution.drafts);
@@ -55,12 +48,13 @@ export default function CreateSolutionPage() {
     draftsRef.current = drafts;
   }, [drafts]);
 
-  const loadDefaultContent = useCallback(async (sub: Submission) => {
-    try {
-      const sourceCode = sub.sourceCode;
-      const langName = sub.language?.name.toLowerCase();
+  const loadDefaultContent = useCallback(
+    async (sub: Submission) => {
+      try {
+        const sourceCode = sub.sourceCode;
+        const langName = sub.language?.name.toLowerCase();
 
-      const defaultMarkdown = `# ${t('intuition')}
+        const defaultMarkdown = `# ${t('intuition')}
 
 # ${t('approach')}
 <!-- ${t('description_placeholder')} -->
@@ -78,16 +72,18 @@ export default function CreateSolutionPage() {
 \`\`\`
 `;
 
-      let newContent = defaultMarkdown.replace('cpp []', `${langName} []`);
-      newContent = newContent.replace(
-        `// ${t('code_placeholder')}`,
-        sourceCode || ''
-      );
-      setContent(newContent);
-    } catch (error) {
-      console.error('Error loading default content:', error);
-    }
-  }, [t]);
+        let newContent = defaultMarkdown.replace('cpp []', `${langName} []`);
+        newContent = newContent.replace(
+          `// ${t('code_placeholder')}`,
+          sourceCode || ''
+        );
+        setContent(newContent);
+      } catch (error) {
+        console.error('Error loading default content:', error);
+      }
+    },
+    [t]
+  );
 
   useEffect(() => {
     const fetchSubmission = async () => {

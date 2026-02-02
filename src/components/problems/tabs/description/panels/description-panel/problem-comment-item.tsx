@@ -37,7 +37,9 @@ import { CommentInput } from './comment-input';
 interface ProblemCommentItemProps {
   comment: ProblemComment;
   problemId: string | number;
-  onReply: (data: CreateProblemCommentRequest) => Promise<ProblemComment | void>;
+  onReply: (
+    data: CreateProblemCommentRequest
+  ) => Promise<ProblemComment | void>;
   onUpdate: (
     id: number,
     data: UpdateProblemCommentRequest
@@ -229,16 +231,18 @@ export default function ProblemCommentItem({
             <div className="flex items-center gap-1">
               <button
                 onClick={() => handleVote(ProblemCommentVoteType.UPVOTE)}
-                className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${comment.userVote === ProblemCommentVoteType.UPVOTE
-                  ? 'text-green-600'
-                  : ''
-                  }`}
+                className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${
+                  comment.userVote === ProblemCommentVoteType.UPVOTE
+                    ? 'text-green-600'
+                    : ''
+                }`}
               >
                 <ArrowBigUp
-                  className={`w-4 h-4 ${comment.userVote === ProblemCommentVoteType.UPVOTE
-                    ? 'fill-current'
-                    : ''
-                    }`}
+                  className={`w-4 h-4 ${
+                    comment.userVote === ProblemCommentVoteType.UPVOTE
+                      ? 'fill-current'
+                      : ''
+                  }`}
                 />
                 <span>{comment.upvoteCount}</span>
               </button>
@@ -247,16 +251,18 @@ export default function ProblemCommentItem({
             <div className="flex items-center gap-1">
               <button
                 onClick={() => handleVote(ProblemCommentVoteType.DOWNVOTE)}
-                className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${comment.userVote === ProblemCommentVoteType.DOWNVOTE
-                  ? 'text-red-600'
-                  : ''
-                  }`}
+                className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${
+                  comment.userVote === ProblemCommentVoteType.DOWNVOTE
+                    ? 'text-red-600'
+                    : ''
+                }`}
               >
                 <ArrowBigDown
-                  className={`w-4 h-4 ${comment.userVote === ProblemCommentVoteType.DOWNVOTE
-                    ? 'fill-current'
-                    : ''
-                    }`}
+                  className={`w-4 h-4 ${
+                    comment.userVote === ProblemCommentVoteType.DOWNVOTE
+                      ? 'fill-current'
+                      : ''
+                  }`}
                 />
                 <span>{comment.downvoteCount}</span>
               </button>
@@ -287,57 +293,54 @@ export default function ProblemCommentItem({
       {/* Recursive Replies */}
       {(comment.replyCount > 0 ||
         (comment.replies && comment.replies.length > 0)) && (
-          <div className="pl-11 space-y-4">
-            {!showReplies ? (
+        <div className="pl-11 space-y-4">
+          {!showReplies ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                if (!comment.replies || comment.replies.length === 0) {
+                  await fetchReplies(comment.id);
+                }
+                setShowReplies(true);
+              }}
+              className="text-muted-foreground h-auto p-0 hover:bg-transparent hover:text-foreground"
+            >
+              <MoreHorizontal className="w-4 h-4 mr-1" />
+              {t('view_replies', { count: comment.replyCount })}
+            </Button>
+          ) : (
+            <>
+              {comment.replies?.map((reply) => (
+                <div key={reply.id} className="relative">
+                  {/* Connecting line for nested replies */}
+                  <div className="absolute -left-6 top-0 bottom-0 w-px bg-border/50" />
+                  <ProblemCommentItem
+                    comment={reply}
+                    problemId={problemId}
+                    onReply={onReply}
+                    onUpdate={onUpdate}
+                    onDelete={onDelete}
+                    onVote={onVote}
+                    onUnvote={onUnvote}
+                    onReport={onReport}
+                    fetchReplies={fetchReplies}
+                  />
+                </div>
+              ))}
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={async () => {
-                  if (!comment.replies || comment.replies.length === 0) {
-                    await fetchReplies(comment.id);
-                  }
-                  setShowReplies(true);
-                }}
-                className="text-muted-foreground h-auto p-0 hover:bg-transparent hover:text-foreground"
+                onClick={() => setShowReplies(false)}
+                className="text-muted-foreground h-auto p-0 hover:bg-transparent hover:text-foreground mt-2"
               >
-                <MoreHorizontal className="w-4 h-4 mr-1" />
-                {t('view_replies', { count: comment.replyCount })}
+                <ChevronUp className="w-4 h-4 mr-1" />
+                {t('hide_replies')}
               </Button>
-            ) : (
-              <>
-                {comment.replies?.map((reply) => (
-                  <div
-                    key={reply.id}
-                    className="relative"
-                  >
-                    {/* Connecting line for nested replies */}
-                    <div className="absolute -left-6 top-0 bottom-0 w-px bg-border/50" />
-                    <ProblemCommentItem
-                      comment={reply}
-                      problemId={problemId}
-                      onReply={onReply}
-                      onUpdate={onUpdate}
-                      onDelete={onDelete}
-                      onVote={onVote}
-                      onUnvote={onUnvote}
-                      onReport={onReport}
-                      fetchReplies={fetchReplies}
-                    />
-                  </div>
-                ))}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowReplies(false)}
-                  className="text-muted-foreground h-auto p-0 hover:bg-transparent hover:text-foreground mt-2"
-                >
-                  <ChevronUp className="w-4 h-4 mr-1" />
-                  {t('hide_replies')}
-                </Button>
-              </>
-            )}
-          </div>
-        )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -39,7 +39,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 
     const raw = await response.json();
     const data = raw.data;
-    
 
     if (!response.ok) {
       throw data;

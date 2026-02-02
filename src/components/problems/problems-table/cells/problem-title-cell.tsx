@@ -21,7 +21,7 @@ const getDifficultyColor = (difficulty: string) => {
     default:
       return 'bg-muted text-muted-foreground border-border';
   }
-}
+};
 
 export default function ProblemTitleCell({
   id,

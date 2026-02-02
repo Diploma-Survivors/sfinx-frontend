@@ -100,10 +100,16 @@ export default function ProfilePage({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // New State for Backend Data
-  const [problemStats, setProblemStats] = useState<UserProblemStats | null>(null);
-  const [submissionStats, setSubmissionStats] = useState<UserSubmissionStats | null>(null);
-  const [activityCalendar, setActivityCalendar] = useState<UserActivityCalendar | null>(null);
-  const [recentActivity, setRecentActivity] = useState<UserRecentACProblem[]>([]);
+  const [problemStats, setProblemStats] = useState<UserProblemStats | null>(
+    null
+  );
+  const [submissionStats, setSubmissionStats] =
+    useState<UserSubmissionStats | null>(null);
+  const [activityCalendar, setActivityCalendar] =
+    useState<UserActivityCalendar | null>(null);
+  const [recentActivity, setRecentActivity] = useState<UserRecentACProblem[]>(
+    []
+  );
   const [activityYears, setActivityYears] = useState<number[]>([]);
 
   const [selectedYear, setSelectedYear] = useState<string>(
@@ -125,23 +131,26 @@ export default function ProfilePage({
   const { user: currentUser } = useApp();
   const isCurrentUser = currentUser?.id === Number(userIdString);
 
-  const fetchUserSolutions = useCallback(async (userId: number, page: number, sortBy: SolutionSortBy) => {
-    setSolutionsLoading(true);
-    try {
-      const response = await UserService.getUserSolutions(userId, {
-        page,
-        limit: solutionsPerPage,
-        sortBy,
-      });
-      setUserSolutions(response.data.data.data);
-      setTotalSolutions(response.data.data.meta.total);
-      setTotalSolutionsPages(response.data.data.meta.totalPages);
-    } catch (error) {
-      console.error('Error fetching user solutions:', error);
-    } finally {
-      setSolutionsLoading(false);
-    }
-  }, []);
+  const fetchUserSolutions = useCallback(
+    async (userId: number, page: number, sortBy: SolutionSortBy) => {
+      setSolutionsLoading(true);
+      try {
+        const response = await UserService.getUserSolutions(userId, {
+          page,
+          limit: solutionsPerPage,
+          sortBy,
+        });
+        setUserSolutions(response.data.data.data);
+        setTotalSolutions(response.data.data.meta.total);
+        setTotalSolutionsPages(response.data.data.meta.totalPages);
+      } catch (error) {
+        console.error('Error fetching user solutions:', error);
+      } finally {
+        setSolutionsLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,13 +158,12 @@ export default function ProfilePage({
         const userId = Number(userIdString);
 
         // Fetch initial data (user, stats, years, recent activity)
-        const [userRes, statsRes, yearsRes, recentRes] =
-          await Promise.all([
-            UserService.getUserProfile(userId),
-            UserService.getUserStats(userId),
-            UserService.getUserActivityYears(userId),
-            UserService.getUserRecentACProblems(userId),
-          ]);
+        const [userRes, statsRes, yearsRes, recentRes] = await Promise.all([
+          UserService.getUserProfile(userId),
+          UserService.getUserStats(userId),
+          UserService.getUserActivityYears(userId),
+          UserService.getUserRecentACProblems(userId),
+        ]);
 
         setUser(userRes.data.data);
         setProblemStats(statsRes.data.data.problemStats);
@@ -182,7 +190,10 @@ export default function ProfilePage({
       try {
         const userId = Number(userIdString);
         const year = Number(selectedYear);
-        const response = await UserService.getUserActivityCalendar(userId, year);
+        const response = await UserService.getUserActivityCalendar(
+          userId,
+          year
+        );
         setActivityCalendar(response.data.data);
       } catch (error) {
         console.error('Error fetching activity calendar:', error);
@@ -198,7 +209,6 @@ export default function ProfilePage({
     fetchUserSolutions(Number(userIdString), solutionsPage, solutionsSortBy);
   }, [userIdString, solutionsPage, solutionsSortBy, fetchUserSolutions]);
 
-
   const handleSaveProfile = (updatedUser: UserProfile) => {
     setUser(updatedUser);
     // In a real app, we would call an API to update the user here
@@ -211,9 +221,7 @@ export default function ProfilePage({
   const handleSolutionClick = (solutionId: string) => {
     const solution = userSolutions.find((s) => s.id === solutionId);
     if (solution) {
-      router.push(
-        `/problems/${solution.problemId}/solutions/${solutionId}`
-      );
+      router.push(`/problems/${solution.problemId}/solutions/${solutionId}`);
     }
   };
 
@@ -228,7 +236,7 @@ export default function ProfilePage({
 
     // Create a map for quick lookup
     const submissionMap = new Map<string, number>();
-    activeDays.forEach(day => submissionMap.set(day.date, day.count));
+    activeDays.forEach((day) => submissionMap.set(day.date, day.count));
 
     const grid = [];
     const months = [];
@@ -270,10 +278,7 @@ export default function ProfilePage({
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">{t('activity_calendar')}</h3>
-          <Select
-            value={selectedYear}
-            onValueChange={setSelectedYear}
-          >
+          <Select value={selectedYear} onValueChange={setSelectedYear}>
             <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="Year" />
             </SelectTrigger>
@@ -318,19 +323,24 @@ export default function ProfilePage({
               {grid.map((cell) => (
                 <Tooltip
                   key={cell.id}
-                  content={cell.isPadding ? '' : `${cell.count} submissions on ${cell.date}`}
+                  content={
+                    cell.isPadding
+                      ? ''
+                      : `${cell.count} submissions on ${cell.date}`
+                  }
                 >
                   <div
-                    className={`w-3 h-3 rounded-sm ${cell.isPadding
-                      ? 'bg-transparent'
-                      : cell.count === 0
-                        ? 'bg-muted'
-                        : cell.count < 3
-                          ? 'bg-green-300'
-                          : cell.count < 6
-                            ? 'bg-green-500'
-                            : 'bg-green-700'
-                      }`}
+                    className={`w-3 h-3 rounded-sm ${
+                      cell.isPadding
+                        ? 'bg-transparent'
+                        : cell.count === 0
+                          ? 'bg-muted'
+                          : cell.count < 3
+                            ? 'bg-green-300'
+                            : cell.count < 6
+                              ? 'bg-green-500'
+                              : 'bg-green-700'
+                    }`}
                   />
                 </Tooltip>
               ))}
@@ -388,7 +398,9 @@ export default function ProfilePage({
                 <h2 className="text-2xl font-bold text-foreground">
                   {user.fullName}
                 </h2>
-                <p className="text-muted-foreground font-medium">{user.username}</p>
+                <p className="text-muted-foreground font-medium">
+                  {user.username}
+                </p>
               </div>
               <Badge
                 variant="secondary"
@@ -442,7 +454,9 @@ export default function ProfilePage({
                     className="flex items-center text-muted-foreground hover:text-primary transition-colors"
                   >
                     <Github className="w-4 h-4 mr-3 text-muted-foreground/70" />
-                    <span className="text-sm truncate">@{user.githubUsername}</span>
+                    <span className="text-sm truncate">
+                      @{user.githubUsername}
+                    </span>
                   </a>
                 )}
 
@@ -514,16 +528,21 @@ export default function ProfilePage({
                         </svg>
                         <div className="absolute flex flex-col items-center">
                           <span className="text-2xl font-bold text-foreground">
-                            {problemStats.total.solved}/{problemStats.total.total}
+                            {problemStats.total.solved}/
+                            {problemStats.total.total}
                           </span>
-                          <span className="text-xs text-muted-foreground">{t('solved')}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {t('solved')}
+                          </span>
                         </div>
                       </div>
                     </Tooltip>
 
                     <div className="space-y-2 flex-1">
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-green-600 font-medium">{t('easy')}</span>
+                        <span className="text-green-600 font-medium">
+                          {t('easy')}
+                        </span>
                         <span className="font-bold">
                           {problemStats.easy.solved}
                           <span className="text-muted-foreground font-normal">
@@ -561,7 +580,9 @@ export default function ProfilePage({
                       </div>
 
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-red-600 font-medium">{t('hard')}</span>
+                        <span className="text-red-600 font-medium">
+                          {t('hard')}
+                        </span>
                         <span className="font-bold">
                           {problemStats.hard.solved}
                           <span className="text-muted-foreground font-normal">
@@ -602,11 +623,33 @@ export default function ProfilePage({
                           const total = submissionStats.total || 1;
                           let cumulativePercent = 0;
                           const data = [
-                            { status: SubmissionStatus.ACCEPTED, count: submissionStats.accepted, color: '#10b981' },
-                            { status: SubmissionStatus.WRONG_ANSWER, count: submissionStats.wrongAnswer, color: '#ef4444' },
-                            { status: SubmissionStatus.TIME_LIMIT_EXCEEDED, count: submissionStats.timeLimitExceeded, color: '#eab308' },
-                            { status: SubmissionStatus.RUNTIME_ERROR, count: submissionStats.runtimeError, color: '#f97316' },
-                            { status: 'others', count: submissionStats.others + submissionStats.compilationError, color: '#6b7280' },
+                            {
+                              status: SubmissionStatus.ACCEPTED,
+                              count: submissionStats.accepted,
+                              color: '#10b981',
+                            },
+                            {
+                              status: SubmissionStatus.WRONG_ANSWER,
+                              count: submissionStats.wrongAnswer,
+                              color: '#ef4444',
+                            },
+                            {
+                              status: SubmissionStatus.TIME_LIMIT_EXCEEDED,
+                              count: submissionStats.timeLimitExceeded,
+                              color: '#eab308',
+                            },
+                            {
+                              status: SubmissionStatus.RUNTIME_ERROR,
+                              count: submissionStats.runtimeError,
+                              color: '#f97316',
+                            },
+                            {
+                              status: 'others',
+                              count:
+                                submissionStats.others +
+                                submissionStats.compilationError,
+                              color: '#6b7280',
+                            },
                           ];
 
                           return data.map((item) => {
@@ -617,17 +660,37 @@ export default function ProfilePage({
                             cumulativePercent += percent;
 
                             // Calculate SVG path for pie slice
-                            const x1 = 16 + 16 * Math.cos((2 * Math.PI * startPercent) / 100);
-                            const y1 = 16 + 16 * Math.sin((2 * Math.PI * startPercent) / 100);
-                            const x2 = 16 + 16 * Math.cos((2 * Math.PI * cumulativePercent) / 100);
-                            const y2 = 16 + 16 * Math.sin((2 * Math.PI * cumulativePercent) / 100);
+                            const x1 =
+                              16 +
+                              16 * Math.cos((2 * Math.PI * startPercent) / 100);
+                            const y1 =
+                              16 +
+                              16 * Math.sin((2 * Math.PI * startPercent) / 100);
+                            const x2 =
+                              16 +
+                              16 *
+                                Math.cos(
+                                  (2 * Math.PI * cumulativePercent) / 100
+                                );
+                            const y2 =
+                              16 +
+                              16 *
+                                Math.sin(
+                                  (2 * Math.PI * cumulativePercent) / 100
+                                );
 
                             const largeArcFlag = percent > 50 ? 1 : 0;
 
                             // Handle 100% case
                             if (percent > 99.9) {
                               return (
-                                <circle key={item.status} cx="16" cy="16" r="16" fill={item.color} />
+                                <circle
+                                  key={item.status}
+                                  cx="16"
+                                  cy="16"
+                                  r="16"
+                                  fill={item.color}
+                                />
                               );
                             }
 
@@ -651,28 +714,49 @@ export default function ProfilePage({
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-green-500" />
-                        <span className="text-muted-foreground">{t('accepted')}:</span>
-                        <span className="font-bold">{submissionStats.accepted}</span>
+                        <span className="text-muted-foreground">
+                          {t('accepted')}:
+                        </span>
+                        <span className="font-bold">
+                          {submissionStats.accepted}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-red-500" />
-                        <span className="text-muted-foreground">{t('wrong_answer')}:</span>
-                        <span className="font-bold">{submissionStats.wrongAnswer}</span>
+                        <span className="text-muted-foreground">
+                          {t('wrong_answer')}:
+                        </span>
+                        <span className="font-bold">
+                          {submissionStats.wrongAnswer}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                        <span className="text-muted-foreground">{t('time_limit')}:</span>
-                        <span className="font-bold">{submissionStats.timeLimitExceeded}</span>
+                        <span className="text-muted-foreground">
+                          {t('time_limit')}:
+                        </span>
+                        <span className="font-bold">
+                          {submissionStats.timeLimitExceeded}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-orange-500" />
-                        <span className="text-muted-foreground">{t('runtime_error')}:</span>
-                        <span className="font-bold">{submissionStats.runtimeError}</span>
+                        <span className="text-muted-foreground">
+                          {t('runtime_error')}:
+                        </span>
+                        <span className="font-bold">
+                          {submissionStats.runtimeError}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-gray-500" />
-                        <span className="text-muted-foreground">{t('others')}:</span>
-                        <span className="font-bold">{submissionStats.others + submissionStats.compilationError}</span>
+                        <span className="text-muted-foreground">
+                          {t('others')}:
+                        </span>
+                        <span className="font-bold">
+                          {submissionStats.others +
+                            submissionStats.compilationError}
+                        </span>
                       </div>
                     </div>
                   </>
@@ -683,15 +767,15 @@ export default function ProfilePage({
 
           {/* Heatmap */}
           <Card className="border border-border shadow-md bg-card">
-            <CardContent className="pt-6">
-              {renderHeatmap()}
-            </CardContent>
+            <CardContent className="pt-6">{renderHeatmap()}</CardContent>
           </Card>
 
           {/* Tabs: Recent AC & Solutions */}
           <Tabs defaultValue="recent-ac" className="w-full">
             <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
-              <TabsTrigger value="recent-ac">{t('recent_ac_problems')}</TabsTrigger>
+              <TabsTrigger value="recent-ac">
+                {t('recent_ac_problems')}
+              </TabsTrigger>
               <TabsTrigger value="solutions">{t('solutions')}</TabsTrigger>
             </TabsList>
 
@@ -717,9 +801,13 @@ export default function ProfilePage({
                               {activity.problem.title}
                             </h4>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <span>{format(new Date(activity.firstSolvedAt), 'MMM d, yyyy')}</span>
+                              <span>
+                                {format(
+                                  new Date(activity.firstSolvedAt),
+                                  'MMM d, yyyy'
+                                )}
+                              </span>
                             </div>
-
                           </div>
                         </div>
                         <ArrowRight className="w-4 h-4 text-muted-foreground" />
@@ -778,7 +866,12 @@ export default function ProfilePage({
                               {solution.title}
                             </h4>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span>{format(new Date(solution.createdAt), 'MMM d, yyyy')}</span>
+                              <span>
+                                {format(
+                                  new Date(solution.createdAt),
+                                  'MMM d, yyyy'
+                                )}
+                              </span>
                               <span className="flex items-center gap-1">
                                 <ThumbsUp className="w-3 h-3" />
                                 {solution.upvoteCount}
@@ -840,8 +933,6 @@ export default function ProfilePage({
           </Tabs>
         </div>
       </div>
-
-
     </div>
   );
 }

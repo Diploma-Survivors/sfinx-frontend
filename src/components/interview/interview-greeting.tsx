@@ -1,13 +1,14 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Volume2 } from "lucide-react"
+import { useTranslation } from 'react-i18next';
+import { Volume2, Mic, Code2, MessageSquare, Trophy } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface InterviewGreetingProps {
-  voiceEnabled: boolean
-  onVoiceEnabledChange: (enabled: boolean) => void
-  onStartInterview: () => void
+  voiceEnabled: boolean;
+  onVoiceEnabledChange: (enabled: boolean) => void;
+  onStartInterview: () => void;
 }
 
 export function InterviewGreeting({
@@ -15,70 +16,80 @@ export function InterviewGreeting({
   onVoiceEnabledChange,
   onStartInterview,
 }: InterviewGreetingProps) {
+  const { t } = useTranslation('interview');
+
+  const steps = [
+    { icon: Code2, key: 'solve' },
+    { icon: MessageSquare, key: 'explain' },
+    { icon: Mic, key: 'feedback' },
+    { icon: Trophy, key: 'scores' },
+  ];
+
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl border-border/40 bg-card rounded-xl shadow-lg">
-        <div className="p-12 space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-balance">
-              <span className="bg-gradient-to-r from-accent via-[oklch(0.5_0.18_200)] to-[oklch(0.55_0.2_280)] bg-clip-text text-transparent">
-                Live Coding Interview
-              </span>
-            </h1>
-            <p className="text-lg text-muted-foreground text-pretty max-w-xl mx-auto">
-              You're about to start a real-time coding interview. You'll solve problems, explain your thinking, and
-              receive instant feedback from your AI interviewer.
-            </p>
-          </div>
-
-          <Card className="bg-secondary/50 border border-border/40 rounded-lg p-6 space-y-3">
-            <h3 className="font-semibold text-foreground">Interview Process:</h3>
-            <ol className="text-sm text-muted-foreground space-y-2">
-              <li className="flex gap-3">
-                <span className="flex-none font-medium text-accent">1.</span>
-                <span>You'll receive coding problems to solve</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-none font-medium text-accent">2.</span>
-                <span>Explain your approach and code in real-time</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-none font-medium text-accent">3.</span>
-                <span>Get feedback and suggestions from your interviewer</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-none font-medium text-accent">4.</span>
-                <span>Receive a final evaluation with detailed scores</span>
-              </li>
-            </ol>
-          </Card>
-
-          <div className="space-y-4">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={voiceEnabled}
-                onChange={(e) => onVoiceEnabledChange(e.target.checked)}
-                className="w-4 h-4 rounded accent-accent"
-              />
-              <span className="text-sm text-foreground">Enable voice interaction (optional)</span>
-            </label>
-            {voiceEnabled && (
-              <Card className="bg-accent/10 border border-accent/30 rounded-lg p-3 flex items-center gap-3">
-                <Volume2 className="w-4 h-4 text-accent" />
-                <span className="text-sm text-foreground">Microphone enabled - you can speak your answers</span>
-              </Card>
-            )}
-          </div>
-
-          <Button
-            onClick={onStartInterview}
-            className="w-full bg-accent text-accent-foreground hover:bg-accent/90 h-12 text-base font-semibold shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 transition-all duration-300"
-          >
-            Start Interview
-          </Button>
+    <div className="h-full w-full flex items-center justify-center p-4 bg-muted/30">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
+            <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              {t('title')}
+            </span>
+          </h1>
+          <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
         </div>
-      </Card>
+
+        <Card className="p-5 space-y-5">
+          <div className="space-y-3">
+            {steps.map((step, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <step.icon className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-foreground/80">
+                  {t(`steps.${step.key}`)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="h-px bg-border" />
+
+          <button
+            onClick={() => onVoiceEnabledChange(!voiceEnabled)}
+            className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-8 h-8 rounded-lg flex items-center justify-center ${voiceEnabled ? 'bg-primary/10' : 'bg-muted'}`}
+              >
+                <Volume2
+                  className={`w-4 h-4 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`}
+                />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium">{t('voice.title')}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t('voice.description')}
+                </p>
+              </div>
+            </div>
+            <div
+              className={`w-10 h-6 rounded-full transition-colors ${voiceEnabled ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform ${voiceEnabled ? 'translate-x-5' : 'translate-x-1'}`}
+              />
+            </div>
+          </button>
+
+          <Button onClick={onStartInterview} className="w-full">
+            {t('start')}
+          </Button>
+        </Card>
+
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          {t('duration')} • {t('noPressure')}
+        </p>
+      </div>
     </div>
-  )
+  );
 }

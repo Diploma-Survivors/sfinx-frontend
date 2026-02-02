@@ -67,7 +67,10 @@ async function getContestLeaderboardMe(
 }
 
 function isInProgress(contest: Contest): boolean {
-  return contest.status === ContestStatus.RUNNING && contest.userStatus === ContestUserStatus.JOINED;
+  return (
+    contest.status === ContestStatus.RUNNING &&
+    contest.userStatus === ContestUserStatus.JOINED
+  );
 }
 
 function getContestStatusColor(status: ContestStatus): string {

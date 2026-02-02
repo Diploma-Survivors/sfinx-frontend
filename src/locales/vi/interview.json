@@ -1,0 +1,67 @@
+{
+  "title": "Phỏng vấn trực tiếp",
+  "subtitle": "Luyện tập phỏng vấn coding với phản hồi AI theo thờigian thực.",
+  "duration": "Khoảng 15-20 phút",
+  "noPressure": "Không áp lực, luyện tập theo tốc độ của bạn",
+  "steps": {
+    "solve": "Giải bài toán lập trình theo thờigian thực",
+    "explain": "Giải thích cách tiếp cận và suy nghĩ của bạn",
+    "feedback": "Nhận phản hồi và hướng dẫn từ AI ngay lập tức",
+    "scores": "Nhận điểm số chi tiết về hiệu suất"
+  },
+  "voice": {
+    "title": "Tương tác bằng giọng nói",
+    "description": "Nói câu trả lời của bạn",
+    "on": "Bật giọng nói",
+    "off": "Giọng nói"
+  },
+  "start": "Bắt đầu phỏng vấn",
+  "header": {
+    "problem": "Bài toán",
+    "difficulty": "Trung bình",
+    "category": "Mảng",
+    "run": "Chạy",
+    "running": "Đang chạy",
+    "submit": "Nộp bài"
+  },
+  "chat": {
+    "title": "AI Phỏng vấn",
+    "placeholder": "Nhập tin nhắn..."
+  },
+  "editor": {
+    "title": "Lời giải"
+  },
+  "testcase": {
+    "title": "Testcase",
+    "result": "Kết quả",
+    "input": "Đầu vào",
+    "inputPlaceholder": "Nhập dữ liệu test...",
+    "expected": "Đầu ra mong đợi",
+    "output": "Đầu ra",
+    "error": "Lỗi",
+    "noResults": "Chưa có kết quả",
+    "runHint": "Chạy code để xem kết quả"
+  },
+  "feedback": {
+    "title": "Hoàn thành phỏng vấn",
+    "overall": "Tổng quan",
+    "problemSolving": "Giải quyết vấn đề",
+    "communication": "Giao tiếp",
+    "codeQuality": "Chất lượng code",
+    "strengths": "Điểm mạnh",
+    "improvements": "Cần cải thiện",
+    "viewReport": "Xem báo cáo đầy đủ",
+    "newInterview": "Mới"
+  },
+  "strengths": {
+    "1": "Giải thích rõ ràng cách tiếp cận trước khi code",
+    "2": "Sử dụng tốt hash map để tối ưu hóa",
+    "3": "Xem xét các trường hợp biên và cải tiến tiềm năng",
+    "4": "Giao tiếp hiệu quả với người phỏng vấn"
+  },
+  "improvements": {
+    "1": "Nên kiểm tra code với các trường hợp biên trước khi nộp",
+    "2": "Có thể thảo luận chi tiết hơn về trade-off không gian thời gian",
+    "3": "Luyện tập diễn đạt quá trình suy nghĩ trong khi code"
+  }
+}
