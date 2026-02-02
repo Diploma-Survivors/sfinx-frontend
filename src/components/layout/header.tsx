@@ -1,7 +1,10 @@
 'use client';
 
 import { useApp } from '@/contexts/app-context';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Bell, Search } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -59,6 +62,21 @@ export default function Header() {
                 </Link>
               );
             })}
+          </div>
+
+          {/* Search & Notifications */}
+          <div className="hidden md:flex items-center gap-3 ml-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder={t('search', 'Search...')}
+                className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-primary/30 transition-all duration-200"
+              />
+            </div>
+            <Button variant="ghost" size="icon" className="h-10 w-10 text-black hover:bg-black/5">
+              <Bell className="h-6 w-6" fill="black" />
+            </Button>
           </div>
 
           {/* Separator */}
