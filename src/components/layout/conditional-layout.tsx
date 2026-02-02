@@ -1,6 +1,7 @@
 'use client';
 
 import { Footer, Header } from '@/components/layout';
+import GlobalLoader from '@/components/ui/global-loader';
 import { useApp } from '@/contexts/app-context';
 
 export default function ConditionalLayout({
@@ -9,6 +10,10 @@ export default function ConditionalLayout({
   children: React.ReactNode;
 }) {
   const { shouldHideNavigation, isLoading } = useApp();
+
+  if (isLoading) {
+    return <GlobalLoader />;
+  }
 
 
 
