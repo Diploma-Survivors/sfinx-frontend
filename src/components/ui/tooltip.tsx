@@ -30,3 +30,10 @@ export function Tooltip({
     </TooltipPrimitive.Provider>
   );
 }
+
+// Export primitive components for advanced usage
+export const TooltipProvider = TooltipPrimitive.Provider;
+export const TooltipRoot = TooltipPrimitive.Root;
+export const TooltipTrigger = TooltipPrimitive.Trigger;
+export const TooltipContent = TooltipPrimitive.Content;
+export const TooltipPortal = TooltipPrimitive.Portal;

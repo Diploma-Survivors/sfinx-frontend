@@ -13,7 +13,7 @@
     "title": "Voice Interaction",
     "description": "Speak your answers aloud",
     "on": "Voice On",
-    "off": "Voice"
+    "off": "Voice Off"
   },
   "start": "Start Interview",
   "header": {
@@ -22,11 +22,14 @@
     "category": "Arrays",
     "run": "Run",
     "running": "Running",
-    "submit": "Submit"
+    "submit": "Submit",
+    "end": "End"
   },
   "chat": {
     "title": "AI Interviewer",
-    "placeholder": "Type a message..."
+    "placeholder": "Type a message...",
+    "empty": "Start the conversation by sending a message",
+    "ended": "Interview has ended"
   },
   "editor": {
     "title": "Solution"
@@ -48,14 +51,22 @@
     "problemSolving": "Problem Solving",
     "communication": "Communication",
     "codeQuality": "Code Quality",
+    "technical": "Technical",
     "strengths": "Strengths",
     "improvements": "Areas to Improve",
     "viewReport": "View Full Report",
-    "newInterview": "New"
+    "viewHistory": "View History",
+    "newInterview": "New Interview"
+  },
+  "endDialog": {
+    "title": "End Interview?",
+    "description": "Are you sure you want to end this interview? This will finalize your session and generate the evaluation report.",
+    "cancel": "Cancel",
+    "confirm": "End Interview"
   },
   "strengths": {
     "1": "Clear explanation of your approach before coding",
-    "2": "Good use of hash maps for optimization",
+    "2": "Good use of data structures for optimization",
     "3": "Considered edge cases and potential improvements",
     "4": "Communicated effectively with the interviewer"
   },

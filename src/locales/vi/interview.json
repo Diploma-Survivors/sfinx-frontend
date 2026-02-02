@@ -11,9 +11,9 @@
   },
   "voice": {
     "title": "Tương tác bằng giọng nói",
-    "description": "Nói câu trả lời của bạn",
+    "description": "Nói câu trả lờii của bạn",
     "on": "Bật giọng nói",
-    "off": "Giọng nói"
+    "off": "Tắt giọng nói"
   },
   "start": "Bắt đầu phỏng vấn",
   "header": {
@@ -22,14 +22,17 @@
     "category": "Mảng",
     "run": "Chạy",
     "running": "Đang chạy",
-    "submit": "Nộp bài"
+    "submit": "Nộp bài",
+    "end": "Kết thúc"
   },
   "chat": {
     "title": "AI Phỏng vấn",
-    "placeholder": "Nhập tin nhắn..."
+    "placeholder": "Nhập tin nhắn...",
+    "empty": "Bắt đầu cuộc trò chuyện bằng cách gửi tin nhắn",
+    "ended": "Phỏng vấn đã kết thúc"
   },
   "editor": {
-    "title": "Lời giải"
+    "title": "Lờii giải"
   },
   "testcase": {
     "title": "Testcase",
@@ -48,20 +51,28 @@
     "problemSolving": "Giải quyết vấn đề",
     "communication": "Giao tiếp",
     "codeQuality": "Chất lượng code",
+    "technical": "Kỹ thuật",
     "strengths": "Điểm mạnh",
     "improvements": "Cần cải thiện",
     "viewReport": "Xem báo cáo đầy đủ",
-    "newInterview": "Mới"
+    "viewHistory": "Xem lịch sử",
+    "newInterview": "Phỏng vấn mới"
+  },
+  "endDialog": {
+    "title": "Kết thúc phỏng vấn?",
+    "description": "Bạn có chắc chắn muốn kết thúc phỏng vấn này không? Điều này sẽ kết thúc phiên làm việc và tạo báo cáo đánh giá.",
+    "cancel": "Hủy",
+    "confirm": "Kết thúc phỏng vấn"
   },
   "strengths": {
     "1": "Giải thích rõ ràng cách tiếp cận trước khi code",
-    "2": "Sử dụng tốt hash map để tối ưu hóa",
+    "2": "Sử dụng tốt cấu trúc dữ liệu để tối ưu hóa",
     "3": "Xem xét các trường hợp biên và cải tiến tiềm năng",
-    "4": "Giao tiếp hiệu quả với người phỏng vấn"
+    "4": "Giao tiếp hiệu quả với ngườii phỏng vấn"
   },
   "improvements": {
     "1": "Nên kiểm tra code với các trường hợp biên trước khi nộp",
-    "2": "Có thể thảo luận chi tiết hơn về trade-off không gian thời gian",
+    "2": "Có thể thảo luận chi tiết hơn về trade-off không gian thờigian",
     "3": "Luyện tập diễn đạt quá trình suy nghĩ trong khi code"
   }
 }
