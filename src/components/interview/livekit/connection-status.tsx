@@ -1,9 +1,9 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useConnectionState } from '@livekit/components-react';
 import { ConnectionState } from 'livekit-client';
-import { Wifi, WifiOff, Loader2, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { AlertCircle, Loader2, Wifi, WifiOff } from 'lucide-react';
 
 interface ConnectionStatusProps {
   className?: string;
@@ -13,7 +13,10 @@ interface ConnectionStatusProps {
 /**
  * Displays LiveKit connection status with appropriate icon and color
  */
-export function ConnectionStatus({ className, showLabel = true }: ConnectionStatusProps) {
+export function ConnectionStatus({
+  className,
+  showLabel = true,
+}: ConnectionStatusProps) {
   const connectionState = useConnectionState();
 
   // Don't render anything if disconnected
@@ -63,7 +66,8 @@ export function ConnectionStatus({ className, showLabel = true }: ConnectionStat
     },
   };
 
-  const config = statusConfig[connectionState] || statusConfig[ConnectionState.Connecting];
+  const config =
+    statusConfig[connectionState] || statusConfig[ConnectionState.Connecting];
   const Icon = config.icon;
 
   return (
@@ -111,7 +115,10 @@ export function ConnectionAlert() {
   const connectionState = useConnectionState();
 
   // Don't show alert when disconnected (that's the default state)
-  if (connectionState === ConnectionState.Disconnected || connectionState === ConnectionState.Connected) {
+  if (
+    connectionState === ConnectionState.Disconnected ||
+    connectionState === ConnectionState.Connected
+  ) {
     return null;
   }
 

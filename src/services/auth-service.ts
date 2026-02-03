@@ -1,12 +1,12 @@
 import clientApi from '@/lib/apis/axios-client';
-import { ApiResponse } from '@/types/api';
-import {
+import type { ApiResponse } from '@/types/api';
+import type {
   ChangePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
   VerifyEmailRequest,
 } from '@/types/auth';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 async function changePassword(
   data: ChangePasswordRequest

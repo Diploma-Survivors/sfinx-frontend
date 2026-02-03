@@ -1,10 +1,18 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Volume2, Mic, Code2, MessageSquare, Trophy, Loader2, Sparkles } from 'lucide-react';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import {
+  Code2,
+  Loader2,
+  MessageSquare,
+  Mic,
+  Sparkles,
+  Trophy,
+  Volume2,
+} from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface InterviewGreetingProps {
   voiceEnabled: boolean;
@@ -47,7 +55,9 @@ export function InterviewGreeting({
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <step.icon className="w-4 h-4 text-primary" />
                 </div>
-                <span className="text-foreground/80">{t(`steps.${step.key}`)}</span>
+                <span className="text-foreground/80">
+                  {t(`steps.${step.key}`)}
+                </span>
               </div>
             ))}
           </div>
@@ -58,10 +68,12 @@ export function InterviewGreeting({
           <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
             <Sparkles className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
             <div className="text-sm">
-              <p className="font-medium text-blue-600">Random Problem Selection</p>
+              <p className="font-medium text-blue-600">
+                Random Problem Selection
+              </p>
               <p className="text-blue-600/70 text-xs mt-0.5">
-                {/* TODO: Implement problem selection UI */}
-                A random problem will be selected for you. Problem selection UI coming soon!
+                {/* TODO: Implement problem selection UI */}A random problem
+                will be selected for you. Problem selection UI coming soon!
               </p>
             </div>
           </div>
@@ -81,7 +93,9 @@ export function InterviewGreeting({
               </div>
               <div className="text-left">
                 <p className="text-sm font-medium">{t('voice.title')}</p>
-                <p className="text-xs text-muted-foreground">{t('voice.description')}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t('voice.description')}
+                </p>
               </div>
             </div>
             <div
@@ -93,7 +107,11 @@ export function InterviewGreeting({
             </div>
           </button>
 
-          <Button onClick={onStartInterview} className="w-full" disabled={isLoading}>
+          <Button
+            onClick={onStartInterview}
+            className="w-full"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

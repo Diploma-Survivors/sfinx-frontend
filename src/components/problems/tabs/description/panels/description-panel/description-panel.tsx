@@ -1,10 +1,10 @@
-import MarkdownRenderer from '@/components/ui/markdown-renderer';
 import { Button } from '@/components/ui/button';
+import MarkdownRenderer from '@/components/ui/markdown-renderer';
 
 import { toastService } from '@/services/toasts-service';
-import { ProblemStatus, type Problem } from '@/types/problems';
+import { type Problem, ProblemStatus } from '@/types/problems';
 
-import { SampleTestCase } from '@/types/testcases';
+import type { SampleTestCase } from '@/types/testcases';
 import {
   CheckCircle2,
   Copy,

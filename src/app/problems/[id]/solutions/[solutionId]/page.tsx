@@ -1,14 +1,14 @@
 'use client';
 
 import SolutionDetailPanel from '@/components/problems/tabs/solutions/solution-detail-panel';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { SolutionsService } from '@/services/solutions-service';
 import type { Solution } from '@/types/solutions';
+import { ArrowLeft } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SolutionDetailPage() {
   const { t } = useTranslation('problems');

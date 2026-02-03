@@ -1,3 +1,4 @@
+import { type } from 'os';
 import clientApi from '@/lib/apis/axios-client';
 import type { ApiResponse } from '@/types/api';
 import type {
@@ -10,7 +11,6 @@ import type {
   SolutionVoteType,
 } from '@/types/solutions';
 import type { AxiosResponse } from 'axios';
-import { type } from 'os';
 import qs from 'qs';
 
 async function getSolutionsList(

@@ -1,5 +1,5 @@
-import { Problem } from './problems';
-import { UserProfile } from './user';
+import type { Problem } from './problems';
+import type { UserProfile } from './user';
 
 export enum SubmissionStatus {
   PENDING = 'PENDING',

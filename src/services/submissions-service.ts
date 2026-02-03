@@ -1,12 +1,12 @@
 import clientApi from '@/lib/apis/axios-client';
 import { store } from '@/store';
 import { setLanguages } from '@/store/slides/workspace-slice';
-import { ApiResponse } from '@/types/api';
+import type { ApiResponse } from '@/types/api';
 import {
   type GetSubmissionListRequest,
   type Language,
   type Submission,
-  SubmissionListResponse,
+  type SubmissionListResponse,
   type SubmissionRequest,
   SubmissionStatus,
 } from '@/types/submissions';

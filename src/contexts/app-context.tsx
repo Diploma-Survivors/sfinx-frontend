@@ -3,7 +3,7 @@
 import clientApi from '@/lib/apis/axios-client';
 import type { DecodedAccessToken, UserInfo } from '@/types/states';
 
-import { UserProfile } from '@/types/user';
+import type { UserProfile } from '@/types/user';
 import { usePathname } from 'next/navigation';
 import {
   type ReactNode,

@@ -20,7 +20,7 @@ import { ContestsService } from '@/services/contests-service';
 import {
   ContestProblemStatus,
   ContestProblemStatusTooltip,
-  LeaderboardEntry,
+  type LeaderboardEntry,
 } from '@/types/contests';
 import { Medal, Search, Trophy } from 'lucide-react';
 import Link from 'next/link';

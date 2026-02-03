@@ -1,21 +1,25 @@
 'use client';
 
-import { TableCell, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Contest, ContestStatus, ContestUserStatus } from '@/types/contests';
-import { useRouter } from 'next/navigation';
+import { TableCell, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import {
-  Clock,
-  Timer,
-  History,
+  type Contest,
+  ContestStatus,
+  ContestUserStatus,
+} from '@/types/contests';
+import {
   Calendar,
+  CalendarClock,
+  CheckCircle,
+  CircleDashed,
+  Clock,
+  History,
+  Timer,
   User,
   Zap,
-  CheckCircle,
-  CalendarClock,
-  CircleDashed,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 interface ContestTableRowProps {

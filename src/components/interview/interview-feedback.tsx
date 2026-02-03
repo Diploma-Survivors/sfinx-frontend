@@ -1,20 +1,20 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import type { InterviewEvaluation } from '@/types/interview';
 import {
-  Clock,
-  CheckCircle2,
-  Lightbulb,
   ArrowRight,
+  Brain,
+  CheckCircle2,
+  Clock,
+  Code2,
+  Lightbulb,
+  MessageSquare,
   RotateCcw,
   TrendingUp,
-  Code2,
-  MessageSquare,
-  Brain,
 } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import type { InterviewEvaluation } from '@/types/interview';
+import { useTranslation } from 'react-i18next';
 
 interface InterviewFeedbackProps {
   interviewTime: number;
@@ -40,16 +40,51 @@ export function InterviewFeedback({
   // Default/mock scores if no evaluation provided
   const scores = evaluation
     ? [
-        { key: 'problemSolving', score: evaluation.problemSolvingScore, icon: Brain, color: 'text-purple-500' },
-        { key: 'communication', score: evaluation.communicationScore, icon: MessageSquare, color: 'text-blue-500' },
-        { key: 'codeQuality', score: evaluation.codeQualityScore, icon: Code2, color: 'text-green-500' },
-        { key: 'technical', score: evaluation.technicalScore, icon: TrendingUp, color: 'text-orange-500' },
+        {
+          key: 'problemSolving',
+          score: evaluation.problemSolvingScore,
+          icon: Brain,
+          color: 'text-purple-500',
+        },
+        {
+          key: 'communication',
+          score: evaluation.communicationScore,
+          icon: MessageSquare,
+          color: 'text-blue-500',
+        },
+        {
+          key: 'codeQuality',
+          score: evaluation.codeQualityScore,
+          icon: Code2,
+          color: 'text-green-500',
+        },
+        {
+          key: 'technical',
+          score: evaluation.technicalScore,
+          icon: TrendingUp,
+          color: 'text-orange-500',
+        },
       ]
     : [
-        { key: 'problemSolving', score: 0, icon: Brain, color: 'text-purple-500' },
-        { key: 'communication', score: 0, icon: MessageSquare, color: 'text-blue-500' },
+        {
+          key: 'problemSolving',
+          score: 0,
+          icon: Brain,
+          color: 'text-purple-500',
+        },
+        {
+          key: 'communication',
+          score: 0,
+          icon: MessageSquare,
+          color: 'text-blue-500',
+        },
         { key: 'codeQuality', score: 0, icon: Code2, color: 'text-green-500' },
-        { key: 'technical', score: 0, icon: TrendingUp, color: 'text-orange-500' },
+        {
+          key: 'technical',
+          score: 0,
+          icon: TrendingUp,
+          color: 'text-orange-500',
+        },
       ];
 
   const overallScore = evaluation?.overallScore || 0;
@@ -70,7 +105,9 @@ export function InterviewFeedback({
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">{overallScore}</div>
+                <div className="text-3xl font-bold text-primary">
+                  {overallScore}
+                </div>
                 <div className="text-xs text-muted-foreground">Overall</div>
               </div>
             </div>
@@ -85,7 +122,9 @@ export function InterviewFeedback({
                   className="text-center p-3 rounded-lg bg-muted/50 border"
                 >
                   <item.icon className={`w-5 h-5 mx-auto mb-1 ${item.color}`} />
-                  <div className={`text-xl font-bold ${item.color}`}>{item.score}</div>
+                  <div className={`text-xl font-bold ${item.color}`}>
+                    {item.score}
+                  </div>
                   <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">
                     {t(`feedback.${item.key}`)}
                   </div>
@@ -96,7 +135,9 @@ export function InterviewFeedback({
             {/* Detailed Feedback */}
             {evaluation?.detailedFeedback && (
               <div className="p-4 rounded-lg bg-muted/30 border">
-                <h3 className="text-sm font-semibold mb-2">Detailed Feedback</h3>
+                <h3 className="text-sm font-semibold mb-2">
+                  Detailed Feedback
+                </h3>
                 <p className="text-sm text-foreground/80 leading-relaxed">
                   {evaluation.detailedFeedback}
                 </p>
@@ -160,7 +201,9 @@ export function InterviewFeedback({
                         className="flex items-start gap-2 text-xs text-foreground/80"
                       >
                         <span className="w-1 h-1 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
-                        <span className="leading-relaxed">{t(`strengths.${i}`)}</span>
+                        <span className="leading-relaxed">
+                          {t(`strengths.${i}`)}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -178,7 +221,9 @@ export function InterviewFeedback({
                         className="flex items-start gap-2 text-xs text-foreground/80"
                       >
                         <span className="w-1 h-1 rounded-full bg-yellow-500 mt-1.5 flex-shrink-0" />
-                        <span className="leading-relaxed">{t(`improvements.${i}`)}</span>
+                        <span className="leading-relaxed">
+                          {t(`improvements.${i}`)}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -191,7 +236,11 @@ export function InterviewFeedback({
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2">
               {onViewHistory && (
-                <Button variant="outline" onClick={onViewHistory} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={onViewHistory}
+                  className="flex-1"
+                >
                   {t('feedback.viewHistory')}
                 </Button>
               )}

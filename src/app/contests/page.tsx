@@ -1,15 +1,15 @@
 'use client';
 
 import ContestFilter from '@/components/contest/contest-filter';
+import ContestListSkeleton from '@/components/contest/contest-list-skeleton';
 import ContestSortControls from '@/components/contest/contest-sort-controls';
 import ContestTable from '@/components/contest/contest-table';
-import ContestListSkeleton from '@/components/contest/contest-list-skeleton';
-import useContests from '@/hooks/use-contests';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next';
-import { Filter } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import useContests from '@/hooks/use-contests';
+import { Filter } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function ContestsPage() {
   const { t } = useTranslation('contests');

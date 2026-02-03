@@ -32,9 +32,9 @@ import { type Submission, SubmissionStatus } from '@/types/submissions';
 import type {
   UserActivityCalendar,
   UserProblemStats,
+  UserProfile,
   UserRecentACProblem,
   UserSubmissionStats,
-  UserProfile,
 } from '@/types/user';
 import { format } from 'date-fns';
 import {

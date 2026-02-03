@@ -14,6 +14,7 @@ import { useProblemDetail } from '@/contexts/problem-detail-context';
 import { SubmissionsService } from '@/services/submissions-service';
 import { TagsService } from '@/services/tags-service';
 import { toastService } from '@/services/toasts-service';
+import { ProblemStatus } from '@/types/problems';
 import { SolutionSortBy } from '@/types/solutions';
 import type { Language } from '@/types/submissions';
 import type { Tag } from '@/types/tags';
@@ -29,7 +30,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProblemStats from '../../problems-stats/problem-stats';
-import { ProblemStatus } from '@/types/problems';
 
 interface SolutionFilterProps {
   keyword: string;

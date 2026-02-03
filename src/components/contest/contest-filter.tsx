@@ -2,24 +2,24 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import {
   type ContestFilters,
   ContestStatus,
   ContestUserStatus,
 } from '@/types/contests';
 import {
-  RotateCcw,
-  Search,
   Calendar,
   CheckCircle2,
   Circle,
   Clock,
-  Timer,
   History,
+  RotateCcw,
+  Search,
+  Timer,
 } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
 
 interface ContestFilterProps {
   search?: string;

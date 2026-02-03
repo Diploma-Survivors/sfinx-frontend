@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { ForgotPasswordModal } from '@/components/auth/forgot-password-modal';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,

@@ -1,24 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n';
-import { InterviewService } from '@/services/interview-service';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { InterviewService } from '@/services/interview-service';
+import type { Interview, InterviewStatus } from '@/types/interview';
 import {
-  Clock,
   ArrowLeft,
   Calendar,
   CheckCircle2,
+  Clock,
+  Loader2,
+  MessageSquare,
   Play,
   TrendingUp,
-  MessageSquare,
-  Loader2,
 } from 'lucide-react';
-import type { Interview, InterviewStatus } from '@/types/interview';
 
 function formatDuration(startedAt: string, endedAt?: string) {
   if (!endedAt) return 'In progress';
@@ -42,24 +42,26 @@ function getStatusBadge(status: InterviewStatus) {
   switch (status) {
     case 'completed':
       return (
-        <Badge variant="default" className="bg-green-500/10 text-green-600 hover:bg-green-500/20">
+        <Badge
+          variant="default"
+          className="bg-green-500/10 text-green-600 hover:bg-green-500/20"
+        >
           <CheckCircle2 className="w-3 h-3 mr-1" />
           Completed
         </Badge>
       );
     case 'active':
       return (
-        <Badge variant="default" className="bg-blue-500/10 text-blue-600 hover:bg-blue-500/20">
+        <Badge
+          variant="default"
+          className="bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
+        >
           <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1 animate-pulse" />
           In Progress
         </Badge>
       );
     case 'abandoned':
-      return (
-        <Badge variant="secondary">
-          Abandoned
-        </Badge>
-      );
+      return <Badge variant="secondary">Abandoned</Badge>;
     default:
       return <Badge variant="secondary">{status}</Badge>;
   }
@@ -103,7 +105,11 @@ export default function InterviewHistoryPage() {
       <div className="h-full max-w-5xl mx-auto p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" size="sm" onClick={() => router.push('/interview')}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push('/interview')}
+          >
             <ArrowLeft className="w-4 h-4 mr-1" />
             Back
           </Button>
@@ -135,7 +141,10 @@ export default function InterviewHistoryPage() {
         ) : (
           <div className="space-y-4 overflow-auto max-h-[calc(100%-80px)]">
             {interviews.map((interview) => (
-              <Card key={interview.id} className="p-5 hover:shadow-md transition-shadow">
+              <Card
+                key={interview.id}
+                className="p-5 hover:shadow-md transition-shadow"
+              >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
@@ -190,25 +199,33 @@ export default function InterviewHistoryPage() {
                       <div className="text-lg font-bold text-purple-500">
                         {interview.evaluation.problemSolvingScore}
                       </div>
-                      <div className="text-xs text-muted-foreground">Problem Solving</div>
+                      <div className="text-xs text-muted-foreground">
+                        Problem Solving
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold text-blue-500">
                         {interview.evaluation.communicationScore}
                       </div>
-                      <div className="text-xs text-muted-foreground">Communication</div>
+                      <div className="text-xs text-muted-foreground">
+                        Communication
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold text-green-500">
                         {interview.evaluation.codeQualityScore}
                       </div>
-                      <div className="text-xs text-muted-foreground">Code Quality</div>
+                      <div className="text-xs text-muted-foreground">
+                        Code Quality
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold text-orange-500">
                         {interview.evaluation.technicalScore}
                       </div>
-                      <div className="text-xs text-muted-foreground">Technical</div>
+                      <div className="text-xs text-muted-foreground">
+                        Technical
+                      </div>
                     </div>
                   </div>
                 )}

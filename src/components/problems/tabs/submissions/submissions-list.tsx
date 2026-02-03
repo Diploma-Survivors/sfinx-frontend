@@ -1,6 +1,6 @@
 'use client';
 
-import type { SubmissionFilters, Submission } from '@/types/submissions';
+import type { Submission, SubmissionFilters } from '@/types/submissions';
 import type { GetSubmissionListRequest } from '@/types/submissions';
 import { Loader2, Search } from 'lucide-react';
 import InfiniteScroll from 'react-infinite-scroll-component';

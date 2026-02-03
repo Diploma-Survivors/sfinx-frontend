@@ -1,5 +1,6 @@
 import MonacoEditor from '@/components/problems/tabs/description/panels/editor-panel/monaco-editor';
 import { Button } from '@/components/ui/button';
+import { useApp } from '@/contexts/app-context';
 import { ContestsService } from '@/services/contests-service';
 import { selectContest } from '@/store/slides/contest-slice';
 import { selectProblem } from '@/store/slides/problem-slice';
@@ -14,10 +15,9 @@ import { getDefaultCode } from '@/types/languages';
 import { AlertCircle, CheckCircle, Play, Send } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { useApp } from '@/contexts/app-context';
-import { useTranslation } from 'react-i18next';
 
 interface EditorPanelProps {
   height: number;

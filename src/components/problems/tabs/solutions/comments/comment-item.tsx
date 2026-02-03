@@ -10,7 +10,6 @@ import type { SolutionComment } from '@/types/solutions';
 import { SolutionCommentVoteType } from '@/types/solutions';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { useTranslation } from 'react-i18next';
 import {
   ArrowBigDown,
   ArrowBigUp,
@@ -19,6 +18,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface CommentItemProps {
   comment: SolutionComment;

@@ -17,8 +17,8 @@ import { resetDraft, setDraft } from '@/store/slides/create-solution-slice';
 import { type Submission, SubmissionStatus } from '@/types/submissions';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function CreateSolutionPage() {
   const { t } = useTranslation('problems');
@@ -26,9 +26,9 @@ export default function CreateSolutionPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const problemIdString = params.id as string;
-  const problemId = parseInt(problemIdString);
+  const problemId = Number.parseInt(problemIdString);
   const submissionIdString = params.submissionId as string;
-  const submissionId = parseInt(submissionIdString);
+  const submissionId = Number.parseInt(submissionIdString);
 
   const { confirm } = useDialog();
 

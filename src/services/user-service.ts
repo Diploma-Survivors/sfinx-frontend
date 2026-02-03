@@ -1,28 +1,28 @@
 import clientApi from '@/lib/apis/axios-client';
-import { ApiResponse } from '@/types/api';
+import type { ApiResponse } from '@/types/api';
 import {
-  initialProblemData,
   ProblemDifficulty,
   ProblemStatus,
+  initialProblemData,
 } from '@/types/problems';
 import { SubmissionStatus } from '@/types/submissions';
 import {
-  AvatarUploadUrlRequest,
-  AvatarUploadUrlResponse,
-  ConfirmAvatarUploadRequest,
-  PracticeHistoryParams,
+  type AvatarUploadUrlRequest,
+  type AvatarUploadUrlResponse,
+  type ConfirmAvatarUploadRequest,
+  type PracticeHistoryParams,
   PracticeHistorySortBy,
-  UpdateUserProfileRequest,
-  UserActivityCalendar,
+  type UpdateUserProfileRequest,
+  type UserActivityCalendar,
   UserPracticeHistoryItem,
-  UserPracticeHistoryResponse,
-  UserProblemStats,
-  UserRecentACProblem,
-  UserSolutionsResponse,
-  UserSubmissionStats,
-  UserProfile,
+  type UserPracticeHistoryResponse,
+  type UserProblemStats,
+  type UserProfile,
+  type UserRecentACProblem,
+  type UserSolutionsResponse,
+  type UserSubmissionStats,
 } from '@/types/user';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 async function getUserProfile(
   userId: number

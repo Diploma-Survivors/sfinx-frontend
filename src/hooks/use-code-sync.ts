@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
 import { InterviewService } from '@/services/interview-service';
+import { useCallback, useEffect, useRef } from 'react';
 
 interface UseCodeSyncOptions {
   interviewId: string | null;
@@ -12,23 +12,39 @@ interface UseCodeSyncOptions {
 }
 
 /**
- * Hook to periodically sync code snapshots to backend
- * This allows the AI agent to see the user's current code
- * 
- * Optimizations:
- * - Only syncs when code has changed
- * - Skips empty code
- * - Uses longer intervals (10s default)
- * - Debounces rapid changes
+ * @deprecated This hook is deprecated. Code is now sent with every message via the
+ * `sendMessage(content, { code, language })` API. This provides better consistency
+ * and eliminates the need for periodic syncing.
+ *
+ * For voice-only mode, use the data channel to send code snapshots when needed:
+ * ```
+ * const { sendCodeSnapshot } = useDataChannelSender();
+ * sendCodeSnapshot(code, language);
+ * ```
+ *
+ * This hook is kept for backwards compatibility but should not be used in new code.
  */
 export function useCodeSync(options: UseCodeSyncOptions): void {
-  const { interviewId, code, language, enabled, intervalMs = 10000 } = options;
+  const { interviewId, code, language, enabled, intervalMs = 30000 } = options;
 
   // Refs to avoid re-triggering effect
   const codeRef = useRef(code);
   const languageRef = useRef(language);
   const lastSyncRef = useRef<number>(0);
   const lastCodeRef = useRef<string>('');
+  const warnedRef = useRef(false);
+
+  // Warn once about deprecation
+  useEffect(() => {
+    if (!warnedRef.current && enabled) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[useCodeSync] This hook is deprecated. ' +
+          'Code should be sent with messages via sendMessage(content, { code, language })'
+      );
+      warnedRef.current = true;
+    }
+  }, [enabled]);
 
   // Update refs
   codeRef.current = code;
@@ -57,11 +73,12 @@ export function useCodeSync(options: UseCodeSyncOptions): void {
       lastCodeRef.current = currentCode;
     } catch (error) {
       // Silently fail - code sync is non-critical
-      console.warn('Code sync failed:', error);
+      // eslint-disable-next-line no-console
+      console.warn('[useCodeSync] Code sync failed:', error);
     }
   }, [interviewId, enabled, intervalMs]);
 
-  // Periodic sync
+  // Periodic sync (much longer interval now that code is sent with messages)
   useEffect(() => {
     if (!enabled || !interviewId) return;
 
@@ -71,18 +88,4 @@ export function useCodeSync(options: UseCodeSyncOptions): void {
 
     return () => clearInterval(interval);
   }, [enabled, interviewId, intervalMs, syncCode]);
-
-  // Sync on code change (debounced, only if significant)
-  useEffect(() => {
-    if (!enabled || !interviewId || !code) return;
-
-    // Skip if code hasn't changed meaningfully
-    if (code === lastCodeRef.current) return;
-
-    const timeout = setTimeout(() => {
-      syncCode();
-    }, 2000); // 2s debounce
-
-    return () => clearTimeout(timeout);
-  }, [code, enabled, interviewId, syncCode]);
 }

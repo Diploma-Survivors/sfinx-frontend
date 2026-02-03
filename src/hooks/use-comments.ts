@@ -1,16 +1,16 @@
+import { useApp } from '@/contexts/app-context';
 import { commentService } from '@/services/comment-service';
+import { toastService } from '@/services/toasts-service';
 import {
-  CreateProblemCommentRequest,
+  type CreateProblemCommentRequest,
   ProblemCommentSortBy,
-  ReportProblemCommentRequest,
-  UpdateProblemCommentRequest,
-  VoteProblemCommentRequest,
+  type ReportProblemCommentRequest,
+  type UpdateProblemCommentRequest,
+  type VoteProblemCommentRequest,
 } from '@/types/comments';
 import { useState } from 'react';
-import useSWR from 'swr';
-import { useApp } from '@/contexts/app-context';
-import { toastService } from '@/services/toasts-service';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 export function useComments(problemId: string | number) {
   const [page, setPage] = useState(1);

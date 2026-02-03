@@ -1,20 +1,22 @@
 import clientApi from '@/lib/apis/axios-client';
 import type { ApiResponse } from '@/types/api';
 import type {
+  CodeSnapshot,
   Interview,
   InterviewEvaluation,
-  StartInterviewResponse,
+  InterviewMessage,
   LiveKitTokenResponse,
   SendMessageRequest,
-  InterviewMessage,
-  CodeSnapshot,
+  StartInterviewResponse,
 } from '@/types/interview';
 import type { AxiosResponse } from 'axios';
 
 /**
  * Start a new AI interview session
  */
-async function startInterview(problemId: number): Promise<AxiosResponse<ApiResponse<StartInterviewResponse>>> {
+async function startInterview(
+  problemId: number
+): Promise<AxiosResponse<ApiResponse<StartInterviewResponse>>> {
   return clientApi.post<ApiResponse<StartInterviewResponse>>('/ai-interviews', {
     problemId,
   });
@@ -23,7 +25,9 @@ async function startInterview(problemId: number): Promise<AxiosResponse<ApiRespo
 /**
  * Get interview details including messages
  */
-async function getInterview(interviewId: string): Promise<AxiosResponse<ApiResponse<Interview>>> {
+async function getInterview(
+  interviewId: string
+): Promise<AxiosResponse<ApiResponse<Interview>>> {
   return clientApi.get<ApiResponse<Interview>>(`/ai-interviews/${interviewId}`);
 }
 
@@ -47,14 +51,21 @@ async function sendMessage(
   interviewId: string,
   data: SendMessageRequest
 ): Promise<AxiosResponse<ApiResponse<InterviewMessage>>> {
-  return clientApi.post<ApiResponse<InterviewMessage>>(`/ai-interviews/${interviewId}/messages`, data);
+  return clientApi.post<ApiResponse<InterviewMessage>>(
+    `/ai-interviews/${interviewId}/messages`,
+    data
+  );
 }
 
 /**
  * Get chat history for an interview
  */
-async function getChatHistory(interviewId: string): Promise<AxiosResponse<ApiResponse<InterviewMessage[]>>> {
-  return clientApi.get<ApiResponse<InterviewMessage[]>>(`/ai-interviews/${interviewId}/messages`);
+async function getChatHistory(
+  interviewId: string
+): Promise<AxiosResponse<ApiResponse<InterviewMessage[]>>> {
+  return clientApi.get<ApiResponse<InterviewMessage[]>>(
+    `/ai-interviews/${interviewId}/messages`
+  );
 }
 
 /**
@@ -63,13 +74,19 @@ async function getChatHistory(interviewId: string): Promise<AxiosResponse<ApiRes
 async function endInterview(
   interviewId: string
 ): Promise<AxiosResponse<ApiResponse<InterviewEvaluation>>> {
-  return clientApi.post<ApiResponse<InterviewEvaluation>>(`/ai-interviews/${interviewId}/end`);
+  return clientApi.post<ApiResponse<InterviewEvaluation>>(
+    `/ai-interviews/${interviewId}/end`
+  );
 }
 
 /**
  * Get room status from LiveKit
  */
-async function getRoomStatus(interviewId: string): Promise<AxiosResponse<ApiResponse<{ active: boolean; participants: number }>>> {
+async function getRoomStatus(
+  interviewId: string
+): Promise<
+  AxiosResponse<ApiResponse<{ active: boolean; participants: number }>>
+> {
   return clientApi.get<ApiResponse<{ active: boolean; participants: number }>>(
     `/livekit/room/${interviewId}/status`
   );
@@ -79,9 +96,15 @@ async function getRoomStatus(interviewId: string): Promise<AxiosResponse<ApiResp
  * Send code snapshot to backend for AI context
  * This allows the AI agent to see the user's code
  */
-async function syncCodeSnapshot(interviewId: string, snapshot: CodeSnapshot): Promise<void> {
+async function syncCodeSnapshot(
+  interviewId: string,
+  snapshot: CodeSnapshot
+): Promise<void> {
   try {
-    await clientApi.post(`/ai-interviews/${interviewId}/code-snapshot`, snapshot);
+    await clientApi.post(
+      `/ai-interviews/${interviewId}/code-snapshot`,
+      snapshot
+    );
   } catch (error) {
     // Silently fail - code sync is non-critical
     console.warn('Failed to sync code snapshot:', error);
@@ -91,7 +114,9 @@ async function syncCodeSnapshot(interviewId: string, snapshot: CodeSnapshot): Pr
 /**
  * Get user's interview history
  */
-async function getInterviewHistory(): Promise<AxiosResponse<ApiResponse<Interview[]>>> {
+async function getInterviewHistory(): Promise<
+  AxiosResponse<ApiResponse<Interview[]>>
+> {
   return clientApi.get<ApiResponse<Interview[]>>('/ai-interviews');
 }
 

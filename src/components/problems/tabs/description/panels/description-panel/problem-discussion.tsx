@@ -14,7 +14,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useComments } from '@/hooks/use-comments';
-import { ProblemCommentSortBy, ProblemCommentType } from '@/types/comments';
+import {
+  ProblemCommentSortBy,
+  type ProblemCommentType,
+} from '@/types/comments';
 import {
   ArrowLeft,
   ArrowRight,

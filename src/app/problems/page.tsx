@@ -1,16 +1,16 @@
 'use client';
 
+import ProblemListSkeleton from '@/components/problems/problem-list-skeleton';
 import ProblemFilter from '@/components/problems/problems-filter/problems-filter';
 import SortControls from '@/components/problems/problems-filter/sort-controls';
 import ProblemTable from '@/components/problems/problems-table/problems-table';
-import ProblemListSkeleton from '@/components/problems/problem-list-skeleton';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import useProblems from '@/hooks/use-problems';
 import { cn } from '@/lib/utils';
 import { Filter } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export default function ProblemsPage() {
   const { t } = useTranslation('problems');

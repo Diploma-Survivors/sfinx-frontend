@@ -1,4 +1,4 @@
-import { initialProblemData, type Problem } from '@/types/problems';
+import { type Problem, initialProblemData } from '@/types/problems';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 

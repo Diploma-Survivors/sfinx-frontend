@@ -1,12 +1,12 @@
 'use client';
-import { TableCell, TableRow } from '@/components/ui/table';
-import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, Clock, Lock } from 'lucide-react';
-import type { Problem } from '@/types/problems';
+import { TableCell, TableRow } from '@/components/ui/table';
 import { Tooltip } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
+import type { Problem } from '@/types/problems';
+import { CheckCircle2, Circle, Clock, Lock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface ProblemTableRowProps {
   problem: Problem;

@@ -5,7 +5,7 @@ import {
   ContestProblemStatusTooltip,
   type LeaderboardEntry,
 } from '@/types/contests';
-import { type JSX } from 'react';
+import type { JSX } from 'react';
 
 interface ContestLeaderboardEntryProps {
   entry: LeaderboardEntry;

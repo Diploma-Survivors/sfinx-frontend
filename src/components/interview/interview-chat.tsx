@@ -1,11 +1,11 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
-import { useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { InterviewMessage } from '@/types/interview';
+import { Bot, Loader2, Send, User } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface InterviewChatProps {
   messages: InterviewMessage[];
@@ -74,10 +74,7 @@ export function InterviewChat({
           return (
             <div
               key={msg.id}
-              className={cn(
-                'flex gap-2',
-                isUser ? 'flex-row-reverse' : ''
-              )}
+              className={cn('flex gap-2', isUser ? 'flex-row-reverse' : '')}
             >
               {showAvatar ? (
                 <div
@@ -96,7 +93,12 @@ export function InterviewChat({
                 <div className="w-7 flex-shrink-0" />
               )}
 
-              <div className={cn('flex flex-col max-w-[75%]', isUser ? 'items-end' : 'items-start')}>
+              <div
+                className={cn(
+                  'flex flex-col max-w-[75%]',
+                  isUser ? 'items-end' : 'items-start'
+                )}
+              >
                 <div
                   className={cn(
                     'px-3 py-2 rounded-2xl text-sm leading-relaxed',

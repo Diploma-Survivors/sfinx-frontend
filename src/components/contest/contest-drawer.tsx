@@ -1,6 +1,5 @@
 import { Badge } from '@/components/ui/badge';
 
-import { ContestLeaderboardList } from './contest-leaderboard-list';
 import {
   type ContestProblem,
   ContestProblemStatus,
@@ -12,6 +11,7 @@ import { CheckCircle, Minus, X } from 'lucide-react';
 import { type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '../ui/tooltip';
+import { ContestLeaderboardList } from './contest-leaderboard-list';
 
 interface ContestDrawerProps {
   isOpen: boolean;

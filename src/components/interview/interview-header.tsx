@@ -1,9 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Clock, Mic, MicOff, PhoneOff, Loader2, AlertCircle } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,9 +11,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { ConnectionStatus, ConnectionAlert } from './livekit';
-import { checkMicrophonePermission, type PermissionState } from '@/lib/permissions';
+import { Button } from '@/components/ui/button';
+import {
+  type PermissionState,
+  checkMicrophonePermission,
+} from '@/lib/permissions';
 import type { ProblemSnapshot } from '@/types/interview';
+import {
+  AlertCircle,
+  Clock,
+  Loader2,
+  Mic,
+  MicOff,
+  PhoneOff,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ConnectionAlert, ConnectionStatus } from './livekit';
 
 interface InterviewHeaderProps {
   interviewTime: number;
@@ -39,7 +49,8 @@ export function InterviewHeader({
   problem,
 }: InterviewHeaderProps) {
   const { t } = useTranslation('interview');
-  const [micPermission, setMicPermission] = useState<PermissionState>('unknown');
+  const [micPermission, setMicPermission] =
+    useState<PermissionState>('unknown');
 
   // Check microphone permission on mount and when voiceEnabled changes
   useEffect(() => {
@@ -68,7 +79,8 @@ export function InterviewHeader({
               {problem?.title || t('header.problem')}
             </h1>
             <p className="text-xs text-muted-foreground truncate">
-              {problem?.difficulty || t('header.difficulty')} • {t('header.category')}
+              {problem?.difficulty || t('header.difficulty')} •{' '}
+              {t('header.category')}
             </p>
           </div>
         </div>
@@ -159,7 +171,8 @@ export function InterviewHeader({
           <div className="flex items-center gap-2 px-3 py-2 text-xs rounded-md bg-destructive/10 text-destructive">
             <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
             <span>
-              Microphone access is blocked. Please allow microphone access in your browser settings to use voice mode.
+              Microphone access is blocked. Please allow microphone access in
+              your browser settings to use voice mode.
             </span>
           </div>
         </div>

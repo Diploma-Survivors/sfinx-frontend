@@ -1,6 +1,6 @@
 import { getStatusMeta } from '@/lib/utils/testcase-status';
-import { SubmissionStatus } from '@/types/submissions';
 import type { SSEResult } from '@/services/sse-service';
+import { SubmissionStatus } from '@/types/submissions';
 import type { SampleTestCase } from '@/types/testcases';
 import { Plus, X } from 'lucide-react';
 

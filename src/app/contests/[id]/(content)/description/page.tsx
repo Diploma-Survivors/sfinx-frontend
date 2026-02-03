@@ -1,34 +1,34 @@
 'use client';
 
-import MarkdownRenderer from '@/components/ui/markdown-renderer';
-import Timeline from '@/components/contest/timeline';
 import { ContestDescriptionSkeleton } from '@/components/contest/contest-description-skeleton';
+import Timeline from '@/components/contest/timeline';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import MarkdownRenderer from '@/components/ui/markdown-renderer';
+import { cn } from '@/lib/utils';
 import { ContestsService } from '@/services/contests-service';
+import { toastService } from '@/services/toasts-service';
 import {
-  Contest,
+  type Contest,
   ContestStatus,
   ContestUserStatus,
   INITIAL_CONTEST,
 } from '@/types/contests';
 import { getDifficultyColor } from '@/types/problems';
 import {
+  AlertCircle,
   CheckCircle,
   Clock,
+  Eye,
   FileText,
+  Loader2,
   Play,
   Trophy,
-  AlertCircle,
-  Loader2,
-  Eye,
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { cn } from '@/lib/utils';
-import { toastService } from '@/services/toasts-service';
 
 export default function ContestInfoPage() {
   const router = useRouter();

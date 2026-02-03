@@ -2,11 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useApp } from '@/contexts/app-context';
 import { AuthService } from '@/services/auth-service';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useApp } from '@/contexts/app-context';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

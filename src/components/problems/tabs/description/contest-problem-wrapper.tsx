@@ -1,20 +1,20 @@
 'use client';
 
+import SubmissionsPage from '@/components/problems/tabs/submissions/submissions-page';
+import { Button } from '@/components/ui/button';
 import { useProblemDescription } from '@/hooks/use-problem-description';
+import { cn } from '@/lib/utils';
+import { ContestNavTabs } from '@/types/contests';
+import type { Contest } from '@/types/contests';
+import type { Problem } from '@/types/problems';
+import { CheckCircle, FileText } from 'lucide-react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResizableDivider } from './dividers/resizable-divider';
 import { DescriptionPanel } from './panels/description-panel/description-panel';
 import { EditorPanel } from './panels/editor-panel/editor-panel';
 import { SampleTestCasesPanel } from './panels/sample-testcases-panel/sample-testcases-panel';
 import SubmitResultTab from './panels/submit-result/submit-result-tab';
-import SubmissionsPage from '@/components/problems/tabs/submissions/submissions-page';
-import { ContestNavTabs } from '@/types/contests';
-import { Button } from '@/components/ui/button';
-import { FileText, CheckCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
-import { Problem } from '@/types/problems';
-import { Contest } from '@/types/contests';
 
 interface ContestProblemWrapperProps {
   contest: Contest;

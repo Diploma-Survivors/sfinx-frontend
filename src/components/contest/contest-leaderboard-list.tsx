@@ -1,7 +1,7 @@
-import { ContestLeaderboardEntry } from './contest-leaderboard-entry';
-import { type LeaderboardEntry } from '@/types/contests';
-import { type JSX } from 'react';
+import type { LeaderboardEntry } from '@/types/contests';
+import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ContestLeaderboardEntry } from './contest-leaderboard-entry';
 
 interface ContestLeaderboardListProps {
   leaderboard: LeaderboardEntry[];

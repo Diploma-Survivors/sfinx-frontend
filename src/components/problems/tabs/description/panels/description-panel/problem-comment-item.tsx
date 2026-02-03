@@ -12,23 +12,23 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useApp } from '@/contexts/app-context';
 import {
-  CreateProblemCommentRequest,
-  ProblemComment,
+  type CreateProblemCommentRequest,
+  type ProblemComment,
   ProblemCommentType,
   ProblemCommentVoteType,
-  UpdateProblemCommentRequest,
+  type UpdateProblemCommentRequest,
 } from '@/types/comments';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, vi } from 'date-fns/locale';
 import {
   ArrowBigDown,
   ArrowBigUp,
+  ChevronUp,
   Flag,
   MessageSquare,
   MoreHorizontal,
   Pencil,
   Trash2,
-  ChevronUp,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

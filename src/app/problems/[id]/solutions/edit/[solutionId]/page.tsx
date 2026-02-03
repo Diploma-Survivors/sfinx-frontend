@@ -20,7 +20,7 @@ export default function EditSolutionPage() {
   const params = useParams();
   const router = useRouter();
   const problemIdString = params.id as string;
-  const problemId = parseInt(problemIdString);
+  const problemId = Number.parseInt(problemIdString);
   const solutionId = params.solutionId as string;
 
   const { confirm } = useDialog();

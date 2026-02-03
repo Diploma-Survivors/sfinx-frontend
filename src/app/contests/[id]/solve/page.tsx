@@ -8,9 +8,13 @@ import { ContestsService } from '@/services/contests-service';
 import { ProblemsService } from '@/services/problems-service';
 import { setContest as setContestAction } from '@/store/slides/contest-slice';
 import { setProblem } from '@/store/slides/problem-slice';
-import { Contest, INITIAL_CONTEST, LeaderboardEntry } from '@/types/contests';
 import {
-  Problem,
+  type Contest,
+  INITIAL_CONTEST,
+  type LeaderboardEntry,
+} from '@/types/contests';
+import {
+  type Problem,
   ProblemDifficulty,
   initialProblemData,
 } from '@/types/problems';

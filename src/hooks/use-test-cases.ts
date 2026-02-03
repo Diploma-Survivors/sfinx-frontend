@@ -4,7 +4,7 @@ import {
   updateSingleTestCase,
 } from '@/store/slides/workspace-slice';
 import type { Problem } from '@/types/problems';
-import { SampleTestCase } from '@/types/testcases';
+import type { SampleTestCase } from '@/types/testcases';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';

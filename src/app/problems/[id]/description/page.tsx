@@ -1,8 +1,8 @@
 'use client';
 
 import { DescriptionPanel } from '@/components/problems/tabs/description/panels/description-panel/description-panel';
-import { useProblemDetail } from '@/contexts/problem-detail-context';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useProblemDetail } from '@/contexts/problem-detail-context';
 
 export default function ProblemDescriptionPage() {
   const { problem, isLoading } = useProblemDetail();

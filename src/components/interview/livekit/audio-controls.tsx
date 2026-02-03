@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useLocalParticipant, useConnectionState } from '@livekit/components-react';
-import { ConnectionState } from 'livekit-client';
-import { Mic, MicOff, PhoneOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components/ui/tooltip';
+import {
+  useConnectionState,
+  useLocalParticipant,
+} from '@livekit/components-react';
+import { ConnectionState } from 'livekit-client';
+import { Loader2, Mic, MicOff, PhoneOff } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 interface AudioControlsProps {
   onEndCall?: () => void;
@@ -16,7 +19,10 @@ interface AudioControlsProps {
  * Audio controls for LiveKit voice connection
  * Handles mute/unmute and end call functionality
  */
-export function AudioControls({ onEndCall, disabled = false }: AudioControlsProps) {
+export function AudioControls({
+  onEndCall,
+  disabled = false,
+}: AudioControlsProps) {
   const { localParticipant } = useLocalParticipant();
   const connectionState = useConnectionState();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,12 +54,7 @@ export function AudioControls({ onEndCall, disabled = false }: AudioControlsProp
     return (
       <div className="flex items-center gap-2">
         <Tooltip content="Voice not connected">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 w-9 p-0"
-            disabled
-          >
+          <Button variant="outline" size="sm" className="h-9 w-9 p-0" disabled>
             <MicOff className="h-4 w-4 text-muted-foreground" />
           </Button>
         </Tooltip>
@@ -76,7 +77,9 @@ export function AudioControls({ onEndCall, disabled = false }: AudioControlsProp
   return (
     <div className="flex items-center gap-2">
       {/* Microphone Toggle */}
-      <Tooltip content={isMicrophoneEnabled ? 'Mute microphone' : 'Unmute microphone'}>
+      <Tooltip
+        content={isMicrophoneEnabled ? 'Mute microphone' : 'Unmute microphone'}
+      >
         <Button
           variant={isMicrophoneEnabled ? 'default' : 'destructive'}
           size="sm"

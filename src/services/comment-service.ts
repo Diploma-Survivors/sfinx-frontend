@@ -1,6 +1,6 @@
 import clientApi from '@/lib/apis/axios-client';
-import { ApiResponse } from '@/types/api';
-import {
+import type { ApiResponse } from '@/types/api';
+import type {
   CreateProblemCommentRequest,
   GetProblemCommentsParams,
   ProblemComment,

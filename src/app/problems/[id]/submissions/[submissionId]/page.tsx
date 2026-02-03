@@ -1,22 +1,22 @@
 'use client';
 
 import SubmissionDetail from '@/components/problems/tabs/submissions/submission-detail';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { SubmissionsService } from '@/services/submissions-service';
+import { ArrowLeft } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SubmissionDetailPage() {
   const { t } = useTranslation('problems');
   const params = useParams();
   const router = useRouter();
   const submissionIdString = params.submissionId as string;
-  const submissionId = parseInt(submissionIdString);
+  const submissionId = Number.parseInt(submissionIdString);
   const problemIdString = params.id as string;
-  const problemId = parseInt(problemIdString);
+  const problemId = Number.parseInt(problemIdString);
 
   const [submission, setSubmission] = useState<any>(null);
   const [loading, setLoading] = useState(true);

@@ -2,14 +2,14 @@ import clientApi from '@/lib/apis/axios-client';
 import type { ApiResponse } from '@/types/api';
 import {
   type GetProblemListRequest,
-  Problem,
+  type Problem,
   ProblemDifficulty,
   type ProblemListItem,
   type ProblemListResponse,
 } from '@/types/problems';
+import type { SampleTestCase } from '@/types/testcases';
 import type { AxiosResponse } from 'axios';
 import qs from 'qs';
-import { SampleTestCase } from '@/types/testcases';
 
 async function getProblemList(
   getProblemListRequest: GetProblemListRequest

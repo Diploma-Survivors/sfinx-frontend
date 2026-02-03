@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ContestsService } from '@/services/contests-service';
-import { LeaderboardEntry } from '@/types/contests';
+import type { LeaderboardEntry } from '@/types/contests';
 import { Crown, Medal, Trophy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
