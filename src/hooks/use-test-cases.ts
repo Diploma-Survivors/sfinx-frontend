@@ -4,7 +4,7 @@ import {
   updateSingleTestCase,
 } from '@/store/slides/workspace-slice';
 import type { Problem } from '@/types/problems';
-import { SampleTestCase } from '@/types/testcases';
+import type { SampleTestCase } from '@/types/testcases';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -16,9 +16,12 @@ export function useTestCases(problem: Problem) {
     (state: RootState) => state.workspace.currentSampleTestCases[problem.id]
   );
 
-  
   // Map saved/sample test cases to the UI format
-  const testCases: SampleTestCase[] = (savedTestCases ?? problem.sampleTestcases ?? []).map(tc => ({
+  const testCases: SampleTestCase[] = (
+    savedTestCases ??
+    problem.sampleTestcases ??
+    []
+  ).map((tc) => ({
     id: tc.id,
     input: tc.input,
     expectedOutput: tc.expectedOutput,
@@ -62,12 +65,12 @@ export function useTestCases(problem: Problem) {
     // We need to construct the full array for the store
     // We can't just append to the derived `testCases` because it's a transformation
     // But we can use the current `testCases` as a base and map back
-    const currentStoreTestCases = testCases.map(tc => ({
+    const currentStoreTestCases = testCases.map((tc) => ({
       id: tc.id,
       input: tc.input,
-      expectedOutput: tc.expectedOutput
+      expectedOutput: tc.expectedOutput,
     }));
-    
+
     const newSampleTestcases = [...currentStoreTestCases, newTestCase];
 
     dispatch(
@@ -84,10 +87,10 @@ export function useTestCases(problem: Problem) {
     (id: number) => {
       const newSampleTestcases = testCases
         .filter((testCase) => testCase.id !== id)
-        .map(tc => ({
+        .map((tc) => ({
           id: tc.id,
           input: tc.input,
-          expectedOutput: tc.expectedOutput
+          expectedOutput: tc.expectedOutput,
         }));
 
       dispatch(

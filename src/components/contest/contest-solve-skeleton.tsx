@@ -63,7 +63,11 @@ export function ContestSolveSkeleton() {
           <div className="flex-1 p-4">
             <div className="space-y-2">
               {Array.from({ length: 15 }).map((_, i) => (
-                <Skeleton key={i} className="h-4 w-full" style={{ width: `${Math.random() * 40 + 60}%` }} />
+                <Skeleton
+                  key={i}
+                  className="h-4 w-full"
+                  style={{ width: `${Math.random() * 40 + 60}%` }}
+                />
               ))}
             </div>
           </div>

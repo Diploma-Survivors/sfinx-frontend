@@ -65,20 +65,32 @@ export default function PracticeHistoryPage({
   const { t } = useTranslation('profile');
 
   const [loading, setLoading] = useState(true);
-  const [historyItems, setHistoryItems] = useState<UserPracticeHistoryItem[]>([]);
+  const [historyItems, setHistoryItems] = useState<UserPracticeHistoryItem[]>(
+    []
+  );
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   // Stats
-  const [problemStats, setProblemStats] = useState<UserProblemStats | null>(null);
+  const [problemStats, setProblemStats] = useState<UserProblemStats | null>(
+    null
+  );
 
   // Filtering
-  const [statusFilter, setStatusFilter] = useState<ProblemStatus | 'ALL'>('ALL');
-  const [difficultyFilter, setDifficultyFilter] = useState<ProblemDifficulty | 'ALL'>('ALL');
+  const [statusFilter, setStatusFilter] = useState<ProblemStatus | 'ALL'>(
+    'ALL'
+  );
+  const [difficultyFilter, setDifficultyFilter] = useState<
+    ProblemDifficulty | 'ALL'
+  >('ALL');
 
   // Sorting
-  const [sortBy, setSortBy] = useState<PracticeHistorySortBy>(PracticeHistorySortBy.LAST_SUBMITTED_AT);
-  const [sortOrder, setSortOrder] = useState<PracticeHistorySortOrder>(PracticeHistorySortOrder.DESC);
+  const [sortBy, setSortBy] = useState<PracticeHistorySortBy>(
+    PracticeHistorySortBy.LAST_SUBMITTED_AT
+  );
+  const [sortOrder, setSortOrder] = useState<PracticeHistorySortOrder>(
+    PracticeHistorySortOrder.DESC
+  );
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,7 +108,8 @@ export default function PracticeHistoryPage({
             page: currentPage,
             limit: itemsPerPage,
             status: statusFilter === 'ALL' ? undefined : statusFilter,
-            difficulty: difficultyFilter === 'ALL' ? undefined : difficultyFilter,
+            difficulty:
+              difficultyFilter === 'ALL' ? undefined : difficultyFilter,
             sortBy: sortBy,
             sortOrder: sortOrder,
           }),
@@ -144,10 +157,18 @@ export default function PracticeHistoryPage({
   };
 
   const getStatusColor = (status: SubmissionStatus | ProblemStatus) => {
-    if (status === ProblemStatus.SOLVED || status === SubmissionStatus.ACCEPTED) {
+    if (
+      status === ProblemStatus.SOLVED ||
+      status === SubmissionStatus.ACCEPTED
+    ) {
       return 'text-green-600';
     }
-    if (status === SubmissionStatus.WRONG_ANSWER || status === SubmissionStatus.TIME_LIMIT_EXCEEDED || status === SubmissionStatus.RUNTIME_ERROR || status === SubmissionStatus.COMPILATION_ERROR) {
+    if (
+      status === SubmissionStatus.WRONG_ANSWER ||
+      status === SubmissionStatus.TIME_LIMIT_EXCEEDED ||
+      status === SubmissionStatus.RUNTIME_ERROR ||
+      status === SubmissionStatus.COMPILATION_ERROR
+    ) {
       return 'text-red-600';
     }
     return 'text-gray-600';
@@ -237,7 +258,9 @@ export default function PracticeHistoryPage({
             <div className="flex items-center gap-2">
               <Select
                 value={sortBy}
-                onValueChange={(value) => setSortBy(value as PracticeHistorySortBy)}
+                onValueChange={(value) =>
+                  setSortBy(value as PracticeHistorySortBy)
+                }
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder={t('sort_by')} />
@@ -255,10 +278,24 @@ export default function PracticeHistoryPage({
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setSortOrder(sortOrder === PracticeHistorySortOrder.ASC ? PracticeHistorySortOrder.DESC : PracticeHistorySortOrder.ASC)}
-                title={sortOrder === PracticeHistorySortOrder.ASC ? t('ascending') : t('descending')}
+                onClick={() =>
+                  setSortOrder(
+                    sortOrder === PracticeHistorySortOrder.ASC
+                      ? PracticeHistorySortOrder.DESC
+                      : PracticeHistorySortOrder.ASC
+                  )
+                }
+                title={
+                  sortOrder === PracticeHistorySortOrder.ASC
+                    ? t('ascending')
+                    : t('descending')
+                }
               >
-                {sortOrder === PracticeHistorySortOrder.ASC ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                {sortOrder === PracticeHistorySortOrder.ASC ? (
+                  <ArrowUp className="h-4 w-4" />
+                ) : (
+                  <ArrowDown className="h-4 w-4" />
+                )}
               </Button>
 
               <DropdownMenu>
@@ -277,34 +314,54 @@ export default function PracticeHistoryPage({
                       </DropdownMenuLabel>
                       <div className="grid grid-cols-2 gap-2">
                         <div
-                          className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-colors ${statusFilter === ProblemStatus.SOLVED
-                            ? 'bg-green-50 border-green-200 text-green-700'
-                            : 'hover:bg-gray-50 border-gray-200 text-gray-600'
-                            }`}
-                          onClick={() => setStatusFilter(statusFilter === ProblemStatus.SOLVED ? 'ALL' : ProblemStatus.SOLVED)}
+                          className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-colors ${
+                            statusFilter === ProblemStatus.SOLVED
+                              ? 'bg-green-50 border-green-200 text-green-700'
+                              : 'hover:bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                          onClick={() =>
+                            setStatusFilter(
+                              statusFilter === ProblemStatus.SOLVED
+                                ? 'ALL'
+                                : ProblemStatus.SOLVED
+                            )
+                          }
                         >
                           <CheckCircle
-                            className={`w-4 h-4 ${statusFilter === ProblemStatus.SOLVED
-                              ? 'text-green-600'
-                              : 'text-gray-400'
-                              }`}
+                            className={`w-4 h-4 ${
+                              statusFilter === ProblemStatus.SOLVED
+                                ? 'text-green-600'
+                                : 'text-gray-400'
+                            }`}
                           />
-                          <span className="text-sm font-medium">{t('solved')}</span>
+                          <span className="text-sm font-medium">
+                            {t('solved')}
+                          </span>
                         </div>
                         <div
-                          className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-colors ${statusFilter === ProblemStatus.ATTEMPTED
-                            ? 'bg-gray-100 border-gray-300 text-gray-900'
-                            : 'hover:bg-gray-50 border-gray-200 text-gray-600'
-                            }`}
-                          onClick={() => setStatusFilter(statusFilter === ProblemStatus.ATTEMPTED ? 'ALL' : ProblemStatus.ATTEMPTED)}
+                          className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-colors ${
+                            statusFilter === ProblemStatus.ATTEMPTED
+                              ? 'bg-gray-100 border-gray-300 text-gray-900'
+                              : 'hover:bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                          onClick={() =>
+                            setStatusFilter(
+                              statusFilter === ProblemStatus.ATTEMPTED
+                                ? 'ALL'
+                                : ProblemStatus.ATTEMPTED
+                            )
+                          }
                         >
                           <Circle
-                            className={`w-4 h-4 ${statusFilter === ProblemStatus.ATTEMPTED
-                              ? 'text-gray-900'
-                              : 'text-gray-400'
-                              }`}
+                            className={`w-4 h-4 ${
+                              statusFilter === ProblemStatus.ATTEMPTED
+                                ? 'text-gray-900'
+                                : 'text-gray-400'
+                            }`}
                           />
-                          <span className="text-sm font-medium">{t('attempted')}</span>
+                          <span className="text-sm font-medium">
+                            {t('attempted')}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -327,7 +384,9 @@ export default function PracticeHistoryPage({
                           {
                             value: ProblemDifficulty.MEDIUM,
                             label: t('medium'),
-                            color: getDifficultyStyles(ProblemDifficulty.MEDIUM),
+                            color: getDifficultyStyles(
+                              ProblemDifficulty.MEDIUM
+                            ),
                             hover: 'hover:bg-orange-50/50',
                           },
                           {
@@ -341,12 +400,15 @@ export default function PracticeHistoryPage({
                           return (
                             <div
                               key={diff.value}
-                              className={`flex items-center justify-center p-2 rounded-md border cursor-pointer transition-all ${isSelected
-                                ? diff.color
-                                : `border-gray-200 text-gray-500 ${diff.hover}`
-                                }`}
+                              className={`flex items-center justify-center p-2 rounded-md border cursor-pointer transition-all ${
+                                isSelected
+                                  ? diff.color
+                                  : `border-gray-200 text-gray-500 ${diff.hover}`
+                              }`}
                               onClick={() => {
-                                setDifficultyFilter(isSelected ? 'ALL' : diff.value);
+                                setDifficultyFilter(
+                                  isSelected ? 'ALL' : diff.value
+                                );
                               }}
                             >
                               <span className="text-sm font-medium">
@@ -398,9 +460,9 @@ export default function PracticeHistoryPage({
                       <TableCell className="text-gray-500 font-medium">
                         {item.lastSubmittedAt
                           ? format(
-                            new Date(item.lastSubmittedAt),
-                            'MMM d, yyyy'
-                          )
+                              new Date(item.lastSubmittedAt),
+                              'MMM d, yyyy'
+                            )
                           : '-'}
                       </TableCell>
                       <TableCell>
@@ -425,9 +487,11 @@ export default function PracticeHistoryPage({
                               variant="outline"
                               className={`mt-1 text-xs font-normal border ${getDifficultyStyles(item.problem.difficulty)}`}
                             >
-                              {item.problem.difficulty === ProblemDifficulty.EASY
+                              {item.problem.difficulty ===
+                              ProblemDifficulty.EASY
                                 ? t('easy')
-                                : item.problem.difficulty === ProblemDifficulty.MEDIUM
+                                : item.problem.difficulty ===
+                                    ProblemDifficulty.MEDIUM
                                   ? t('medium')
                                   : t('hard')}
                             </Badge>
@@ -490,9 +554,9 @@ export default function PracticeHistoryPage({
                                     <TableCell className="text-gray-500">
                                       {sub.submittedAt
                                         ? format(
-                                          new Date(sub.submittedAt),
-                                          'yyyy.MM.dd'
-                                        )
+                                            new Date(sub.submittedAt),
+                                            'yyyy.MM.dd'
+                                          )
                                         : '-'}
                                     </TableCell>
                                     <TableCell
@@ -556,7 +620,10 @@ export default function PracticeHistoryPage({
                     {t('previous_page')}
                   </Button>
                   <span className="flex items-center px-4 text-sm text-gray-600">
-                    {t('page_info', { current: currentPage, total: totalPages })}
+                    {t('page_info', {
+                      current: currentPage,
+                      total: totalPages,
+                    })}
                   </span>
                   <Button
                     variant="outline"
@@ -613,7 +680,9 @@ export default function PracticeHistoryPage({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm font-medium text-red-600">{t('hard')}</div>
+                      <div className="text-sm font-medium text-red-600">
+                        {t('hard')}
+                      </div>
                       <div className="text-lg font-bold text-gray-700">
                         {problemStats.hard.solved}
                       </div>

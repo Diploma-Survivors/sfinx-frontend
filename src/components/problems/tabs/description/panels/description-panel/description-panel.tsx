@@ -1,11 +1,17 @@
-import MarkdownRenderer from '@/components/ui/markdown-renderer';
 import { Button } from '@/components/ui/button';
+import MarkdownRenderer from '@/components/ui/markdown-renderer';
 
 import { toastService } from '@/services/toasts-service';
-import { ProblemStatus, type Problem } from '@/types/problems';
+import { type Problem, ProblemStatus } from '@/types/problems';
 
-import { SampleTestCase } from '@/types/testcases';
-import { CheckCircle2, Copy, Lightbulb, Lock, Tag as TagIcon } from 'lucide-react';
+import type { SampleTestCase } from '@/types/testcases';
+import {
+  CheckCircle2,
+  Copy,
+  Lightbulb,
+  Lock,
+  Tag as TagIcon,
+} from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProblemDiscussion } from './problem-discussion';
@@ -61,12 +67,13 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
             {/* Row 2: Meta & Actions */}
             <div className="flex items-center gap-4 flex-wrap">
               <div
-                className={`px-3 py-1 rounded-full text-sm font-semibold border ${problem.difficulty === 'easy'
-                  ? 'bg-green-500/10 text-green-600 border-green-500/20'
-                  : problem.difficulty === 'medium'
-                    ? 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
-                    : 'bg-red-500/10 text-red-600 border-red-500/20'
-                  }`}
+                className={`px-3 py-1 rounded-full text-sm font-semibold border ${
+                  problem.difficulty === 'easy'
+                    ? 'bg-green-500/10 text-green-600 border-green-500/20'
+                    : problem.difficulty === 'medium'
+                      ? 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
+                      : 'bg-red-500/10 text-red-600 border-red-500/20'
+                }`}
               >
                 {t(`difficulty_${problem.difficulty}`)}
               </div>
@@ -123,10 +130,11 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                   <button
                     key={`sample-tab-${sample.id ?? sample.input?.slice(0, 20) ?? index}`}
                     onClick={() => setActiveSampleIndex(index)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${activeSampleIndex === index
-                      ? 'bg-secondary text-secondary-foreground shadow-sm'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                      }`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                      activeSampleIndex === index
+                        ? 'bg-secondary text-secondary-foreground shadow-sm'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
                   >
                     {t('case')} {index + 1}
                   </button>
@@ -168,7 +176,9 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                         variant="ghost"
                         size="sm"
                         className="h-7 px-2 text-xs"
-                        onClick={() => copyToClipboard(activeSample.expectedOutput)}
+                        onClick={() =>
+                          copyToClipboard(activeSample.expectedOutput)
+                        }
                       >
                         <Copy className="w-3 h-3 mr-1" /> {t('copy')}
                       </Button>
@@ -183,7 +193,9 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                   {/* Explanation */}
                   {activeSample.explanation && (
                     <div className="text-sm text-muted-foreground italic">
-                      <span className="font-semibold not-italic mr-1">{t('explanation')}:</span>
+                      <span className="font-semibold not-italic mr-1">
+                        {t('explanation')}:
+                      </span>
                       {activeSample.explanation}
                     </div>
                   )}
@@ -191,7 +203,6 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
               )}
             </section>
           )}
-
 
           {/* Constraints */}
           <section>

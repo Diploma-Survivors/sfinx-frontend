@@ -99,7 +99,8 @@ export function ResultTab({
         <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
           <pre className="text-slate-800 dark:text-slate-200 font-mono text-sm whitespace-pre-wrap">
             {testResult?.expectedOutput ??
-              (testCases[activeTestCase].expectedOutput || 'No expected output')}
+              (testCases[activeTestCase].expectedOutput ||
+                'No expected output')}
           </pre>
         </div>
       </div>

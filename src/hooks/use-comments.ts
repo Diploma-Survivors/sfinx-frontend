@@ -1,16 +1,16 @@
+import { useApp } from '@/contexts/app-context';
 import { commentService } from '@/services/comment-service';
+import { toastService } from '@/services/toasts-service';
 import {
-  CreateProblemCommentRequest,
+  type CreateProblemCommentRequest,
   ProblemCommentSortBy,
-  ReportProblemCommentRequest,
-  UpdateProblemCommentRequest,
-  VoteProblemCommentRequest,
+  type ReportProblemCommentRequest,
+  type UpdateProblemCommentRequest,
+  type VoteProblemCommentRequest,
 } from '@/types/comments';
 import { useState } from 'react';
-import useSWR from 'swr';
-import { useApp } from '@/contexts/app-context';
-import { toastService } from '@/services/toasts-service';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 export function useComments(problemId: string | number) {
   const [page, setPage] = useState(1);
@@ -83,10 +83,7 @@ export function useComments(problemId: string | number) {
   };
 
   // Helper to recursively find a parent and remove a reply
-  const removeReplyInTree = (
-    comments: any[],
-    replyId: number
-  ): any[] => {
+  const removeReplyInTree = (comments: any[], replyId: number): any[] => {
     return comments.map((comment) => {
       // Check if this comment has the reply in its children
       if (comment.replies?.some((r: any) => r.id === replyId)) {
@@ -126,7 +123,7 @@ export function useComments(problemId: string | number) {
     if (!checkPermission()) return;
     try {
       const newComment = await commentService.createComment(problemId, data);
-      
+
       await mutate((currentData: any) => {
         if (!currentData) return currentData;
 
@@ -163,7 +160,7 @@ export function useComments(problemId: string | number) {
     if (!checkPermission()) return;
     try {
       const updatedComment = await commentService.updateComment(id, data);
-      
+
       await mutate((currentData: any) => {
         if (!currentData) return currentData;
 
@@ -187,7 +184,7 @@ export function useComments(problemId: string | number) {
     if (!checkPermission()) return;
     try {
       await commentService.deleteComment(id);
-      
+
       await mutate((currentData: any) => {
         if (!currentData) return currentData;
 
@@ -197,7 +194,7 @@ export function useComments(problemId: string | number) {
           // Check if it's actually in the top level list
           const isTopLevel = currentData.data.some((c: any) => c.id === id);
           if (isTopLevel) {
-             return {
+            return {
               ...currentData,
               data: currentData.data.filter((c: any) => c.id !== id),
               meta: {
@@ -316,10 +313,14 @@ export function useComments(problemId: string | number) {
       const commentWithReplies = await commentService.getComment(id);
       await mutate((currentData: any) => {
         if (!currentData) return currentData;
-        
+
         return {
           ...currentData,
-          data: updateCommentInTree(currentData.data, id, () => commentWithReplies),
+          data: updateCommentInTree(
+            currentData.data,
+            id,
+            () => commentWithReplies
+          ),
         };
       }, false);
     } catch (error) {

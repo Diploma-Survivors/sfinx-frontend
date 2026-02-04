@@ -1,6 +1,6 @@
 import { getStatusMeta } from '@/lib/utils/testcase-status';
-import { SubmissionStatus } from '@/types/submissions';
 import type { SSEResult } from '@/services/sse-service';
+import { SubmissionStatus } from '@/types/submissions';
 import type { SampleTestCase } from '@/types/testcases';
 import { Plus, X } from 'lucide-react';
 
@@ -63,7 +63,8 @@ export function CaseTabs({
         const isActive = activeTestCase === index;
 
         // Determine styling
-        let tabStyle = 'bg-background border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:border-border/80';
+        let tabStyle =
+          'bg-background border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:border-border/80';
 
         if (activeTab === 'result' && testResult && isActive) {
           // In result tab, use status colors ONLY for active tab
@@ -71,7 +72,8 @@ export function CaseTabs({
           tabStyle = `${statusColor}`;
         } else if (isActive) {
           // Normal active state
-          tabStyle = 'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/5';
+          tabStyle =
+            'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/5';
         }
 
         return (
@@ -82,7 +84,9 @@ export function CaseTabs({
             >
               {/* Show status icon for result tab */}
               {activeTab === 'result' && statusInfo ? (
-                <span className={isActive ? 'text-current' : statusInfo.iconColor}>
+                <span
+                  className={isActive ? 'text-current' : statusInfo.iconColor}
+                >
                   {statusInfo.icon}
                 </span>
               ) : null}

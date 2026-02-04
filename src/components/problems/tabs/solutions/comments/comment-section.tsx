@@ -15,10 +15,7 @@ import { SolutionsService } from '@/services/solutions-service';
 import { UserService } from '@/services/user-service';
 import { type SolutionComment, SolutionCommentSortBy } from '@/types/solutions';
 import type { UserProfile } from '@/types/user';
-import {
-  ArrowUpDown,
-  MessageSquare,
-} from 'lucide-react';
+import { ArrowUpDown, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CommentNode from './comment-node';
@@ -47,7 +44,9 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
   useEffect(() => {
     // Fetch current user for the avatar in the input
     if (!user) return;
-    UserService.getUserProfile(user.id).then((res) => setCurrentUser(res.data.data));
+    UserService.getUserProfile(user.id).then((res) =>
+      setCurrentUser(res.data.data)
+    );
   }, [user]);
 
   const fetchComments = async () => {
@@ -73,7 +72,10 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
     fetchComments();
   }, [solutionId]);
 
-  const sortComments = (items: SolutionComment[], sortOption: SolutionCommentSortBy) => {
+  const sortComments = (
+    items: SolutionComment[],
+    sortOption: SolutionCommentSortBy
+  ) => {
     return [...items].sort((a, b) => {
       if (sortOption === SolutionCommentSortBy.RECENT) {
         return (
@@ -178,7 +180,9 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
           <MessageSquare className="w-5 h-5" />
-          <span className="font-semibold">{comments.length} {t('comments')}</span>
+          <span className="font-semibold">
+            {comments.length} {t('comments')}
+          </span>
         </div>
 
         <DropdownMenu>
@@ -249,28 +253,28 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
       <div className="space-y-6">
         {isLoading
           ? // Skeleton
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="flex gap-4">
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/3" />
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex gap-4">
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
               </div>
-            </div>
-          ))
+            ))
           : displayedComments.map((comment) => (
-            <CommentNode
-              key={comment.id}
-              comment={comment}
-              getReplies={getReplies}
-              solutionId={solutionId}
-              onReplySuccess={handleReplySuccess}
-              onUpdate={handleUpdateComment}
-              onDelete={handleDeleteComment}
-              expandedReplies={expandedReplies}
-              toggleReplies={toggleReplies}
-            />
-          ))}
+              <CommentNode
+                key={comment.id}
+                comment={comment}
+                getReplies={getReplies}
+                solutionId={solutionId}
+                onReplySuccess={handleReplySuccess}
+                onUpdate={handleUpdateComment}
+                onDelete={handleDeleteComment}
+                expandedReplies={expandedReplies}
+                toggleReplies={toggleReplies}
+              />
+            ))}
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 pt-4">
@@ -288,7 +292,9 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
             >
               {t('next')}

@@ -2,14 +2,14 @@ import clientApi from '@/lib/apis/axios-client';
 import type { ApiResponse } from '@/types/api';
 import {
   type GetProblemListRequest,
-  Problem,
+  type Problem,
   ProblemDifficulty,
   type ProblemListItem,
   type ProblemListResponse,
 } from '@/types/problems';
+import type { SampleTestCase } from '@/types/testcases';
 import type { AxiosResponse } from 'axios';
 import qs from 'qs';
-import { SampleTestCase } from '@/types/testcases';
 
 async function getProblemList(
   getProblemListRequest: GetProblemListRequest
@@ -30,23 +30,23 @@ async function getProblemList(
 async function getProblemById(
   problemId: number
 ): Promise<AxiosResponse<ApiResponse<Problem>>> {
-
   const [problemResponse, samplesResponse] = await Promise.all([
     clientApi.get<ApiResponse<Problem>>(`/problems/${problemId}`),
-    clientApi.get<ApiResponse<SampleTestCase[]>>(`/problems/${problemId}/samples`).catch(() => null),
+    clientApi
+      .get<ApiResponse<SampleTestCase[]>>(`/problems/${problemId}/samples`)
+      .catch(() => null),
   ]);
 
   if (problemResponse.data?.data && samplesResponse?.data?.data) {
     problemResponse.data.data.sampleTestcases = samplesResponse.data.data;
   }
-  if(problemResponse.data?.data){
-    problemResponse.data.data.hasOfficialSolution = !!problemResponse.data.data.officialSolutionContent;
+  if (problemResponse.data?.data) {
+    problemResponse.data.data.hasOfficialSolution =
+      !!problemResponse.data.data.officialSolutionContent;
   }
 
   return problemResponse;
 }
-
-
 
 export const ProblemsService = {
   getProblemList,

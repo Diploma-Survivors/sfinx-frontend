@@ -1,20 +1,20 @@
 'use client';
 
+import SubmissionsPage from '@/components/problems/tabs/submissions/submissions-page';
+import { Button } from '@/components/ui/button';
 import { useProblemDescription } from '@/hooks/use-problem-description';
+import { cn } from '@/lib/utils';
+import { ContestNavTabs } from '@/types/contests';
+import type { Contest } from '@/types/contests';
+import type { Problem } from '@/types/problems';
+import { CheckCircle, FileText } from 'lucide-react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResizableDivider } from './dividers/resizable-divider';
 import { DescriptionPanel } from './panels/description-panel/description-panel';
 import { EditorPanel } from './panels/editor-panel/editor-panel';
 import { SampleTestCasesPanel } from './panels/sample-testcases-panel/sample-testcases-panel';
 import SubmitResultTab from './panels/submit-result/submit-result-tab';
-import SubmissionsPage from '@/components/problems/tabs/submissions/submissions-page';
-import { ContestNavTabs } from '@/types/contests';
-import { Button } from '@/components/ui/button';
-import { FileText, CheckCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
-import { Problem } from '@/types/problems';
-import { Contest } from '@/types/contests';
 
 interface ContestProblemWrapperProps {
   contest: Contest;
@@ -34,8 +34,12 @@ export default function ContestProblemWrapper({
   onSubmitSuccess,
 }: ContestProblemWrapperProps) {
   const { t } = useTranslation('contests');
-  const [activeTab, setActiveTab] = useState<ContestNavTabs>(ContestNavTabs.DESCRIPTION);
-  const [selectedSubmissionId, setSelectedSubmissionId] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<ContestNavTabs>(
+    ContestNavTabs.DESCRIPTION
+  );
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<
+    number | null
+  >(null);
 
   const {
     containerRef,
@@ -85,7 +89,11 @@ export default function ContestProblemWrapper({
 
   const tabs = [
     { id: ContestNavTabs.DESCRIPTION, label: t('description'), icon: FileText },
-    { id: ContestNavTabs.SUBMISSIONS, label: t('submissions'), icon: CheckCircle },
+    {
+      id: ContestNavTabs.SUBMISSIONS,
+      label: t('submissions'),
+      icon: CheckCircle,
+    },
   ];
 
   return (
@@ -98,20 +106,23 @@ export default function ContestProblemWrapper({
         }}
       >
         {/* Left Panel Container */}
-        <div className="flex flex-col h-full" style={{ width: `${leftWidth}%` }}>
+        <div
+          className="flex flex-col h-full"
+          style={{ width: `${leftWidth}%` }}
+        >
           {/* Tabs Header */}
           <div className="flex items-center h-12 px-2 border-b border-border bg-background/50 backdrop-blur-sm shrink-0 gap-2">
             {tabs.map((tab) => (
               <Button
                 key={tab.id}
-                variant={activeTab === tab.id ? "secondary" : "ghost"}
+                variant={activeTab === tab.id ? 'secondary' : 'ghost'}
                 size="sm"
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "h-8 text-xs font-medium gap-2 px-3",
+                  'h-8 text-xs font-medium gap-2 px-3',
                   activeTab === tab.id
-                    ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 <tab.icon className="w-3.5 h-3.5" />

@@ -1,4 +1,4 @@
-import { initialProblemData, type Problem } from '@/types/problems';
+import { type Problem, initialProblemData } from '@/types/problems';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
@@ -9,8 +9,7 @@ const ProblemSlice = createSlice({
   name: 'problem',
   initialState,
   reducers: {
-    setProblem: (state, action: PayloadAction<Problem>) =>
-      action.payload,
+    setProblem: (state, action: PayloadAction<Problem>) => action.payload,
   },
 });
 

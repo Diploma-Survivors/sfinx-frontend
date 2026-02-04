@@ -2,16 +2,16 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { type ProblemFilters, ProblemStatus } from '@/types/problems';
 import type { Tag } from '@/types/tags';
 import type { Topic } from '@/types/topics';
-import { RotateCcw, Search, CheckCircle2, Circle, Clock } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, RotateCcw, Search } from 'lucide-react';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import DifficultyFilter from './difficulty-filter';
 import TagFilter from './tags-filter';
 import TopicFilter from './topics-filter';
-import { cn } from '@/lib/utils';
 
 interface ProblemFilterProps {
   keyWord: string;
@@ -51,7 +51,7 @@ export default function ProblemFilter({
   );
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -89,7 +89,9 @@ export default function ProblemFilter({
             {filters.status && (
               <button
                 type="button"
-                onClick={() => onFiltersChange({ ...filters, status: undefined })}
+                onClick={() =>
+                  onFiltersChange({ ...filters, status: undefined })
+                }
                 className="text-[10px] font-medium text-muted-foreground hover:text-foreground"
               >
                 {t('clear')}
@@ -97,20 +99,25 @@ export default function ProblemFilter({
             )}
           </div>
           <div className="flex flex-col gap-2">
-            {[ProblemStatus.SOLVED, ProblemStatus.ATTEMPTED, ProblemStatus.NOT_STARTED].map((status) => {
+            {[
+              ProblemStatus.SOLVED,
+              ProblemStatus.ATTEMPTED,
+              ProblemStatus.NOT_STARTED,
+            ].map((status) => {
               const isSelected = filters.status === status;
 
               const getStatusColor = (s: ProblemStatus) => {
-                if (!isSelected) return "bg-background text-muted-foreground border-transparent hover:bg-muted";
+                if (!isSelected)
+                  return 'bg-background text-muted-foreground border-transparent hover:bg-muted';
                 switch (s) {
                   case ProblemStatus.SOLVED:
-                    return "bg-green-500/10 text-green-600 border-green-200 dark:border-green-800";
+                    return 'bg-green-500/10 text-green-600 border-green-200 dark:border-green-800';
                   case ProblemStatus.ATTEMPTED:
-                    return "bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-800";
+                    return 'bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-800';
                   case ProblemStatus.NOT_STARTED:
-                    return "bg-gray-500/10 text-gray-600 border-gray-200 dark:border-gray-800";
+                    return 'bg-gray-500/10 text-gray-600 border-gray-200 dark:border-gray-800';
                   default:
-                    return "bg-background text-muted-foreground border-transparent";
+                    return 'bg-background text-muted-foreground border-transparent';
                 }
               };
 
@@ -129,10 +136,14 @@ export default function ProblemFilter({
 
               const getStatusLabel = (s: ProblemStatus) => {
                 switch (s) {
-                  case ProblemStatus.SOLVED: return t('status_solved');
-                  case ProblemStatus.ATTEMPTED: return t('status_attempted');
-                  case ProblemStatus.NOT_STARTED: return t('status_not_started');
-                  default: return '';
+                  case ProblemStatus.SOLVED:
+                    return t('status_solved');
+                  case ProblemStatus.ATTEMPTED:
+                    return t('status_attempted');
+                  case ProblemStatus.NOT_STARTED:
+                    return t('status_not_started');
+                  default:
+                    return '';
                 }
               };
 
@@ -140,12 +151,14 @@ export default function ProblemFilter({
                 <button
                   key={status}
                   type="button"
-                  onClick={() => onFiltersChange({
-                    ...filters,
-                    status: isSelected ? undefined : status
-                  })}
+                  onClick={() =>
+                    onFiltersChange({
+                      ...filters,
+                      status: isSelected ? undefined : status,
+                    })
+                  }
                   className={cn(
-                    "flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border",
+                    'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border',
                     getStatusColor(status)
                   )}
                 >

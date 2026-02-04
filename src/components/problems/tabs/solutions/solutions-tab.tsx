@@ -37,9 +37,7 @@ export default function SolutionsTab({ problemId }: SolutionsTabProps) {
         sortBy={sortBy}
         onSortChange={handleSortByChange}
         selectedTags={filters.tagIds || []}
-        onTagsChange={(ids) =>
-          handleFiltersChange({ ...filters, tagIds: ids })
-        }
+        onTagsChange={(ids) => handleFiltersChange({ ...filters, tagIds: ids })}
         selectedLanguages={filters.languageIds || []}
         onLanguagesChange={(ids) =>
           handleFiltersChange({ ...filters, languageIds: ids })

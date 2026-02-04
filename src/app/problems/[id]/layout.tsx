@@ -6,7 +6,10 @@ import { SampleTestCasesPanel } from '@/components/problems/tabs/description/pan
 import { SubmitResultTab } from '@/components/problems/tabs/description/panels/submit-result/submit-result-tab';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ProblemDetailProvider, useProblemDetail } from '@/contexts/problem-detail-context';
+import {
+  ProblemDetailProvider,
+  useProblemDetail,
+} from '@/contexts/problem-detail-context';
 import { cn } from '@/lib/utils';
 import { CheckCircle, ChevronLeft, FileText, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
@@ -62,7 +65,7 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
     handleSubmit,
     clearSubmitResults,
     problem,
-    isLoading
+    isLoading,
   } = useProblemDetail();
 
   const navItems = [
@@ -92,7 +95,7 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -104,8 +107,8 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
         {/* Left Panel */}
         <div
           className={cn(
-            "flex flex-col h-full bg-card",
-            !isFullPage && "border-r border-border"
+            'flex flex-col h-full bg-card',
+            !isFullPage && 'border-r border-border'
           )}
           style={{ width: isFullPage ? '100%' : `${leftWidth}%` }}
         >
@@ -134,12 +137,14 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
                       key={item.id}
                       variant={isActive ? 'secondary' : 'ghost'}
                       size="sm"
-                      onClick={() => router.push(`/problems/${problemId}/${item.id}`)}
+                      onClick={() =>
+                        router.push(`/problems/${problemId}/${item.id}`)
+                      }
                       className={cn(
-                        "h-8 text-xs font-medium gap-2 px-3",
+                        'h-8 text-xs font-medium gap-2 px-3',
                         isActive
-                          ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
-                          : "text-muted-foreground hover:text-foreground"
+                          ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
+                          : 'text-muted-foreground hover:text-foreground'
                       )}
                     >
                       <item.icon className="w-3.5 h-3.5" />
@@ -190,7 +195,9 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
                 isRunning={isRunning}
                 isSubmitting={isSubmitting}
                 onRun={handleRun}
-                onSubmit={(code, langId, contestId) => handleSubmit(code, langId, contestId)}
+                onSubmit={(code, langId, contestId) =>
+                  handleSubmit(code, langId, contestId)
+                }
               />
 
               {/* Vertical Resizer */}

@@ -1,5 +1,6 @@
 import MonacoEditor from '@/components/problems/tabs/description/panels/editor-panel/monaco-editor';
 import { Button } from '@/components/ui/button';
+import { useApp } from '@/contexts/app-context';
 import { ContestsService } from '@/services/contests-service';
 import { selectContest } from '@/store/slides/contest-slice';
 import { selectProblem } from '@/store/slides/problem-slice';
@@ -14,10 +15,9 @@ import { getDefaultCode } from '@/types/languages';
 import { AlertCircle, CheckCircle, Play, Send } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { useApp } from '@/contexts/app-context';
-import { useTranslation } from 'react-i18next';
 
 interface EditorPanelProps {
   height: number;
@@ -56,7 +56,9 @@ export function EditorPanel({
   const currentLanguageId = workspace?.currentLanguage?.[problem.id] ?? 46;
   const currentCode =
     workspace?.currentCode?.[problem.id]?.[currentLanguageId] ??
-    workspace?.languages?.find((lang) => lang.id === currentLanguageId)?.starterCode ?? 'Write your code here';
+    workspace?.languages?.find((lang) => lang.id === currentLanguageId)
+      ?.starterCode ??
+    'Write your code here';
 
   const handleRunClick = () => {
     onRun(currentCode, currentLanguageId);
@@ -73,7 +75,9 @@ export function EditorPanel({
     : true;
 
   const onLanguageIdChange = (languageId: number) => {
-    dispatch(updateCurrentLanguage({ problemId: problem.id.toString(), languageId }));
+    dispatch(
+      updateCurrentLanguage({ problemId: problem.id.toString(), languageId })
+    );
   };
 
   const onCurrentCodeChange = (code: string) => {

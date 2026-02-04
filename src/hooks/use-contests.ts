@@ -85,12 +85,10 @@ export default function useContests(): UseContestsReturn {
         const data = axiosResponse?.data?.data.data;
         const pageInfo = axiosResponse?.data?.data.meta;
 
-
         setState((prev) => ({
           ...prev,
-          contests: requestParams.page === 1
-            ? data
-            : [...prev.contests, ...data],
+          contests:
+            requestParams.page === 1 ? data : [...prev.contests, ...data],
           pageInfo: {
             hasNextPage: pageInfo.hasNextPage,
             hasPreviousPage: pageInfo.hasPreviousPage,
@@ -134,34 +132,43 @@ export default function useContests(): UseContestsReturn {
   );
 
   // Debounced search for search term
-  const debouncedSearch = useDebouncedCallback((searchTerm: string, currentFilters: ContestFilters) => {
-    updateRequest(
-      {
-        search: searchTerm.trim() || undefined,
-        ...currentFilters,
-        page: 1,
-      },
-      true
-    );
-  }, 500);
+  const debouncedSearch = useDebouncedCallback(
+    (searchTerm: string, currentFilters: ContestFilters) => {
+      updateRequest(
+        {
+          search: searchTerm.trim() || undefined,
+          ...currentFilters,
+          page: 1,
+        },
+        true
+      );
+    },
+    500
+  );
 
   // handle filter changes
-  const handleFiltersChange = useCallback((newFilters: ContestFilters) => {
-    setFilters(newFilters);
-    updateRequest(
-      {
-        ...newFilters,
-        search: search.trim() || undefined,
-        page: 1,
-      },
-      true
-    );
-  }, [search, updateRequest]);
+  const handleFiltersChange = useCallback(
+    (newFilters: ContestFilters) => {
+      setFilters(newFilters);
+      updateRequest(
+        {
+          ...newFilters,
+          search: search.trim() || undefined,
+          page: 1,
+        },
+        true
+      );
+    },
+    [search, updateRequest]
+  );
 
-  const handleSearchChange = useCallback((newSearch: string) => {
-    setSearch(newSearch);
-    debouncedSearch(newSearch, filters);
-  }, [filters, debouncedSearch]);
+  const handleSearchChange = useCallback(
+    (newSearch: string) => {
+      setSearch(newSearch);
+      debouncedSearch(newSearch, filters);
+    },
+    [filters, debouncedSearch]
+  );
 
   // handle sorting changes
   const handleSortByChange = useCallback(

@@ -34,8 +34,9 @@ export function ProblemTopicsTags({
           <span>{t('topics_tags_title')}</span>
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''
-            }`}
+          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+            isOpen ? 'transform rotate-180' : ''
+          }`}
         />
       </CollapsibleTrigger>
       <CollapsibleContent>

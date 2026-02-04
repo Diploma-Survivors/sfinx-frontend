@@ -44,9 +44,7 @@ export default function ContestTable({
       {/* Empty State */}
       {!isLoading && !error && contests.length === 0 && (
         <div className="text-center py-12 border border-dashed border-border rounded-xl">
-          <p className="text-muted-foreground">
-            {t('no_contests_found')}
-          </p>
+          <p className="text-muted-foreground">{t('no_contests_found')}</p>
         </div>
       )}
 
@@ -103,4 +101,3 @@ export default function ContestTable({
     </div>
   );
 }
-

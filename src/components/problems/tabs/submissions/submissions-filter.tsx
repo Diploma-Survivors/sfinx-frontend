@@ -10,10 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { SubmissionsService } from '@/services/submissions-service';
 import { SubmissionStatus } from '@/types/submissions';
-import type {
-  Language,
-  SubmissionFilters,
-} from '@/types/submissions';
+import type { Language, SubmissionFilters } from '@/types/submissions';
 import { ChevronDown, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

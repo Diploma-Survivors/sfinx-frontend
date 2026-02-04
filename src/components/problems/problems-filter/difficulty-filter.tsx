@@ -1,6 +1,5 @@
 import type { ProblemDifficulty } from '@/types/problems';
 
-
 interface DifficultyFilterProps {
   selectedDifficulty?: ProblemDifficulty;
   onDifficultyChange: (difficulty?: ProblemDifficulty) => void;

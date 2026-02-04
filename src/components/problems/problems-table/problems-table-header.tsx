@@ -2,7 +2,6 @@ import SortControls from '@/components/problems/problems-filter/sort-controls';
 import type { SortBy, SortOrder } from '@/types/problems';
 import { FaList } from 'react-icons/fa6';
 
-
 import { useTranslation } from 'react-i18next';
 
 interface ProblemTableHeaderProps {
@@ -28,16 +27,12 @@ export default function ProblemTableHeader({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-xl font-bold flex items-center gap-2 text-foreground">
           <FaList className="text-muted-foreground" />
-          <span>
-            {t('problems_list')}
-          </span>
+          <span>{t('problems_list')}</span>
         </h3>
         <div className="flex items-center gap-4">
           <div className="text-sm text-muted-foreground">
-            <span className="font-bold text-foreground">
-              {currentCount}
-            </span>{' '}
-            / {totalCount} {t('problems')}
+            <span className="font-bold text-foreground">{currentCount}</span> /{' '}
+            {totalCount} {t('problems')}
           </div>
           <SortControls
             sortBy={sortBy}

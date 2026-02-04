@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { ForgotPasswordModal } from '@/components/auth/forgot-password-modal';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -23,7 +23,8 @@ import { FcGoogle } from 'react-icons/fc';
 export default function LoginPage() {
   const { t } = useTranslation('auth');
   const [isSignUp, setIsSignUp] = useState(false);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');

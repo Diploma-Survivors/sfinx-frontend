@@ -1,12 +1,12 @@
+import { useApp } from '@/contexts/app-context';
 import { type SSEResult, sseService } from '@/services/sse-service';
 import { SubmissionsService } from '@/services/submissions-service';
+import { toastService } from '@/services/toasts-service';
 import { selectContest } from '@/store/slides/contest-slice';
 import type { SubmissionRequest } from '@/types/submissions';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { useApp } from '@/contexts/app-context';
-import { toastService } from '@/services/toasts-service';
+import { useSelector } from 'react-redux';
 
 export function useCodeExecution() {
   const { t } = useTranslation('problems');

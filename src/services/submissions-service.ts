@@ -1,12 +1,12 @@
 import clientApi from '@/lib/apis/axios-client';
 import { store } from '@/store';
 import { setLanguages } from '@/store/slides/workspace-slice';
-import { ApiResponse } from '@/types/api';
+import type { ApiResponse } from '@/types/api';
 import {
   type GetSubmissionListRequest,
   type Language,
   type Submission,
-  SubmissionListResponse,
+  type SubmissionListResponse,
   type SubmissionRequest,
   SubmissionStatus,
 } from '@/types/submissions';
@@ -39,15 +39,18 @@ async function getLanguageList() {
     return languageListPromise;
   }
 
-  languageListPromise = clientApi.get<ApiResponse<Language[]>>('/programming-languages/active').then((response) => {
-    store.dispatch(setLanguages(response.data.data));
-    languageListPromise = null;
-    return response.data.data;
-  }).catch((error) => {
-    console.warn('API failed, using mock languages', error);
-    languageListPromise = null;
-    return [];
-  });
+  languageListPromise = clientApi
+    .get<ApiResponse<Language[]>>('/programming-languages/active')
+    .then((response) => {
+      store.dispatch(setLanguages(response.data.data));
+      languageListPromise = null;
+      return response.data.data;
+    })
+    .catch((error) => {
+      console.warn('API failed, using mock languages', error);
+      languageListPromise = null;
+      return [];
+    });
 
   return languageListPromise;
 }
@@ -80,12 +83,12 @@ async function getSubmissionList(
 }
 
 async function getSubmissionById(submissionId: number) {
-  return await clientApi.get<ApiResponse<Submission>>(`/submissions/${submissionId}`);
+  return await clientApi.get<ApiResponse<Submission>>(
+    `/submissions/${submissionId}`
+  );
 }
 
-async function getAllSubmissions(
-  userId: number
-): Promise<Submission[]> {
+async function getAllSubmissions(userId: number): Promise<Submission[]> {
   // Mock data
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -132,7 +135,10 @@ async function getAllSubmissions(
           status,
           executionTime: Math.floor(Math.random() * 1000),
           memoryUsed: Math.floor(Math.random() * 10000),
-          testcasesPassed: status === SubmissionStatus.ACCEPTED ? 10 : Math.floor(Math.random() * 10),
+          testcasesPassed:
+            status === SubmissionStatus.ACCEPTED
+              ? 10
+              : Math.floor(Math.random() * 10),
           totalTestcases: 10,
           testcaseResults: [],
           failedResult: {

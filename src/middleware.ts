@@ -9,7 +9,11 @@ export default withAuth(
     // 1. Authenticated Users
     if (token) {
       // Redirect from Login or Root to /problems
-      if (pathname === '/login' || pathname.startsWith('/auth') || pathname === '/') {
+      if (
+        pathname === '/login' ||
+        pathname.startsWith('/auth') ||
+        pathname === '/'
+      ) {
         return NextResponse.redirect(new URL('/problems', req.url));
       }
     }

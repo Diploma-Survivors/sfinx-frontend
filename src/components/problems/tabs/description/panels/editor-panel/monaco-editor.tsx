@@ -24,7 +24,6 @@ interface MonacoEditorProps {
   onCurrentCodeChange: (code: string) => void;
 }
 
-
 export default function MonacoEditor({
   currentLanguageId,
   onCurrentLanguageIdChange: setCurrentLanguageId,

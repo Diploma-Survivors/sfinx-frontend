@@ -2,11 +2,24 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { type ContestFilters, ContestStatus, ContestUserStatus } from '@/types/contests';
-import { RotateCcw, Search, Calendar, CheckCircle2, Circle, Clock, Timer, History } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import {
+  type ContestFilters,
+  ContestStatus,
+  ContestUserStatus,
+} from '@/types/contests';
+import {
+  Calendar,
+  CheckCircle2,
+  Circle,
+  Clock,
+  History,
+  RotateCcw,
+  Search,
+  Timer,
+} from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
 
 interface ContestFilterProps {
   search?: string;
@@ -44,8 +57,18 @@ export default function ContestFilter({
   };
 
   const USER_STATUS_OPTIONS = [
-    { value: ContestUserStatus.JOINED, label: t('joined'), icon: CheckCircle2, color: 'text-green-500 bg-green-500/10 border-green-200' },
-    { value: ContestUserStatus.NOT_JOINED, label: t('not_joined'), icon: Circle, color: 'text-muted-foreground bg-muted border-transparent' },
+    {
+      value: ContestUserStatus.JOINED,
+      label: t('joined'),
+      icon: CheckCircle2,
+      color: 'text-green-500 bg-green-500/10 border-green-200',
+    },
+    {
+      value: ContestUserStatus.NOT_JOINED,
+      label: t('not_joined'),
+      icon: Circle,
+      color: 'text-muted-foreground bg-muted border-transparent',
+    },
   ];
 
   const toggleStatus = (status: string) => {
@@ -54,13 +77,28 @@ export default function ContestFilter({
   };
 
   const STATUS_OPTIONS = [
-    { value: ContestStatus.SCHEDULED, label: t('scheduled'), icon: Clock, color: 'text-blue-500 bg-blue-500/10 border-blue-200' },
-    { value: ContestStatus.RUNNING, label: t('running'), icon: Timer, color: 'text-green-500 bg-green-500/10 border-green-200' },
-    { value: ContestStatus.ENDED, label: t('ended'), icon: History, color: 'text-muted-foreground bg-muted border-transparent' },
+    {
+      value: ContestStatus.SCHEDULED,
+      label: t('scheduled'),
+      icon: Clock,
+      color: 'text-blue-500 bg-blue-500/10 border-blue-200',
+    },
+    {
+      value: ContestStatus.RUNNING,
+      label: t('running'),
+      icon: Timer,
+      color: 'text-green-500 bg-green-500/10 border-green-200',
+    },
+    {
+      value: ContestStatus.ENDED,
+      label: t('ended'),
+      icon: History,
+      color: 'text-muted-foreground bg-muted border-transparent',
+    },
   ];
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -115,10 +153,10 @@ export default function ContestFilter({
                   type="button"
                   onClick={() => toggleUserStatus(option.value)}
                   className={cn(
-                    "flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border",
+                    'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border',
                     isSelected
                       ? option.color
-                      : "bg-background text-muted-foreground border-transparent hover:bg-muted"
+                      : 'bg-background text-muted-foreground border-transparent hover:bg-muted'
                   )}
                 >
                   <Icon className="w-4 h-4 mr-2" />
@@ -155,10 +193,10 @@ export default function ContestFilter({
                   type="button"
                   onClick={() => toggleStatus(option.value)}
                   className={cn(
-                    "flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border",
+                    'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border',
                     isSelected
                       ? option.color
-                      : "bg-background text-muted-foreground border-transparent hover:bg-muted"
+                      : 'bg-background text-muted-foreground border-transparent hover:bg-muted'
                   )}
                 >
                   <Icon className="w-4 h-4 mr-2" />
@@ -178,9 +216,7 @@ export default function ContestFilter({
             <Input
               type="datetime-local"
               value={filters.startAfter || ''}
-              onChange={(e) =>
-                handleFilterChange('startAfter', e.target.value)
-              }
+              onChange={(e) => handleFilterChange('startAfter', e.target.value)}
               className="h-9 text-xs pl-2"
             />
           </div>
@@ -195,7 +231,9 @@ export default function ContestFilter({
             <Input
               type="datetime-local"
               value={filters.startBefore || ''}
-              onChange={(e) => handleFilterChange('startBefore', e.target.value)}
+              onChange={(e) =>
+                handleFilterChange('startBefore', e.target.value)
+              }
               className="h-9 text-xs pl-2"
             />
           </div>

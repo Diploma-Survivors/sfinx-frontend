@@ -1,14 +1,14 @@
 'use client';
 
 import SolutionDetailPanel from '@/components/problems/tabs/solutions/solution-detail-panel';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { SolutionsService } from '@/services/solutions-service';
 import type { Solution } from '@/types/solutions';
+import { ArrowLeft } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SolutionDetailPage() {
   const { t } = useTranslation('problems');
@@ -45,7 +45,11 @@ export default function SolutionDetailPage() {
   }
 
   if (!solution) {
-    return <div className="p-6 text-center text-muted-foreground">Solution not found</div>;
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        Solution not found
+      </div>
+    );
   }
 
   return (
@@ -60,7 +64,9 @@ export default function SolutionDetailPage() {
           <ArrowLeft className="w-4 h-4" />
           {t('back_to_list')}
         </Button>
-        <h2 className="font-semibold text-foreground truncate">{solution.title}</h2>
+        <h2 className="font-semibold text-foreground truncate">
+          {solution.title}
+        </h2>
       </div>
       <div className="flex-1 overflow-y-auto">
         <SolutionDetailPanel
@@ -71,4 +77,3 @@ export default function SolutionDetailPage() {
     </div>
   );
 }
-

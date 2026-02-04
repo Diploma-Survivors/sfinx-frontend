@@ -105,10 +105,7 @@ export default function useSolutions(problemId: string): UseSolutionsReturn {
   const handleKeywordChange = useCallback(
     (newKeyword: string) => {
       setKeyword(newKeyword);
-      updateRequest(
-        { keyword: newKeyword.trim() || undefined, page: 1 },
-        true
-      );
+      updateRequest({ keyword: newKeyword.trim() || undefined, page: 1 }, true);
     },
     [updateRequest]
   );
