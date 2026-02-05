@@ -58,6 +58,8 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         a: ({ node, ...props }) => (
           <a
             className="text-blue-600 dark:text-blue-400 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
             {...props}
           />
         ),

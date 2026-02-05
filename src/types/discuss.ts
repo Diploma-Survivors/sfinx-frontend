@@ -3,6 +3,7 @@ export interface Author {
     username: string;
     fullName: string | null;
     avatarKey: string | null;
+    avatarUrl?: string; // Comments return pre-signed URL/full URL
 }
 
 export interface Tag {
@@ -16,11 +17,18 @@ export interface Tag {
 }
 
 export interface Comment {
-    id: string;
+    id: number;
+    parentId: number | null;
     content: string;
     author: Author;
     createdAt: string;
-    upvotes: number;
+    updatedAt: string;
+    upvoteCount: number;
+    downvoteCount: number;
+    replyCount: number;
+    isDeleted: boolean;
+    isEdited: boolean;
+    userVote: number | null; // 1 for UPVOTE, -1 for DOWNVOTE (if using enum values)
     replies?: Comment[];
 }
 

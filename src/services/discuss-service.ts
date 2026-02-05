@@ -114,6 +114,52 @@ export class DiscussService {
         }
     }
 
+    private static readonly COMMENT_URL = '/discuss-comments';
+
+    static async getComments(postId: string): Promise<Comment[]> {
+        const response = await clientApi.get<{ data: Comment[] }>(
+            `${this.COMMENT_URL}/${postId}`
+        );
+        return response.data.data;
+    }
+
+    static async getCommentsForPost(postId: string): Promise<Comment[]> {
+        const response = await clientApi.get<{ data: Comment[] }>(
+            `${this.COMMENT_URL}/${postId}`
+        );
+        return response.data.data || [];
+    }
+
+    static async createComment(postId: string, content: string, parentId?: number): Promise<Comment> {
+        const payload = { content, parentId };
+        const response = await clientApi.post<{ data: Comment }>(
+            `${this.COMMENT_URL}/${postId}`,
+            payload
+        );
+        return response.data.data;
+    }
+
+    static async updateComment(id: number, content: string): Promise<Comment> {
+        const payload = { content };
+        const response = await clientApi.patch<{ data: Comment }>(
+            `${this.COMMENT_URL}/${id}`,
+            payload
+        );
+        return response.data.data;
+    }
+
+    static async deleteComment(id: number): Promise<void> {
+        await clientApi.delete(`${this.COMMENT_URL}/${id}`);
+    }
+
+    static async voteComment(id: number, type: 'UPVOTE' | 'DOWNVOTE'): Promise<void> {
+        const payload = { voteType: type };
+        await clientApi.post(
+            `${this.COMMENT_URL}/${id}/vote`,
+            payload
+        );
+    }
+
     // Legacy method for backward compatibility  
     static async votePost(id: string, type: 'up' | 'down'): Promise<void> {
         // TODO: Implement when vote API is available
