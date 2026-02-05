@@ -1,6 +1,6 @@
 import clientApi from '@/lib/apis/axios-client';
-import { ApiResponse } from '@/types/api';
-import {
+import type { ApiResponse } from '@/types/api';
+import type {
   CreateProblemCommentRequest,
   GetProblemCommentsParams,
   ProblemComment,
@@ -17,9 +17,8 @@ async function getComments(
 ) {
   const queryParams = qs.stringify(params, { skipNulls: true });
   const url = `/problems/${problemId}/comments${queryParams ? `?${queryParams}` : ''}`;
-  const response = await clientApi.get<ApiResponse<ProblemCommentListResponse>>(
-    url
-  );
+  const response =
+    await clientApi.get<ApiResponse<ProblemCommentListResponse>>(url);
   return response.data.data;
 }
 

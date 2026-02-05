@@ -7,7 +7,6 @@ export enum ContestSortBy {
   START_TIME = 'startTime',
 }
 
-
 export enum MatchMode {
   ANY = 'any',
   ALL = 'all',
@@ -19,13 +18,12 @@ export enum ContestProblemStatus {
   NOT_STARTED = 'NOT_STARTED',
 }
 
-
 export const ContestProblemStatusTooltip: Record<ContestProblemStatus, string> =
-{
-  [ContestProblemStatus.NOT_STARTED]: 'Not Started',
-  [ContestProblemStatus.SOLVED]: 'Solved',
-  [ContestProblemStatus.ATTEMPTED]: 'Attempted',
-};
+  {
+    [ContestProblemStatus.NOT_STARTED]: 'Not Started',
+    [ContestProblemStatus.SOLVED]: 'Solved',
+    [ContestProblemStatus.ATTEMPTED]: 'Attempted',
+  };
 
 // Contest Detail types
 export interface ContestProblem {
@@ -56,7 +54,6 @@ export enum ContestStatus {
   RUNNING = 'Running',
   ENDED = 'Ended',
 }
-
 
 export interface ContestParticipation {
   participationId?: number;
@@ -93,8 +90,6 @@ export interface Contest {
   lateDeadline?: string;
 }
 
-
-
 export interface ContestOverView {
   id?: number;
   title: string;
@@ -117,8 +112,6 @@ export enum ContestUserStatus {
   JOINED = 'JOINED',
   NOT_JOINED = 'NOT_JOINED',
 }
-
-
 
 // Filter types
 export interface ContestFilters {
@@ -154,7 +147,6 @@ export interface ContestListResponse {
   };
 }
 
-
 export const ContestStatusLabels: Record<ContestStatus, string> = {
   [ContestStatus.SCHEDULED]: 'Scheduled',
   [ContestStatus.RUNNING]: 'Running',
@@ -179,11 +171,11 @@ export const CONTEST_SUBMISSION_STRATEGY_DESCRIPTION: Record<
     'Only one submission is allowed for each problem',
   [ContestSubmissionStrategy.BEST_SCORE]:
     'The best score from all submissions is taken',
-  [ContestSubmissionStrategy.LATEST_SCORE]: 'The latest submission score is taken',
+  [ContestSubmissionStrategy.LATEST_SCORE]:
+    'The latest submission score is taken',
   [ContestSubmissionStrategy.AVERAGE_SCORE]:
     'The average score from all submissions is taken',
 };
-
 
 export const CONTEST_ACCESS_RANGE_OPTIONS = [
   { value: 'all', label: 'All' },
@@ -252,7 +244,6 @@ export const INITIAL_CONTEST: Contest = {
   status: ContestStatus.SCHEDULED,
 };
 
-
 export interface ProblemStatus {
   problemId: number;
   problemOrder: number; // Q1, Q2, etc.
@@ -286,5 +277,3 @@ export interface LeaderboardResponse {
     hasPreviousPage: boolean;
   };
 }
-
-

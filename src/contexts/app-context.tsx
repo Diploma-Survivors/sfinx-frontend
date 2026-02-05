@@ -3,7 +3,7 @@
 import clientApi from '@/lib/apis/axios-client';
 import type { DecodedAccessToken, UserInfo } from '@/types/states';
 
-import { UserProfile } from '@/types/user';
+import type { UserProfile } from '@/types/user';
 import { usePathname } from 'next/navigation';
 import {
   type ReactNode,
@@ -61,7 +61,10 @@ export function AppProvider({
       const userData = response.data.data;
       setUser(userData);
 
-      if (userData.preferredLanguage && i18n.language !== userData.preferredLanguage) {
+      if (
+        userData.preferredLanguage &&
+        i18n.language !== userData.preferredLanguage
+      ) {
         i18n.changeLanguage(userData.preferredLanguage);
       }
     } catch (error) {

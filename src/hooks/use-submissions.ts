@@ -1,8 +1,8 @@
 import { SubmissionsService } from '@/services/submissions-service';
-import {
-  type GetSubmissionListRequest,
-  type SubmissionFilters,
-  type Submission,
+import type {
+  GetSubmissionListRequest,
+  Submission,
+  SubmissionFilters,
   SubmissionListResponse,
 } from '@/types/submissions';
 import { useCallback, useEffect, useState } from 'react';

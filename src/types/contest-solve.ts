@@ -20,13 +20,13 @@ export interface ContestRanking {
 export interface SubmissionResult {
   id: string;
   status:
-  | 'pending'
-  | 'accepted'
-  | 'wrong_answer'
-  | 'time_limit_exceeded'
-  | 'memory_limit_exceeded'
-  | 'runtime_error'
-  | 'compilation_error';
+    | 'pending'
+    | 'accepted'
+    | 'wrong_answer'
+    | 'time_limit_exceeded'
+    | 'memory_limit_exceeded'
+    | 'runtime_error'
+    | 'compilation_error';
   language: string;
   runtime?: number;
   memory?: number;

@@ -1,15 +1,15 @@
 'use client';
 
 import ContestFilter from '@/components/contest/contest-filter';
+import ContestListSkeleton from '@/components/contest/contest-list-skeleton';
 import ContestSortControls from '@/components/contest/contest-sort-controls';
 import ContestTable from '@/components/contest/contest-table';
-import ContestListSkeleton from '@/components/contest/contest-list-skeleton';
-import useContests from '@/hooks/use-contests';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next';
-import { Filter } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import useContests from '@/hooks/use-contests';
+import { Filter } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function ContestsPage() {
   const { t } = useTranslation('contests');
@@ -76,14 +76,20 @@ export default function ContestsPage() {
                 />
 
                 {/* Mobile Filter Trigger */}
-                <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+                <Sheet
+                  open={isMobileFilterOpen}
+                  onOpenChange={setIsMobileFilterOpen}
+                >
                   <SheetTrigger asChild>
                     <Button variant="outline" className="lg:hidden">
                       <Filter className="mr-2 h-4 w-4" />
                       {t('filters')}
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-[300px] sm:w-[400px] p-6">
+                  <SheetContent
+                    side="left"
+                    className="w-[300px] sm:w-[400px] p-6"
+                  >
                     <div className="mt-6">
                       <ContestFilter
                         search={search}

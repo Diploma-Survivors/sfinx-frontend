@@ -66,10 +66,11 @@ export function SampleTestCasesPanel({
           {/* Testcase tab */}
           <button
             onClick={() => setActiveTab('testcase')}
-            className={`h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all duration-200 cursor-pointer ${activeTab === 'testcase'
-              ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
-              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-              }`}
+            className={`h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all duration-200 cursor-pointer ${
+              activeTab === 'testcase'
+                ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
           >
             <CheckCircle className="w-3.5 h-3.5" />
             Testcase
@@ -78,10 +79,11 @@ export function SampleTestCasesPanel({
           {/* Result tab */}
           <button
             onClick={() => setActiveTab('result')}
-            className={`h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all duration-200 cursor-pointer ${activeTab === 'result'
-              ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
-              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-              }`}
+            className={`h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all duration-200 cursor-pointer ${
+              activeTab === 'result'
+                ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
           >
             <Code className="w-3.5 h-3.5" />
             Test Result

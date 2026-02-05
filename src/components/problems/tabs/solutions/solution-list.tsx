@@ -62,9 +62,7 @@ export default function SolutionList({
 
   if (solutions.length === 0) {
     return (
-      <div className="p-8 text-center text-slate-500">
-        {t('no_solutions')}
-      </div>
+      <div className="p-8 text-center text-slate-500">{t('no_solutions')}</div>
     );
   }
 

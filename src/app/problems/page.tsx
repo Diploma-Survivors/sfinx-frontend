@@ -1,16 +1,16 @@
 'use client';
 
+import ProblemListSkeleton from '@/components/problems/problem-list-skeleton';
 import ProblemFilter from '@/components/problems/problems-filter/problems-filter';
 import SortControls from '@/components/problems/problems-filter/sort-controls';
 import ProblemTable from '@/components/problems/problems-table/problems-table';
-import ProblemListSkeleton from '@/components/problems/problem-list-skeleton';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import useProblems from '@/hooks/use-problems';
 import { cn } from '@/lib/utils';
 import { Filter } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export default function ProblemsPage() {
   const { t } = useTranslation('problems');
@@ -85,14 +85,20 @@ export default function ProblemsPage() {
                 />
 
                 {/* Mobile Filter Trigger */}
-                <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+                <Sheet
+                  open={isMobileFilterOpen}
+                  onOpenChange={setIsMobileFilterOpen}
+                >
                   <SheetTrigger asChild>
                     <Button variant="outline" className="lg:hidden">
                       <Filter className="mr-2 h-4 w-4" />
                       {t('filters')}
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-[300px] sm:w-[400px] p-6">
+                  <SheetContent
+                    side="left"
+                    className="w-[300px] sm:w-[400px] p-6"
+                  >
                     <div className="mt-6">
                       <ProblemFilter
                         keyWord={keyword}
@@ -114,7 +120,12 @@ export default function ProblemsPage() {
             {error && !isLoading && (
               <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-6 text-center mb-6">
                 <p className="text-destructive font-medium">{error}</p>
-                <Button variant="outline" size="sm" onClick={handleReset} className="mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="mt-4"
+                >
                   {t('try_again')}
                 </Button>
               </div>

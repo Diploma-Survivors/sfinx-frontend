@@ -14,7 +14,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useComments } from '@/hooks/use-comments';
-import { ProblemCommentSortBy, ProblemCommentType } from '@/types/comments';
+import {
+  ProblemCommentSortBy,
+  type ProblemCommentType,
+} from '@/types/comments';
 import {
   ArrowLeft,
   ArrowRight,
@@ -84,8 +87,9 @@ export function ProblemDiscussion({ problemId }: ProblemDiscussionProps) {
           </span>
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''
-            }`}
+          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+            isOpen ? 'transform rotate-180' : ''
+          }`}
         />
       </CollapsibleTrigger>
       <CollapsibleContent>

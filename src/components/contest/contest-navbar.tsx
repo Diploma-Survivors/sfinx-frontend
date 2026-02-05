@@ -53,10 +53,10 @@ export default function ContestNavbar({
                 size="sm"
                 onClick={() => onTabChange(item.id)}
                 className={cn(
-                  "gap-2 h-9 px-4 rounded-lg text-sm font-medium transition-all duration-200",
+                  'gap-2 h-9 px-4 rounded-lg text-sm font-medium transition-all duration-200',
                   isActive
-                    ? "bg-primary/10 text-primary shadow-none hover:bg-primary/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? 'bg-primary/10 text-primary shadow-none hover:bg-primary/20'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 )}
               >
                 <IconComponent className="w-4 h-4" />

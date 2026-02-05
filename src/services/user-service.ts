@@ -1,54 +1,73 @@
 import clientApi from '@/lib/apis/axios-client';
-import { ApiResponse } from '@/types/api';
+import type { ApiResponse } from '@/types/api';
 import {
-  initialProblemData,
   ProblemDifficulty,
   ProblemStatus,
+  initialProblemData,
 } from '@/types/problems';
 import { SubmissionStatus } from '@/types/submissions';
 import {
-  AvatarUploadUrlRequest,
-  AvatarUploadUrlResponse,
-  ConfirmAvatarUploadRequest,
-  PracticeHistoryParams,
+  type AvatarUploadUrlRequest,
+  type AvatarUploadUrlResponse,
+  type ConfirmAvatarUploadRequest,
+  type PracticeHistoryParams,
   PracticeHistorySortBy,
-  UpdateUserProfileRequest,
-  UserActivityCalendar,
+  type UpdateUserProfileRequest,
+  type UserActivityCalendar,
   UserPracticeHistoryItem,
-  UserPracticeHistoryResponse,
-  UserProblemStats,
-  UserRecentACProblem,
-  UserSolutionsResponse,
-  UserSubmissionStats,
-  UserProfile,
+  type UserPracticeHistoryResponse,
+  type UserProblemStats,
+  type UserProfile,
+  type UserRecentACProblem,
+  type UserSolutionsResponse,
+  type UserSubmissionStats,
 } from '@/types/user';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
-async function getUserProfile(userId: number): Promise<AxiosResponse<ApiResponse<UserProfile>>> {
-  return await clientApi.get<ApiResponse<UserProfile>>(`/users/profile?userId=${userId}`);
+async function getUserProfile(
+  userId: number
+): Promise<AxiosResponse<ApiResponse<UserProfile>>> {
+  return await clientApi.get<ApiResponse<UserProfile>>(
+    `/users/profile?userId=${userId}`
+  );
 }
 
 async function getMe(): Promise<AxiosResponse<ApiResponse<UserProfile>>> {
   return await clientApi.get<ApiResponse<UserProfile>>(`/auth/me`);
 }
 
-async function updateMe(data: UpdateUserProfileRequest): Promise<AxiosResponse<ApiResponse<UserProfile>>> {
+async function updateMe(
+  data: UpdateUserProfileRequest
+): Promise<AxiosResponse<ApiResponse<UserProfile>>> {
   return await clientApi.patch<ApiResponse<UserProfile>>(`/auth/me`, data);
 }
 
-async function getAvatarUploadUrl(data: AvatarUploadUrlRequest): Promise<AxiosResponse<ApiResponse<AvatarUploadUrlResponse>>> {
-  return await clientApi.post<ApiResponse<AvatarUploadUrlResponse>>(`/auth/me/avatar/upload-url`, data);
+async function getAvatarUploadUrl(
+  data: AvatarUploadUrlRequest
+): Promise<AxiosResponse<ApiResponse<AvatarUploadUrlResponse>>> {
+  return await clientApi.post<ApiResponse<AvatarUploadUrlResponse>>(
+    `/auth/me/avatar/upload-url`,
+    data
+  );
 }
 
-async function confirmAvatarUpload(data: ConfirmAvatarUploadRequest): Promise<AxiosResponse<ApiResponse<void>>> {
-  return await clientApi.post<ApiResponse<void>>(`/auth/me/avatar/confirm`, data);
+async function confirmAvatarUpload(
+  data: ConfirmAvatarUploadRequest
+): Promise<AxiosResponse<ApiResponse<void>>> {
+  return await clientApi.post<ApiResponse<void>>(
+    `/auth/me/avatar/confirm`,
+    data
+  );
 }
 
-
-
-async function getUserStats(
-  userId: number
-): Promise<AxiosResponse<ApiResponse<{ problemStats: UserProblemStats; submissionStats: UserSubmissionStats }>>> {
+async function getUserStats(userId: number): Promise<
+  AxiosResponse<
+    ApiResponse<{
+      problemStats: UserProblemStats;
+      submissionStats: UserSubmissionStats;
+    }>
+  >
+> {
   return await clientApi.get(`/users/${userId}/stats`);
 }
 
@@ -61,7 +80,9 @@ async function getUserActivityCalendar(
   });
 }
 
-async function getUserActivityYears(userId: number): Promise<AxiosResponse<ApiResponse<number[]>>> {
+async function getUserActivityYears(
+  userId: number
+): Promise<AxiosResponse<ApiResponse<number[]>>> {
   return await clientApi.get(`/users/${userId}/activity-years`);
 }
 

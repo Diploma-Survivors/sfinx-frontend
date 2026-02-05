@@ -16,7 +16,6 @@ export interface SampleTestCase {
   updatedAt?: string;
 }
 
-
 export interface CreateTestcaseRequest {
   testcases: SampleTestCase[];
 }

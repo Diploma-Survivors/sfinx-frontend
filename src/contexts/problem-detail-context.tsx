@@ -2,19 +2,19 @@
 
 import { useProblemDescription } from '@/hooks/use-problem-description';
 import { ProblemsService } from '@/services/problems-service';
-import { sseService, type SSEResult } from '@/services/sse-service';
+import { type SSEResult, sseService } from '@/services/sse-service';
 import { SubmissionsService } from '@/services/submissions-service';
 import { setProblem } from '@/store/slides/problem-slice';
 import type { Problem } from '@/types/problems';
 import type { Language } from '@/types/submissions';
-import { SampleTestCase } from '@/types/testcases';
+import type { SampleTestCase } from '@/types/testcases';
 import { useParams } from 'next/navigation';
 import {
+  type ReactNode,
   createContext,
   useContext,
   useEffect,
   useState,
-  type ReactNode,
 } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -59,9 +59,9 @@ interface ProblemDetailContextType {
   clearSubmitResults: () => void;
 }
 
-const ProblemDetailContext = createContext<ProblemDetailContextType | undefined>(
-  undefined
-);
+const ProblemDetailContext = createContext<
+  ProblemDetailContextType | undefined
+>(undefined);
 
 export function ProblemDetailProvider({ children }: { children: ReactNode }) {
   const params = useParams();
@@ -113,7 +113,8 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
           languages: [],
           ...problemDescriptionState, // This contains the dummy problem state
           problem: null, // Override with null for consumers
-          testCases: problemDescriptionState.testCases as unknown as SampleTestCase[],
+          testCases:
+            problemDescriptionState.testCases as unknown as SampleTestCase[],
           testResults: problemDescriptionState.testResults,
           submitResults: problemDescriptionState.submitResults,
           runError: problemDescriptionState.runError,
@@ -131,7 +132,8 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
         languages,
         ...problemDescriptionState,
         problem,
-        testCases: problemDescriptionState.testCases as unknown as SampleTestCase[],
+        testCases:
+          problemDescriptionState.testCases as unknown as SampleTestCase[],
       }}
     >
       {children}

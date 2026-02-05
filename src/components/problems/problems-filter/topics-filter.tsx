@@ -77,18 +77,18 @@ export default function TopicFilter({
                   type="button"
                   onClick={() => onTopicToggle(topic.id, isSelected)}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors border text-left",
+                    'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors border text-left',
                     isSelected
-                      ? "bg-primary/10 text-primary border-primary/20"
-                      : "bg-background text-muted-foreground border-transparent hover:bg-muted"
+                      ? 'bg-primary/10 text-primary border-primary/20'
+                      : 'bg-background text-muted-foreground border-transparent hover:bg-muted'
                   )}
                 >
                   <div
                     className={cn(
-                      "w-4 h-4 rounded border flex items-center justify-center flex-shrink-0",
+                      'w-4 h-4 rounded border flex items-center justify-center flex-shrink-0',
                       isSelected
-                        ? "bg-primary border-primary"
-                        : "bg-background border-muted-foreground/30"
+                        ? 'bg-primary border-primary'
+                        : 'bg-background border-muted-foreground/30'
                     )}
                   >
                     {isSelected && (

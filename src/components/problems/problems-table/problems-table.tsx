@@ -47,7 +47,8 @@ export default function ProblemTable({
           </div>
         }
         endMessage={
-          !isLoading && problems.length > 0 && (
+          !isLoading &&
+          problems.length > 0 && (
             <div className="text-center py-6 px-4">
               <p className="text-xs text-muted-foreground">
                 {t('all_problems_loaded')}
@@ -70,24 +71,16 @@ export default function ProblemTable({
                 <TableHead className="w-16 font-medium text-muted-foreground text-center py-3">
                   #
                 </TableHead>
-                <TableHead
-                  className="font-medium text-muted-foreground py-3"
-                >
-                  <div className="flex items-center">
-                    {t('title')}
-                  </div>
+                <TableHead className="font-medium text-muted-foreground py-3">
+                  <div className="flex items-center">{t('title')}</div>
                 </TableHead>
 
                 <TableHead className="w-4 py-1">
                   {/* Premium Status */}
                 </TableHead>
 
-                <TableHead
-                  className="w-32 font-medium text-muted-foreground py-3"
-                >
-                  <div className="flex items-center">
-                    {t('difficulty')}
-                  </div>
+                <TableHead className="w-32 font-medium text-muted-foreground py-3">
+                  <div className="flex items-center">{t('difficulty')}</div>
                 </TableHead>
 
                 <TableHead className="w-28 text-center font-medium text-muted-foreground py-3">

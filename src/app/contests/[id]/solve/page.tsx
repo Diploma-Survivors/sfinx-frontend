@@ -8,8 +8,16 @@ import { ContestsService } from '@/services/contests-service';
 import { ProblemsService } from '@/services/problems-service';
 import { setContest as setContestAction } from '@/store/slides/contest-slice';
 import { setProblem } from '@/store/slides/problem-slice';
-import { Contest, INITIAL_CONTEST, LeaderboardEntry } from '@/types/contests';
-import { Problem, ProblemDifficulty, initialProblemData } from '@/types/problems';
+import {
+  type Contest,
+  INITIAL_CONTEST,
+  type LeaderboardEntry,
+} from '@/types/contests';
+import {
+  type Problem,
+  ProblemDifficulty,
+  initialProblemData,
+} from '@/types/problems';
 import { Loader2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -21,9 +29,12 @@ export default function ContestSolvePage() {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [contest, setContest] = useState<Contest>(INITIAL_CONTEST);
-  const [currentProblem, setCurrentProblem] = useState<Problem>(initialProblemData);
+  const [currentProblem, setCurrentProblem] =
+    useState<Problem>(initialProblemData);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [userRank, setUserRank] = useState<LeaderboardEntry | undefined>(undefined);
+  const [userRank, setUserRank] = useState<LeaderboardEntry | undefined>(
+    undefined
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isProblemLoading, setIsProblemLoading] = useState(false);
 
@@ -43,8 +54,13 @@ export default function ContestSolvePage() {
           dispatch(setContestAction(contestData));
 
           // Set initial problem if available
-          if (contestData.contestProblems && contestData.contestProblems.length > 0) {
-            fetchProblemDetail(contestData.contestProblems[0].problem.id.toString());
+          if (
+            contestData.contestProblems &&
+            contestData.contestProblems.length > 0
+          ) {
+            fetchProblemDetail(
+              contestData.contestProblems[0].problem.id.toString()
+            );
           }
         }
       } catch (error) {
@@ -111,19 +127,23 @@ export default function ContestSolvePage() {
 
   const currentIndex = useMemo(() => {
     if (!contest.contestProblems) return -1;
-    return contest.contestProblems.findIndex(p => p.problem.id === currentProblem.id);
+    return contest.contestProblems.findIndex(
+      (p) => p.problem.id === currentProblem.id
+    );
   }, [contest.contestProblems, currentProblem.id]);
 
   const handleNext = () => {
     if (currentIndex < contest.contestProblems.length - 1) {
-      const nextProblemId = contest.contestProblems[currentIndex + 1].problem.id;
+      const nextProblemId =
+        contest.contestProblems[currentIndex + 1].problem.id;
       fetchProblemDetail(nextProblemId.toString());
     }
   };
 
   const handlePrev = () => {
     if (currentIndex > 0) {
-      const prevProblemId = contest.contestProblems[currentIndex - 1].problem.id;
+      const prevProblemId =
+        contest.contestProblems[currentIndex - 1].problem.id;
       fetchProblemDetail(prevProblemId.toString());
     }
   };
@@ -171,16 +191,23 @@ export default function ContestSolvePage() {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         contestName={contest.title}
-        problems={contest.contestProblems?.map(cp => ({
-          id: cp.problem.id.toString(),
-          title: cp.problem.title,
-          maxScore: cp.points || cp.problem.difficulty === ProblemDifficulty.EASY ? 100 : cp.problem.difficulty === ProblemDifficulty.MEDIUM ? 200 : 300, // Fallback logic
-          userScore: 0, // Need to fetch user score per problem if available
-          status: cp.problem.status as any, // Type assertion needed or mapping
-          difficulty: cp.problem.difficulty,
-          memoryLimitKb: cp.problem.memoryLimitKb,
-          timeLimitMs: cp.problem.timeLimitMs
-        })) || []}
+        problems={
+          contest.contestProblems?.map((cp) => ({
+            id: cp.problem.id.toString(),
+            title: cp.problem.title,
+            maxScore:
+              cp.points || cp.problem.difficulty === ProblemDifficulty.EASY
+                ? 100
+                : cp.problem.difficulty === ProblemDifficulty.MEDIUM
+                  ? 200
+                  : 300, // Fallback logic
+            userScore: 0, // Need to fetch user score per problem if available
+            status: cp.problem.status as any, // Type assertion needed or mapping
+            difficulty: cp.problem.difficulty,
+            memoryLimitKb: cp.problem.memoryLimitKb,
+            timeLimitMs: cp.problem.timeLimitMs,
+          })) || []
+        }
         leaderboard={leaderboard}
         userRank={userRank}
         currentProblemId={currentProblem.id.toString()}

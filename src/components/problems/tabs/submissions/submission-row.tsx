@@ -41,8 +41,9 @@ export default function SubmissionRow({
 
   return (
     <tr
-      className={`cursor-pointer transition-all duration-200 group ${isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'
-        }`}
+      className={`cursor-pointer transition-all duration-200 group ${
+        isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'
+      }`}
       onClick={() => onSelect(submission)}
       style={{
         animationDelay: `${index * 50}ms`,

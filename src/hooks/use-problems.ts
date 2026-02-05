@@ -42,12 +42,12 @@ interface UseProblemsReturn extends UseProblemsState, UseProblemsActions {
   keyword: string;
   sortBy: SortBy;
   sortOrder: SortOrder;
-  
+
   // Metadata
   tags: Tag[];
   topics: Topic[];
   isMetadataLoading: boolean;
-  
+
   // Page Info
   pageInfo: {
     hasNextPage: boolean;
@@ -116,18 +116,17 @@ export default function useProblems(): UseProblemsReturn {
     async (requestParams: GetProblemListRequest) => {
       try {
         setState((prev) => ({ ...prev, isLoading: true, error: null }));
-        
-        const response = await ProblemsService.getProblemList(
-          requestParams,
-        );
+
+        const response = await ProblemsService.getProblemList(requestParams);
         setState((prev) => ({
-            ...prev,
-            problems: requestParams.page === 1 
+          ...prev,
+          problems:
+            requestParams.page === 1
               ? response?.data?.data?.data || []
               : [...prev.problems, ...(response?.data?.data?.data || [])],
-            meta: response?.data?.data?.meta,
-            isLoading: false,
-          }));
+          meta: response?.data?.data?.meta,
+          isLoading: false,
+        }));
       } catch (err) {
         console.error('Error fetching problems:', err);
         setState((prev) => ({
@@ -157,13 +156,16 @@ export default function useProblems(): UseProblemsReturn {
   );
 
   // handle filter, keyword changes
-  const handleFiltersChange = useCallback((newFilters: ProblemFilters) => {
-    const filtersWithActive = { ...newFilters, isActive: true };
-    setFilters(filtersWithActive);
+  const handleFiltersChange = useCallback(
+    (newFilters: ProblemFilters) => {
+      const filtersWithActive = { ...newFilters, isActive: true };
+      setFilters(filtersWithActive);
 
-    // When filters change, reset to page 1
-    updateRequest({ filters: filtersWithActive, page: 1 });
-  }, [updateRequest]);
+      // When filters change, reset to page 1
+      updateRequest({ filters: filtersWithActive, page: 1 });
+    },
+    [updateRequest]
+  );
 
   const handleKeywordChange = useCallback((newKeyword: string) => {
     setKeyword(newKeyword);
@@ -199,9 +201,12 @@ export default function useProblems(): UseProblemsReturn {
   );
 
   // handle page change
-  const handlePageChange = useCallback((page: number) => {
-    updateRequest({ page });
-  }, [updateRequest]);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      updateRequest({ page });
+    },
+    [updateRequest]
+  );
 
   const handleLoadMore = useCallback(() => {
     if (state.meta?.hasNextPage) {

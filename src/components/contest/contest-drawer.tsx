@@ -1,6 +1,5 @@
 import { Badge } from '@/components/ui/badge';
 
-import { ContestLeaderboardList } from './contest-leaderboard-list';
 import {
   type ContestProblem,
   ContestProblemStatus,
@@ -12,6 +11,7 @@ import { CheckCircle, Minus, X } from 'lucide-react';
 import { type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '../ui/tooltip';
+import { ContestLeaderboardList } from './contest-leaderboard-list';
 
 interface ContestDrawerProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ const ContestProblemStatusIcons: Record<ContestProblemStatus, JSX.Element> = {
   [ContestProblemStatus.NOT_STARTED]: <div />,
   [ContestProblemStatus.ATTEMPTED]: (
     <Minus className="w-5 h-5 text-amber-600" />
-  )
+  ),
 };
 
 export default function ContestDrawer({
@@ -70,9 +70,7 @@ export default function ContestDrawer({
       >
         {/* Header */}
         <div className="border-b border-border p-4 flex items-center justify-between bg-card/50">
-          <h2 className="text-lg font-bold text-foreground">
-            {contestName}
-          </h2>
+          <h2 className="text-lg font-bold text-foreground">{contestName}</h2>
           <button
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
@@ -86,20 +84,22 @@ export default function ContestDrawer({
         <div className="flex border-b border-border bg-muted/20">
           <button
             onClick={() => setActiveTab('problems')}
-            className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === 'problems'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+            className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'problems'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
             type="button"
           >
             {t('problems')}
           </button>
           <button
             onClick={() => setActiveTab('ranking')}
-            className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === 'ranking'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+            className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'ranking'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
             type="button"
           >
             {t('ranking')}
@@ -131,10 +131,11 @@ export default function ContestDrawer({
                       onProblemClick(problem.id);
                       onClose();
                     }}
-                    className={`w-full text-left p-4 rounded-lg border transition-all cursor-pointer ${currentProblemId === problem.id
+                    className={`w-full text-left p-4 rounded-lg border transition-all cursor-pointer ${
+                      currentProblemId === problem.id
                         ? 'border-primary/50 bg-primary/5 shadow-sm'
                         : 'border-border hover:bg-accent/50 hover:border-accent'
-                      }`}
+                    }`}
                     type="button"
                   >
                     <div className="flex items-start gap-3">
@@ -161,8 +162,9 @@ export default function ContestDrawer({
                             {problem.difficulty}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
-                            {`${problem.userScore ?? 0}/${problem.maxScore ?? 0
-                              } pts`}
+                            {`${problem.userScore ?? 0}/${
+                              problem.maxScore ?? 0
+                            } pts`}
                           </span>
                         </div>
                       </div>

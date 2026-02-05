@@ -6,7 +6,7 @@ export interface DecodedAccessToken {
   iat: number;
   exp: number;
 }
-  
+
 export interface UserInfo {
   id: number;
   email?: string;

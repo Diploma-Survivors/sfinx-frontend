@@ -1,4 +1,4 @@
-import { UserProfile } from './user';
+import type { UserProfile } from './user';
 
 export enum ProblemCommentType {
   FEEDBACK = 'Feedback',

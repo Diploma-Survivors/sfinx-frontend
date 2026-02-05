@@ -1,12 +1,12 @@
 'use client';
-import { TableCell, TableRow } from '@/components/ui/table';
-import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, Clock, Lock } from 'lucide-react';
-import type { Problem } from '@/types/problems';
+import { TableCell, TableRow } from '@/components/ui/table';
 import { Tooltip } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
+import type { Problem } from '@/types/problems';
+import { CheckCircle2, Circle, Clock, Lock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface ProblemTableRowProps {
   problem: Problem;
@@ -30,7 +30,9 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
   };
 
   const getDifficultyLabel = (difficulty: ProblemDifficulty) => {
-    return difficulty ? (difficulty.charAt(0).toUpperCase() + difficulty.slice(1)) : 'Unknown';
+    return difficulty
+      ? difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
+      : 'Unknown';
   };
 
   return (
@@ -51,14 +53,10 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
         </div>
       </TableCell>
 
-
-
       {/* Index */}
       <TableCell className="font-mono text-muted-foreground w-16 text-center text-sm">
         {problem.id}
       </TableCell>
-
-
 
       {/* Title */}
       <TableCell className="font-medium text-foreground text-base w-full">
@@ -68,8 +66,11 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
           </span>
           {problem.tags && problem.tags.length > 0 && (
             <div className="flex gap-1.5 flex-wrap">
-              {problem.tags.slice(0, 3).map(tag => (
-                <span key={tag.id} className="text-[10px] px-2 py-0.5 bg-muted text-muted-foreground rounded-full border border-border/50 whitespace-nowrap">
+              {problem.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag.id}
+                  className="text-[10px] px-2 py-0.5 bg-muted text-muted-foreground rounded-full border border-border/50 whitespace-nowrap"
+                >
                   {tag.name}
                 </span>
               ))}
@@ -91,10 +92,12 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
 
       {/* Difficulty */}
       <TableCell className="w-32">
-        <span className={cn(
-          "inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium w-20",
-          getDifficultyColor(problem.difficulty)
-        )}>
+        <span
+          className={cn(
+            'inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium w-20',
+            getDifficultyColor(problem.difficulty)
+          )}
+        >
           {getDifficultyLabel(problem.difficulty)}
         </span>
       </TableCell>
@@ -102,7 +105,9 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
       {/* Acceptance */}
       <TableCell className="text-center w-28">
         <span className="text-muted-foreground text-sm font-mono">
-          {problem.acceptanceRate !== undefined ? `${Number(problem.acceptanceRate).toFixed(1)}%` : '-'}
+          {problem.acceptanceRate !== undefined
+            ? `${Number(problem.acceptanceRate).toFixed(1)}%`
+            : '-'}
         </span>
       </TableCell>
     </TableRow>

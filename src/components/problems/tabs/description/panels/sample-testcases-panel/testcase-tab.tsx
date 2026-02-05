@@ -98,7 +98,11 @@ export function TestcaseTab({
             value={currentCase.expectedOutput}
             onInput={(e) => autoResize(e.currentTarget)}
             onChange={(e) =>
-              onTestCaseChange(currentCase.id ?? 0, 'expectedOutput', e.target.value)
+              onTestCaseChange(
+                currentCase.id ?? 0,
+                'expectedOutput',
+                e.target.value
+              )
             }
             placeholder="Hãy nhập output..."
             className={getTextAreaClasses(isOutputEmpty)}
