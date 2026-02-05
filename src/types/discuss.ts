@@ -1,0 +1,76 @@
+export interface Author {
+    id: number;
+    username: string;
+    fullName: string | null;
+    avatarKey: string | null;
+}
+
+export interface Tag {
+    id: number;
+    name: string;
+    slug: string;
+    color: string | null;
+    description: string | null;
+    isActive: boolean;
+    createdAt: string;
+}
+
+export interface Comment {
+    id: string;
+    content: string;
+    author: Author;
+    createdAt: string;
+    upvotes: number;
+    replies?: Comment[];
+}
+
+export interface Post {
+    id: string;
+    title: string;
+    content: string;
+    slug: string;
+    viewCount: number;
+    upvoteCount: number;
+    commentCount: number;
+    isLocked: boolean;
+    isDeleted: boolean;
+    author: Author;
+    tags: Tag[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PaginatedResult<T> {
+    data: T[];
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
+}
+
+export interface CreatePostDto {
+    title: string;
+    content: string;
+    tags?: Tag[];
+}
+
+export interface UpdatePostDto {
+    title?: string;
+    content?: string;
+    tags?: Tag[];
+}
+
+export interface FilterPostDto {
+    page?: number;
+    limit?: number;
+    search?: string;
+    tagIds?: number[];
+}
+
+export interface FilterTagDto {
+    page?: number;
+    limit?: number;
+    isActive?: boolean;
+}

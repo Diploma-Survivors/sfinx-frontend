@@ -18,6 +18,16 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const getDisplayName = () => {
+        if (!post) return 'Anonymous';
+        return post.author.fullName || post.author.username || 'Anonymous';
+    };
+
+    const getAvatarUrl = () => {
+        if (!post?.author.avatarKey) return null;
+        return `${process.env.NEXT_PUBLIC_S3_URL}/${post.author.avatarKey}`;
+    };
+
     useEffect(() => {
         const fetchPost = async () => {
             setIsLoading(true);
@@ -85,16 +95,16 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
 
                 <div className="flex items-center justify-between border-b border-border pb-6">
                     <div className="flex items-center gap-3">
-                        {post.author.avatar ? (
+                        {getAvatarUrl() ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={post.author.avatar} alt={post.author.name} className="w-10 h-10 rounded-full border border-border" />
+                            <img src={getAvatarUrl()!} alt={getDisplayName()} className="w-10 h-10 rounded-full border border-border" />
                         ) : (
                             <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
-                                {post.author.name.charAt(0)}
+                                {getDisplayName().charAt(0).toUpperCase()}
                             </div>
                         )}
                         <div>
-                            <div className="font-semibold">{post.author.name}</div>
+                            <div className="font-semibold">{getDisplayName()}</div>
                             <div className="text-sm text-muted-foreground">
                                 Posted {new Date(post.createdAt).toLocaleDateString()}
                             </div>
@@ -125,7 +135,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
                 <div className="flex items-center bg-muted/50 rounded-lg p-1">
                     <Button variant="ghost" size="sm" className="hover:bg-background hover:shadow-sm">
                         <ThumbsUp className="w-4 h-4 mr-2" />
-                        Upvote ({post.upvotes})
+                        Upvote ({post.upvoteCount})
                     </Button>
                     <Button variant="ghost" size="sm" className="hover:bg-background hover:shadow-sm">
                         <ThumbsDown className="w-4 h-4" />

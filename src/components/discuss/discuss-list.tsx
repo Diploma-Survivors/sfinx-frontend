@@ -16,10 +16,14 @@ export function DiscussList() {
         const fetchPosts = async () => {
             setIsLoading(true);
             try {
-                const data = await DiscussService.getPosts(activeTab);
-                setPosts(data);
+                const result = await DiscussService.getPosts({
+                    page: 1,
+                    limit: 10
+                });
+                setPosts(result.data || []);
             } catch (error) {
                 console.error('Failed to fetch posts:', error);
+                setPosts([]);
             } finally {
                 setIsLoading(false);
             }
@@ -56,17 +60,14 @@ export function DiscussList() {
 
             <div className="space-y-4">
                 {isLoading ? (
-                    // Skeleton Loader
                     Array.from({ length: 3 }).map((_, i) => (
                         <div key={i} className="h-48 rounded-xl border border-border bg-card/50 animate-pulse" />
                     ))
-                ) : (
+                ) : Array.isArray(posts) && posts.length > 0 ? (
                     posts.map((post) => (
                         <PostCard key={post.id} post={post} />
                     ))
-                )}
-
-                {!isLoading && posts.length === 0 && (
+                ) : (
                     <div className="text-center py-12 text-muted-foreground">
                         No posts found. Be the first to start a discussion!
                     </div>

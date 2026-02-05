@@ -10,8 +10,17 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
-    const [upvotes, setUpvotes] = useState(post.upvotes);
+    const [upvotes, setUpvotes] = useState(post.upvoteCount);
     const [hasVoted, setHasVoted] = useState(false);
+
+    const getDisplayName = () => {
+        return post.author.fullName || post.author.username || 'Anonymous';
+    };
+
+    const getAvatarUrl = () => {
+        if (!post.author.avatarKey) return null;
+        return `${process.env.NEXT_PUBLIC_S3_URL}/${post.author.avatarKey}`;
+    };
 
     const handleUpvote = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -53,16 +62,16 @@ export function PostCard({ post }: PostCardProps) {
                 {/* Header: Avatar, Name, Time */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        {post.author.avatar ? (
+                        {getAvatarUrl() ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={post.author.avatar} alt={post.author.name} className="w-8 h-8 rounded-full object-cover" />
+                            <img src={getAvatarUrl()!} alt={getDisplayName()} className="w-8 h-8 rounded-full object-cover" />
                         ) : (
                             <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent text-xs font-semibold">
-                                {post.author.name.charAt(0)}
+                                {getDisplayName().charAt(0).toUpperCase()}
                             </div>
                         )}
                         <span className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-                            {post.author.name}
+                            {getDisplayName()}
                         </span>
                         <span className="text-xs text-muted-foreground">
                             • {getTimeAgo(post.createdAt)}

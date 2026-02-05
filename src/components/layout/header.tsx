@@ -21,6 +21,7 @@ export default function Header() {
     { name: t('contests'), href: '/contests' },
     { name: t('ranking'), href: '/ranking' },
     { name: t('discuss'), href: '/discuss' },
+    { name: t('interview'), href: '/interview' },
   ];
 
   const handleLogout = async () => {

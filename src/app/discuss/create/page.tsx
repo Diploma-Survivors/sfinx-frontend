@@ -7,17 +7,13 @@ import EditorSplitPane, {
 import MarkdownToolbar from '@/components/problems/tabs/solutions/create/markdown-toolbar';
 import { TopicSelector } from '@/components/discuss/topic-selector';
 import { DiscussService, type Tag } from '@/services/discuss-service';
+import { toastService } from '@/services/toasts-service';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const SUGGESTED_TAGS = [
-    { id: '1', name: 'Meta', slug: 'meta' },
-    { id: '2', name: 'Interview', slug: 'interview' },
-    { id: '3', name: 'Facebook', slug: 'facebook' },
-    { id: '4', name: 'System Design', slug: 'system-design' },
-    { id: '5', name: 'Google', slug: 'google' },
-    { id: '6', name: 'Dynamic Programming', slug: 'dp' },
-];
+const MIN_TITLE_LENGTH = 5;
+const MAX_TITLE_LENGTH = 255;
+const MIN_CONTENT_LENGTH = 10;
 
 export default function CreatePostPage() {
     const router = useRouter();
@@ -26,26 +22,69 @@ export default function CreatePostPage() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [suggestedTags, setSuggestedTags] = useState<Tag[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoadingTags, setIsLoadingTags] = useState(true);
 
-    // Adapter for TopicSelector to match the interface if needed, or just use as is.
-    // TopicSelector expects Tag objects. existing TagLanguageSelector uses IDs.
-    // I will stick with TopicSelector as it matches the service mock and simpler requirement.
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const response = await DiscussService.getTags({ isActive: true });
+                setSuggestedTags(response.data);
+            } catch (error) {
+                console.error('Failed to fetch tags:', error);
+                toastService.error('Failed to load tags');
+            } finally {
+                setIsLoadingTags(false);
+            }
+        };
+
+        fetchTags();
+    }, []);
 
     const handlePublish = async () => {
-        if (!title.trim() || !content.trim()) return;
+        const trimmedTitle = title.trim();
+        const trimmedContent = content.trim();
+
+        // Validation
+        if (!trimmedTitle) {
+            toastService.error('Title is required');
+            return;
+        }
+
+        if (trimmedTitle.length < MIN_TITLE_LENGTH) {
+            toastService.error(`Title must be at least ${MIN_TITLE_LENGTH} characters`);
+            return;
+        }
+
+        if (trimmedTitle.length > MAX_TITLE_LENGTH) {
+            toastService.error(`Title must not exceed ${MAX_TITLE_LENGTH} characters`);
+            return;
+        }
+
+        if (!trimmedContent) {
+            toastService.error('Content is required');
+            return;
+        }
+
+        if (trimmedContent.length < MIN_CONTENT_LENGTH) {
+            toastService.error(`Content must be at least ${MIN_CONTENT_LENGTH} characters`);
+            return;
+        }
 
         setIsSubmitting(true);
         try {
             await DiscussService.createPost({
-                title,
-                content,
+                title: trimmedTitle,
+                content: trimmedContent,
                 tags: selectedTags,
             });
+            toastService.success('Post created successfully!');
             router.push('/discuss');
             router.refresh();
         } catch (error) {
             console.error('Failed to create post:', error);
+            toastService.error('Failed to create post. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -80,7 +119,7 @@ export default function CreatePostPage() {
                     <TopicSelector
                         selectedTags={selectedTags}
                         onTagsChange={setSelectedTags}
-                        suggestedTags={SUGGESTED_TAGS}
+                        suggestedTags={suggestedTags}
                     />
 
                     <div className="flex-1 flex flex-col border border-border rounded-lg overflow-hidden shadow-sm">

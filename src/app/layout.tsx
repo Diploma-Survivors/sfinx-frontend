@@ -4,6 +4,7 @@ import './styles/editor-theme.css';
 import { EmailVerificationBanner } from '@/components/email-verification-banner';
 import { ConditionalLayout } from '@/components/layout';
 import { ServerProvider } from '@/components/providers/server-provider';
+import { ToastProvider } from '@/components/providers/toast-provider';
 import { AppProvider } from '@/contexts/app-context';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
@@ -32,10 +33,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
-        <ServerProvider>
-          <EmailVerificationBanner />
-          <ConditionalLayout>{children}</ConditionalLayout>
-        </ServerProvider>
+        <ToastProvider>
+          <ServerProvider>
+            <EmailVerificationBanner />
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </ServerProvider>
+        </ToastProvider>
       </body>
     </html>
   );
