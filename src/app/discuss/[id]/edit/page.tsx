@@ -1,6 +1,6 @@
 'use client';
 
-import { PostEditor } from '@/components/discuss/post-editor';
+import { PostEditor } from '@/components/discuss/posts/post-editor';
 import { DiscussService, type Post, type Tag } from '@/services/discuss-service';
 import { toastService } from '@/services/toasts-service';
 import { useRouter, useParams } from 'next/navigation';

@@ -1,6 +1,6 @@
 'use client';
 
-import { DiscussList } from '@/components/discuss/discuss-list';
+import { DiscussList } from '@/components/discuss/posts/discuss-list';
 import { GuidelinesDialog } from '@/components/discuss/guidelines-dialog';
 import { TrendingTopics } from '@/components/discuss/trending-topics';
 import { Button } from '@/components/ui/button';

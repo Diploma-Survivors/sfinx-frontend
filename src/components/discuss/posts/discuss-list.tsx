@@ -1,6 +1,6 @@
 'use client';
 
-import { PostCard } from '@/components/discuss/post-card';
+import { PostCard } from '@/components/discuss/posts/post-card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DiscussFilterBar } from '@/components/discuss/discuss-filter-bar';

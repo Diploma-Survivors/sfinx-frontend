@@ -3,8 +3,8 @@
 import { DiscussService } from '@/services/discuss-service';
 import type { Comment } from '@/types/discuss';
 import { useCallback, useEffect, useState } from 'react';
-import { CommentForm } from './comment-form';
-import { CommentList } from './comment-list';
+import { CommentForm } from './comment-discuss/comment-form';
+import { CommentList } from './comment-discuss/comment-list';
 import { toastService } from '@/services/toasts-service';
 import { ChevronDown } from 'lucide-react';
 

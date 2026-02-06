@@ -5,7 +5,7 @@ import EditorSplitPane, {
     type EditorRef,
 } from '@/components/problems/tabs/solutions/create/editor-split-pane';
 import MarkdownToolbar from '@/components/problems/tabs/solutions/create/markdown-toolbar';
-import { TopicSelector } from '@/components/discuss/topic-selector';
+import { TopicSelector } from '@/components/discuss/filters/topic-selector';
 import { DiscussService, type Tag } from '@/services/discuss-service';
 import { toastService } from '@/services/toasts-service';
 import { useRouter } from 'next/navigation';

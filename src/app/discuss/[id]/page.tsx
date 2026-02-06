@@ -1,5 +1,5 @@
 
-import { DiscussDetail } from '@/components/discuss/discuss-detail';
+import { DiscussDetail } from '@/components/discuss/posts/discuss-detail';
 
 interface PageProps {
     params: {
