@@ -35,7 +35,7 @@ export default function DiscussPage() {
                         </div>
 
                         {/* Create Button */}
-                        <Link href="/discuss/create">
+                        <Link href="/discuss/create" className="w-full block">
                             <Button className="w-full gap-2 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg shadow-accent/20 transition-all hover:shadow-xl hover:shadow-accent/30" size="lg">
                                 <PenSquare className="w-4 h-4" />
                                 New Post
@@ -44,14 +44,14 @@ export default function DiscussPage() {
 
                         {/* Trending / Info Card */}
                         <Card className="bg-card/50 border-border/60 backdrop-blur-sm">
-                            <CardHeader className="pb-3 border-b border-border/40">
+                            <CardHeader className="pb-2 border-b border-border/40">
                                 <CardTitle className="text-base flex items-center gap-2">
                                     <Trophy className="w-4 h-4 text-yellow-500" />
                                     Trending Topics
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="pt-4 space-y-4">
-                                <div className="space-y-3">
+                            <CardContent className="pt-3 space-y-4">
+                                <div className="space-y-4">
                                     <div className="flex items-center justify-between text-sm group cursor-pointer">
                                         <span className="text-foreground/80 group-hover:text-accent transition-colors">#AmazonInterview</span>
                                         <span className="text-muted-foreground text-xs">1.2k posts</span>

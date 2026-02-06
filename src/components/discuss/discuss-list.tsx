@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 export function DiscussList() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('for-you');
+    const [activeTab, setActiveTab] = useState('trending');
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -18,7 +18,8 @@ export function DiscussList() {
             try {
                 const result = await DiscussService.getPosts({
                     page: 1,
-                    limit: 10
+                    limit: 10,
+                    sortBy: activeTab
                 });
                 setPosts(result.data || []);
             } catch (error) {
@@ -35,11 +36,11 @@ export function DiscussList() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <Tabs defaultValue="for-you" className="w-full sm:w-auto" onValueChange={setActiveTab}>
+                <Tabs defaultValue="trending" className="w-full sm:w-auto" value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-2 sm:flex sm:w-auto p-1 bg-muted/50 rounded-lg">
-                        <TabsTrigger value="for-you" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                        <TabsTrigger value="trending" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
                             <Flame className="w-4 h-4 mr-2 text-orange-500" />
-                            For You
+                            Trending
                         </TabsTrigger>
                         <TabsTrigger value="newest" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
                             <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
@@ -47,15 +48,6 @@ export function DiscussList() {
                         </TabsTrigger>
                     </TabsList>
                 </Tabs>
-
-                {/* Categories/Tags Filter (Visual only for now matching the mock image tabs) */}
-                <div className="hidden md:flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-sm text-muted-foreground">
-                    <Button variant="ghost" size="sm" className="font-normal hover:text-foreground">Career</Button>
-                    <Button variant="ghost" size="sm" className="font-normal hover:text-foreground">Contest</Button>
-                    <Button variant="ghost" size="sm" className="font-normal hover:text-foreground">Compensation</Button>
-                    <Button variant="ghost" size="sm" className="font-normal hover:text-foreground">Feedback</Button>
-                    <Button variant="ghost" size="sm" className="font-normal hover:text-foreground">Interview</Button>
-                </div>
             </div>
 
             <div className="space-y-4">
