@@ -1,13 +1,11 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Check, ArrowRight, Receipt, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 function PaymentSuccessContent() {
@@ -53,7 +51,7 @@ function PaymentSuccessContent() {
                             initial={{ scale: 0, rotate: -45 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{
-                                type: "spring",
+                                type: "spring" as const,
                                 stiffness: 260,
                                 damping: 20,
                                 delay: 0.2
