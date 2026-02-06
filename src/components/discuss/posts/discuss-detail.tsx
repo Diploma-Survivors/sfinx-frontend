@@ -1,6 +1,6 @@
 'use client';
 
-import { CommentSection } from '@/components/discuss/comment-section';
+import { CommentSection } from '../comments/comment-section';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MarkdownRenderer from '@/components/ui/markdown-renderer';

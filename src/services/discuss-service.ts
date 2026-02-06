@@ -66,6 +66,29 @@ export class DiscussService {
         return response.data.data;
     }
 
+    static async getUserPosts(
+        userId: number,
+        filters?: Omit<FilterPostDto, 'userId'>
+    ): Promise<PaginatedResult<Post>> {
+        const params = new URLSearchParams();
+
+        params.append('userId', userId.toString());
+        if (filters?.page) params.append('page', filters.page.toString());
+        if (filters?.limit) params.append('limit', filters.limit.toString());
+        if (filters?.search) params.append('search', filters.search);
+        if (filters?.tagIds) {
+            filters.tagIds.forEach(id => params.append('tagIds', id.toString()));
+        }
+        if (filters?.sortBy) params.append('sortBy', filters.sortBy);
+        if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
+
+        const response = await clientApi.get<{ data: PaginatedResult<Post> }>(
+            `${this.BASE_URL}/getAll?${params.toString()}`
+        );
+
+        return response.data.data;
+    }
+
     static async getPost(idOrSlug: string): Promise<Post> {
         const response = await clientApi.get<{ data: Post }>(
             `${this.BASE_URL}/${idOrSlug}`

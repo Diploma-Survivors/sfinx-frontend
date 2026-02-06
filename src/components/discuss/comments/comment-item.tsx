@@ -9,9 +9,9 @@ import { cn } from '@/lib/utils';
 import { MoreHorizontal, Pencil, Trash2, ArrowBigUp, ArrowBigDown, ChevronDown, ChevronUp, Reply, MessageSquare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toastService } from '@/services/toasts-service';
-import { CommentForm } from './comment-discuss/comment-form';
-import { DeleteCommentDialog } from './delete-comment-dialog';
 import { formatDistanceToNow } from 'date-fns';
+import { DeleteCommentDialog } from './delete-comment-dialog';
+import { CommentForm } from './comment-form';
 
 interface CommentItemProps {
     comment: Comment;

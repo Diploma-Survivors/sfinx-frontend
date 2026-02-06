@@ -2,8 +2,7 @@
 
 import { PostCard } from '@/components/discuss/posts/post-card';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DiscussFilterBar } from '@/components/discuss/discuss-filter-bar';
+import { DiscussFilterBar } from '../filters/discuss-filter-bar';
 import { DiscussListSkeleton } from '@/components/discuss/discuss-skeleton';
 import { DiscussService, type Post } from '@/services/discuss-service';
 import { toastService } from '@/services/toasts-service';
