@@ -10,9 +10,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { UserProfile } from '@/types/user';
-import { History, LogIn, LogOut, Settings, User } from 'lucide-react';
+import { Crown, History, LogIn, LogOut, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/lib/utils';
 
 interface UserMenuProps {
   user?: UserProfile;
@@ -52,6 +53,34 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
             </p>
           </div>
           <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link
+              href="/pricing"
+              className={cn(
+                "cursor-pointer w-full flex items-center py-2.5 transition-colors",
+                user.isPremium
+                  ? "bg-gradient-to-r from-[oklch(0.55_0.18_60)]/10 to-transparent"
+                  : ""
+              )}
+            >
+              <Crown
+                className={cn(
+                  "mr-3 h-4 w-4 transition-colors",
+                  user.isPremium
+                    ? "text-[oklch(0.55_0.18_60)] fill-[oklch(0.55_0.18_60)]/20"
+                    : "text-muted-foreground group-hover:text-primary"
+                )}
+              />
+              <span className={cn(
+                "font-medium",
+                user.isPremium
+                  ? "bg-clip-text text-transparent bg-gradient-to-r from-[oklch(0.55_0.18_60)] to-[oklch(0.55_0.2_280)]"
+                  : ""
+              )}>
+                {user.isPremium ? 'Premium Plan' : 'Free Plan'}
+              </span>
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
               href={`/profile/${user.id}`}

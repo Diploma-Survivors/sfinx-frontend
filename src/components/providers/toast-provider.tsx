@@ -1,5 +1,7 @@
+'use client';
+
 import { ToastType, toastService } from '@/services/toasts-service';
-import { X } from 'lucide-react'; // Assuming you use Lucide or Heroicons
+import { X } from 'lucide-react';
 import React, {
   createContext,
   useContext,
@@ -33,8 +35,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const openToast = useCallback(
-    (message: ReactNode, type: ToastType = ToastType.INFO, duration = 5000) => {
-      const id = Date.now();
+    (
+      message: ReactNode,
+      type: ToastType = ToastType.INFO,
+      duration = 5000
+    ) => {
+      const id = Date.now() + Math.random();
       const newToast = { id, message, type };
 
       setToasts((prev) => [...prev, newToast]);
@@ -48,7 +54,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    toastService.subscribe(openToast);
+    const unsubscribe = toastService.subscribe(openToast);
+
+    // Cleanup: unsubscribe when component unmounts or openToast changes
+    return () => {
+      unsubscribe();
+    };
   }, [openToast]);
 
   // Helper functions for cleaner API
@@ -72,14 +83,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={toast.id}
             className={`
               flex min-w-[300px] items-center justify-between rounded-lg p-4 shadow-lg transition-all animate-in slide-in-from-right-full
-              ${toast.type === 'success' ? 'bg-green-500 text-white' : ''}
-              ${toast.type === 'error' ? 'bg-red-500 text-white' : ''}
+              ${toast.type === 'success' ? 'bg-primary text-primary-foreground' : ''}
+              ${toast.type === 'error' ? 'bg-destructive text-destructive-foreground' : ''}
               ${toast.type === 'info' ? 'bg-blue-500 text-white' : ''}
               ${toast.type === 'warning' ? 'bg-orange-500 text-white' : ''}
             `}
           >
             <div className="text-sm font-medium">{toast.message}</div>
             <button
+              type="button"
               onClick={() => removeToast(toast.id)}
               className="ml-4 opacity-70 hover:opacity-100"
             >

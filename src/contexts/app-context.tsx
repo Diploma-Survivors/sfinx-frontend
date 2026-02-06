@@ -47,7 +47,7 @@ export function AppProvider({
   // Hide navigation for contest solve page
   const shouldHideNavigation = /^\/contests\/[^/]+\/solve$/.test(pathname);
 
-  const isLoggedin = !!decodedAccessToken;
+  const isLoggedin = !!decodedAccessToken && (!!user || isLoading);
   const isPrenium = user?.isPremium || false;
   const isEmailVerified = user?.emailVerified || false;
 
@@ -81,7 +81,10 @@ export function AppProvider({
   useEffect(() => {
     if (decodedAccessToken) {
       setIsLoading(true);
-      fetchUser().finally(() => setIsLoading(false));
+      Promise.all([
+        fetchUser(),
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ]).finally(() => setIsLoading(false));
     }
   }, [decodedAccessToken]);
 

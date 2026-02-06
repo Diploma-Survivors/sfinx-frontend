@@ -4,6 +4,7 @@ import './styles/editor-theme.css';
 import { EmailVerificationBanner } from '@/components/email-verification-banner';
 import { ConditionalLayout } from '@/components/layout';
 import { ServerProvider } from '@/components/providers/server-provider';
+import { ToastProvider } from '@/components/providers/toast-provider';
 import { AppProvider } from '@/contexts/app-context';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
@@ -16,9 +17,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SfinX - Ultimate Coding Platform',
+  title: 'SfinX',
   description:
     'Improve your coding skills with SfinX. Practice problems, compete in contests, and climb the leaderboard.',
+  icons: {
+    icon: '/icons/logo.svg',
+  },
 };
 
 export default function RootLayout({
@@ -29,10 +33,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
-        <ServerProvider>
-          <EmailVerificationBanner />
-          <ConditionalLayout>{children}</ConditionalLayout>
-        </ServerProvider>
+        <ToastProvider>
+          <ServerProvider>
+            <EmailVerificationBanner />
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </ServerProvider>
+        </ToastProvider>
       </body>
     </html>
   );
