@@ -8,18 +8,40 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { PenSquare, Search, Trophy } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useRef, useCallback } from 'react';
 
 export default function DiscussPage() {
+    const [externalTagSelection, setExternalTagSelection] = useState<any[] | null>(null);
+    const isExternalUpdate = useRef(false);
+
+    const handleTopicClick = useCallback((topic: any) => {
+        isExternalUpdate.current = true;
+        setExternalTagSelection([{
+            id: topic.id,
+            name: topic.name,
+            slug: topic.slug,
+            color: topic.color
+        }]);
+    }, []);
+
+    const handleTagSelect = useCallback((tags: any[]) => {
+        if (isExternalUpdate.current) {
+            isExternalUpdate.current = false;
+            return;
+        }
+        setExternalTagSelection(null);
+    }, []);
+
     return (
         <div className="container max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
 
                 {/* Main Content */}
                 <div className="space-y-6">
-                    {/* Header Mobile Only (if needed, otherwise relying on list header) */}
-
-
-                    <DiscussList />
+                    <DiscussList
+                        onTagSelect={handleTagSelect}
+                        externalTagSelection={externalTagSelection}
+                    />
                 </div>
 
                 {/* Sidebar */}
@@ -38,7 +60,7 @@ export default function DiscussPage() {
                         </div>
 
                         {/* Trending / Info Card */}
-                        <TrendingTopics />
+                        <TrendingTopics onTopicClick={handleTopicClick} />
                     </div>
                 </div>
 

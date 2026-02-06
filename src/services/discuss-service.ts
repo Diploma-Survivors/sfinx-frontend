@@ -36,6 +36,7 @@ export class DiscussService {
         if (filters?.isActive !== undefined) {
             params.append('isActive', filters.isActive.toString());
         }
+        if (filters?.search) params.append('search', filters.search);
 
         const response = await clientApi.get<{ data: PaginatedResult<Tag> }>(
             `${this.BASE_URL}/tags?${params.toString()}`

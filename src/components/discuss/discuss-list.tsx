@@ -9,7 +9,12 @@ import { toastService } from '@/services/toasts-service';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export function DiscussList() {
+interface DiscussListProps {
+    onTagSelect?: (tags: any[]) => void;
+    externalTagSelection?: any[] | null;
+}
+
+export function DiscussList({ onTagSelect, externalTagSelection }: DiscussListProps = {}) {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'newest' | 'trending'>('newest');
@@ -32,6 +37,16 @@ export function DiscussList() {
         };
         fetchTags();
     }, []);
+
+    useEffect(() => {
+        onTagSelect?.(selectedTags);
+    }, [selectedTags, onTagSelect]);
+
+    useEffect(() => {
+        if (externalTagSelection !== null && Array.isArray(externalTagSelection)) {
+            setSelectedTags(externalTagSelection);
+        }
+    }, [externalTagSelection]);
 
     useEffect(() => {
         const fetchPosts = async () => {

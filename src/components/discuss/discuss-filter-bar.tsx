@@ -36,7 +36,7 @@ export function DiscussFilterBar({
     return (
         <div className={cn("space-y-4", className)}>
             <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
-                {/* Left Side: Search & Tags */}
+                {/* Left Side: Search & Add Tag */}
                 <div className="flex-1 flex flex-col sm:flex-row gap-3">
                     <div className="relative w-full sm:max-w-[300px]">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -128,22 +128,28 @@ export function DiscussFilterBar({
                 </div>
             </div>
 
-            {/* Active Filters Summary (Optional visual confirmation) */}
-            {(selectedTags.length > 0 || searchQuery) && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground animate-in fade-in slide-in-from-top-1">
-                    <span>Filtering by:</span>
-                    {searchQuery && (
-                        <span className="bg-muted px-2 py-0.5 rounded text-foreground">"{searchQuery}"</span>
-                    )}
+            {/* Selected Tags List */}
+            {selectedTags.length > 0 && (
+                <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-1">
                     {selectedTags.map(tag => (
-                        <span key={tag.id} className="bg-muted px-2 py-0.5 rounded text-foreground">#{tag.name}</span>
+                        <div
+                            key={tag.id}
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary/50 border border-secondary text-sm text-secondary-foreground"
+                        >
+                            {tag.name}
+                            <button
+                                onClick={() => onTagsChange(selectedTags.filter(t => t.id !== tag.id))}
+                                className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 hover:bg-background/50 p-0.5 transition-colors"
+                            >
+                                <X className="h-3 w-3" />
+                                <span className="sr-only">Remove {tag.name}</span>
+                            </button>
+                        </div>
                     ))}
+
                     <button
-                        onClick={() => {
-                            onSearchChange('');
-                            onTagsChange([]);
-                        }}
-                        className="ml-auto text-primary hover:underline"
+                        onClick={() => onTagsChange([])}
+                        className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 px-2"
                     >
                         Clear all
                     </button>

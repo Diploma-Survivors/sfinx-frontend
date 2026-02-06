@@ -13,7 +13,11 @@ interface TrendingTopic {
     postCount: number;
 }
 
-export function TrendingTopics() {
+interface TrendingTopicsProps {
+    onTopicClick?: (topic: TrendingTopic) => void;
+}
+
+export function TrendingTopics({ onTopicClick }: TrendingTopicsProps) {
     const [topics, setTopics] = useState<TrendingTopic[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -58,7 +62,8 @@ export function TrendingTopics() {
                         topics.map((topic) => (
                             <div
                                 key={topic.id}
-                                className="flex items-center justify-between text-sm group cursor-pointer"
+                                className="flex items-center justify-between text-sm group cursor-pointer hover:bg-accent/10 rounded-md px-2 py-1.5 -mx-2 transition-colors"
+                                onClick={() => onTopicClick?.(topic)}
                             >
                                 <span
                                     className="text-foreground font-bold group-hover:underline transition-colors truncate max-w-[180px]"

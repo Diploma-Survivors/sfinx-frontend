@@ -84,4 +84,5 @@ export interface FilterTagDto {
     page?: number;
     limit?: number;
     isActive?: boolean;
+    search?: string;
 }
