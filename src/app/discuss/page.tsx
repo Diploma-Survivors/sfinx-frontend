@@ -1,6 +1,7 @@
 'use client';
 
 import { DiscussList } from '@/components/discuss/discuss-list';
+import { GuidelinesDialog } from '@/components/discuss/guidelines-dialog';
 import { TrendingTopics } from '@/components/discuss/trending-topics';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,12 +17,7 @@ export default function DiscussPage() {
                 {/* Main Content */}
                 <div className="space-y-6">
                     {/* Header Mobile Only (if needed, otherwise relying on list header) */}
-                    <div className="lg:hidden flex items-center justify-between mb-4">
-                        <h1 className="text-2xl font-bold">Discussion</h1>
-                        <Button size="sm" className="gap-2 bg-accent text-accent-foreground hover:bg-accent/90">
-                            <PenSquare className="w-4 h-4" /> Create
-                        </Button>
-                    </div>
+
 
                     <DiscussList />
                 </div>
@@ -29,19 +25,17 @@ export default function DiscussPage() {
                 {/* Sidebar */}
                 <div className="hidden lg:flex flex-col gap-6">
                     <div className="sticky top-24 space-y-8">
-                        {/* Search */}
-                        <div className="relative">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search topics..." className="pl-8 bg-card border-border/60" />
-                        </div>
 
-                        {/* Create Button */}
-                        <Link href="/discuss/create" className="w-full block">
-                            <Button className="w-full gap-2 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg shadow-accent/20 transition-all hover:shadow-xl hover:shadow-accent/30" size="lg">
-                                <PenSquare className="w-4 h-4" />
-                                New Post
-                            </Button>
-                        </Link>
+                        <div className="bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-xl p-6 border border-border/50">
+                            <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                                <Trophy className="w-5 h-5 text-yellow-500" />
+                                Community Guidelines
+                            </h3>
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Keep discussions respectful and helpful. Share your knowledge and learn from others!
+                            </p>
+                            <GuidelinesDialog />
+                        </div>
 
                         {/* Trending / Info Card */}
                         <TrendingTopics />

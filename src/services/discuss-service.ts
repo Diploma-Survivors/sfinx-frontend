@@ -44,7 +44,7 @@ export class DiscussService {
         return response.data.data;
     }
 
-    static async    getPosts(
+    static async getPosts(
         filters?: FilterPostDto
     ): Promise<PaginatedResult<Post>> {
         const params = new URLSearchParams();
@@ -197,5 +197,12 @@ export class DiscussService {
 
     static async unvotePost(postId: string): Promise<void> {
         await clientApi.delete(`${this.BASE_URL}/${postId}/vote`);
+    }
+
+    static async getTrendingTopics(): Promise<any[]> {
+        const response = await clientApi.get<any>(
+            `${this.BASE_URL}/trending-topics`
+        );
+        return response.data.data;
     }
 }

@@ -3,29 +3,47 @@
 import { PostCard } from '@/components/discuss/post-card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DiscussFilterBar } from '@/components/discuss/discuss-filter-bar';
 import { DiscussService, type Post } from '@/services/discuss-service';
 import { toastService } from '@/services/toasts-service';
-import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Flame, Loader2, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function DiscussList() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('newest');
+    const [activeTab, setActiveTab] = useState<'newest' | 'trending'>('newest');
     const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('DESC');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedTags, setSelectedTags] = useState<any[]>([]);
+    const [suggestedTags, setSuggestedTags] = useState<any[]>([]);
+
+    useEffect(() => {
+        // Fetch suggested tags on mount
+        const fetchTags = async () => {
+            try {
+                const result = await DiscussService.getTags({ limit: 20 });
+                setSuggestedTags(result.data || []);
+            } catch (error) {
+                console.error('Failed to fetch tags', error);
+            }
+        };
+        fetchTags();
+    }, []);
 
     useEffect(() => {
         const fetchPosts = async () => {
             setIsLoading(true);
             try {
-
                 const result = await DiscussService.getPosts({
                     page,
                     limit: 10,
                     sortBy: activeTab,
-                    sortOrder
+                    sortOrder,
+                    search: searchQuery,
+                    tagIds: selectedTags.map(t => t.id)
                 });
                 setPosts(result.data || []);
                 setTotalPages(result.meta.totalPages);
@@ -37,58 +55,40 @@ export function DiscussList() {
             }
         };
 
-        fetchPosts();
-    }, [activeTab, sortOrder, page]);
+        // Debounce search
+        const timeoutId = setTimeout(() => {
+            fetchPosts();
+        }, 300);
 
-    // Reset page when tab changes
+        return () => clearTimeout(timeoutId);
+    }, [activeTab, sortOrder, page, searchQuery, selectedTags]);
+
+    // Reset page when filters change
     useEffect(() => {
         setPage(1);
-    }, [activeTab, sortOrder]);
+    }, [activeTab, sortOrder, searchQuery, selectedTags]);
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <Tabs defaultValue="newest" className="w-full sm:w-auto" value={activeTab} onValueChange={setActiveTab}>
-                    <TabsList className="grid w-full grid-cols-2 sm:flex sm:w-auto p-1 bg-muted/50 rounded-lg">
-                        <TabsTrigger value="trending" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                            <Flame className="w-4 h-4 mr-2 text-orange-500" />
-                            Trending
-                        </TabsTrigger>
-                        <TabsTrigger value="newest" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                            <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
-                            Newest
-                        </TabsTrigger>
-                    </TabsList>
-                </Tabs>
-
-
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setSortOrder(prev => prev === 'DESC' ? 'ASC' : 'DESC')}
-                    className="gap-2"
-                >
-                    {sortOrder === 'DESC' ? (
-                        <>
-                            <ArrowDown className="w-4 h-4" />
-                            Desc
-                        </>
-                    ) : (
-                        <>
-                            <ArrowUp className="w-4 h-4" />
-                            Asc
-                        </>
-                    )}
-                </Button>
-            </div>
+            <DiscussFilterBar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                selectedTags={selectedTags}
+                onTagsChange={setSelectedTags}
+                suggestedTags={suggestedTags}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                sortOrder={sortOrder}
+                onSortOrderChange={setSortOrder}
+            />
 
             <div>
                 {isLoading ? (
                     Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-48 rounded-xl border border-border bg-card/50 animate-pulse" />
+                        <div key={i} className="h-48 rounded-xl border border-border bg-card/50 animate-pulse mb-4" />
                     ))
                 ) : Array.isArray(posts) && posts.length > 0 ? (
-                    <>
+                    <div className="space-y-4">
                         {posts.map((post) => (
                             <PostCard key={post.id} post={post} />
                         ))}
@@ -121,10 +121,11 @@ export function DiscussList() {
                                 <ChevronRight className="w-4 h-4" />
                             </Button>
                         </div>
-                    </>
+                    </div>
                 ) : (
-                    <div className="text-center py-12 text-muted-foreground">
-                        No posts found. Be the first to start a discussion!
+                    <div className="text-center py-12 text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border">
+                        <p className="text-lg font-medium mb-1">No posts found</p>
+                        <p className="text-sm">Try adjusting your filters or search query.</p>
                     </div>
                 )}
             </div>

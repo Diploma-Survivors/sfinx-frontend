@@ -61,8 +61,7 @@ export function TrendingTopics() {
                                 className="flex items-center justify-between text-sm group cursor-pointer"
                             >
                                 <span
-                                    className="text-foreground/80 group-hover:text-accent transition-colors truncate max-w-[180px]"
-                                    style={{ color: topic.color || undefined }}
+                                    className="text-foreground font-bold group-hover:underline transition-colors truncate max-w-[180px]"
                                 >
                                     #{topic.name}
                                 </span>
