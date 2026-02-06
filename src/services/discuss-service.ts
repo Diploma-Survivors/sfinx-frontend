@@ -152,17 +152,49 @@ export class DiscussService {
         await clientApi.delete(`${this.COMMENT_URL}/${id}`);
     }
 
-    static async voteComment(id: number, type: 'UPVOTE' | 'DOWNVOTE'): Promise<void> {
-        const payload = { voteType: type };
+    static async voteComment(id: number, voteType: 1 | -1): Promise<void> {
+        const payload = { voteType };
         await clientApi.post(
             `${this.COMMENT_URL}/${id}/vote`,
             payload
         );
     }
 
-    // Legacy method for backward compatibility  
-    static async votePost(id: string, type: 'up' | 'down'): Promise<void> {
-        // TODO: Implement when vote API is available
-        console.warn('Vote API not yet implemented');
+    static async unvoteComment(id: number): Promise<void> {
+        await clientApi.delete(`${this.COMMENT_URL}/${id}/vote`);
+    }
+
+    static async getUserVoteForComment(id: number): Promise<1 | -1 | null> {
+        try {
+            const response = await clientApi.get<{ data: { voteType: number | null } }>(
+                `${this.COMMENT_URL}/${id}/vote`
+            );
+            return response.data.data.voteType as 1 | -1 | null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    static async votePost(postId: string, voteType: 1 | -1): Promise<{ upvoteCount: number; downvoteCount: number }> {
+        const response = await clientApi.post<{ data: { upvoteCount: number; downvoteCount: number } }>(
+            `${this.BASE_URL}/${postId}/vote`,
+            { voteType }
+        );
+        return response.data.data;
+    }
+
+    static async getUserVoteForPost(postId: string): Promise<1 | -1 | null> {
+        try {
+            const response = await clientApi.get<{ data: { voteType: number | null } }>(
+                `${this.BASE_URL}/${postId}/vote`
+            );
+            return response.data.data.voteType as 1 | -1 | null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    static async unvotePost(postId: string): Promise<void> {
+        await clientApi.delete(`${this.BASE_URL}/${postId}/vote`);
     }
 }

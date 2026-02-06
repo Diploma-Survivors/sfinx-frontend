@@ -7,14 +7,8 @@ import { DiscussService, type Comment } from '@/services/discuss-service';
 import { useApp } from '@/contexts/app-context';
 import { cn } from '@/lib/utils';
 import { MoreHorizontal, Pencil, Trash2, ArrowBigUp, ArrowBigDown, ChevronDown, ChevronUp, Reply, MessageSquare } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toastService } from '@/services/toasts-service';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { CommentForm } from './comment-form';
 import { DeleteCommentDialog } from './delete-comment-dialog';
 import { formatDistanceToNow } from 'date-fns';
@@ -41,7 +35,7 @@ export function CommentItem({
     const { user } = useApp();
     const [isReplying, setIsReplying] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [userVote, setUserVote] = useState<number | null>(comment.userVote);
+    const [userVote, setUserVote] = useState<number | null>(comment.userVote || null);
     const [upvoteCount, setUpvoteCount] = useState(comment.upvoteCount);
     // Initialize to false to hide replies by default
     const [areRepliesExpanded, setAreRepliesExpanded] = useState(false);
@@ -58,6 +52,17 @@ export function CommentItem({
     // LeetCode style: relative time
     const formattedDate = formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true });
 
+    // Fetch user vote on mount
+    useEffect(() => {
+        const fetchVote = async () => {
+            if (user) {
+                const vote = await DiscussService.getUserVoteForComment(comment.id);
+                setUserVote(vote);
+            }
+        };
+        fetchVote();
+    }, [comment.id, user]);
+
     const handleVote = async (type: 'UPVOTE' | 'DOWNVOTE') => {
         if (!user) {
             toastService.error('Please login to vote');
@@ -65,20 +70,53 @@ export function CommentItem({
         }
 
         const voteValue = type === 'UPVOTE' ? 1 : -1;
-        const newVote = userVote === voteValue ? null : voteValue;
+        // Optimistic update
         const previousVote = userVote;
+        const previousUpvoteCount = upvoteCount;
+
+        // Toggle logic: if clicking same vote, it toggles off (becomes null)
+        // If clicking different vote, it switches
+        let newVote: number | null = voteValue;
+        if (userVote === voteValue) {
+            newVote = null;
+        }
 
         setUserVote(newVote);
+
+        // Update counts optimistically
+        // Only tracking upvotes mostly based on UI, but let's try to be accurate
+        // If we toggled OFF upvote -> decrement
+        // If we toggled ON upvote -> increment
+        // If we switched from downvote to upvote -> increment
+        // If we switched from upvote to downvote -> decrement
+
         if (type === 'UPVOTE') {
-            if (newVote === 1) setUpvoteCount(prev => prev + 1);
-            else if (previousVote === 1) setUpvoteCount(prev => prev - 1);
+            if (userVote === 1) {
+                // Toggling off upvote
+                setUpvoteCount(prev => Math.max(0, prev - 1));
+            } else {
+                // Toggling on upvote (from null or downvote)
+                setUpvoteCount(prev => prev + 1);
+            }
+        } else {
+            // Downvote logic affecting upvote count?
+            // Usually downvotes don't affect upvote count unless we show a score (up-down).
+            // But if we switch from Upvote to Downvote, upvote count should decrease.
+            if (userVote === 1) {
+                setUpvoteCount(prev => Math.max(0, prev - 1));
+            }
         }
 
         try {
-            await DiscussService.voteComment(comment.id, type);
+            if (newVote === null) {
+                await DiscussService.unvoteComment(comment.id);
+            } else {
+                await DiscussService.voteComment(comment.id, voteValue);
+            }
         } catch (error) {
+            // Revert on error
             setUserVote(previousVote);
-            if (type === 'UPVOTE') setUpvoteCount(comment.upvoteCount);
+            setUpvoteCount(previousUpvoteCount);
             toastService.error('Failed to vote');
         }
     };
@@ -105,8 +143,47 @@ export function CommentItem({
         toastService.success('Reply posted');
     };
 
+    // Helper to extract mentions and their links from the ORIGINAL content
+    const extractMentions = (text: string) => {
+        const mentions = new Map<string, string>();
+        const regex = /\[(@[^\]]+)\]\(([^)]+)\)/g;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            // match[1] is @username, match[2] is the link (e.g. /profile/1)
+            // We verify it starts with @ just to be safe based on regex
+            if (match[1].startsWith('@')) {
+                mentions.set(match[1], match[2]);
+            }
+        }
+        return mentions;
+    };
+
+    // Helper to simplify content for display in the textarea (remove links)
+    const simplifyContent = (text: string) => {
+        return text.replace(/\[(@[^\]]+)\]\(([^)]+)\)/g, '$1');
+    };
+
+    // Helper to restore links to mentions before saving
+    const restoreContent = (text: string, originalText: string) => {
+        const knownMentions = extractMentions(originalText);
+        let restored = text;
+
+        knownMentions.forEach((link, username) => {
+            // Escape special chars for regex logic to be safe
+            const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // Ensure we match the whole username (add boundary at the end to avoid matching @user in @username)
+            const mentionRegex = new RegExp(escapedUsername + '\\b', 'g');
+            restored = restored.replace(mentionRegex, `[${username}](${link})`);
+        });
+
+        return restored;
+    };
+
     const handleEdit = async (content: string) => {
-        await DiscussService.updateComment(comment.id, content);
+        // Restore mentions based on the original comment content
+        const finalContent = restoreContent(content, comment.content);
+
+        await DiscussService.updateComment(comment.id, finalContent);
         setIsEditing(false);
         onReplySuccess();
         toastService.success('Comment updated');
@@ -155,14 +232,17 @@ export function CommentItem({
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                            <span className="font-semibold text-foreground hover:text-primary cursor-pointer transition-colors">
-                                {getDisplayName()}
+                            <span className={cn(
+                                "font-semibold transition-colors",
+                                comment.isDeleted ? "text-muted-foreground italic" : "text-foreground hover:text-primary cursor-pointer"
+                            )}>
+                                {comment.isDeleted ? "Deleted" : getDisplayName()}
                             </span>
 
                             <span className="text-muted-foreground text-xs">
                                 {formattedDate}
                             </span>
-                            {comment.isEdited && (
+                            {!comment.isDeleted && comment.isEdited && (
                                 <span className="text-[10px] text-muted-foreground italic">(edited)</span>
                             )}
                         </div>
@@ -177,18 +257,22 @@ export function CommentItem({
                                 placeholder="Edit your comment..."
                                 submitLabel="Save"
                                 autoFocus
-                                initialValue={comment.content}
+                                initialValue={simplifyContent(comment.content)}
                                 showAvatar={false}
                             />
                         </div>
                     ) : (
                         <div className="mt-1 text-sm text-foreground/90 prose prose-sm dark:prose-invert max-w-none leading-relaxed">
-                            <MarkdownRenderer content={comment.content} />
+                            {comment.isDeleted ? (
+                                <span className="text-muted-foreground italic">This comment has been deleted.</span>
+                            ) : (
+                                <MarkdownRenderer content={comment.content} />
+                            )}
                         </div>
                     )}
 
                     {/* Footer Actions */}
-                    {!isEditing && (
+                    {!isEditing && !comment.isDeleted && (
                         <div className="flex items-center gap-6 pt-2">
                             {/* Vote Buttons */}
                             <div className="flex items-center gap-1">
@@ -197,7 +281,7 @@ export function CommentItem({
                                     size="sm"
                                     className={cn(
                                         "h-6 px-1.5 text-muted-foreground hover:text-foreground gap-1 hover:bg-transparent p-0",
-                                        userVote === 1 && "text-orange-500 hover:text-orange-600"
+                                        userVote === 1 && "text-green-600 hover:text-green-700"
                                     )}
                                     onClick={() => handleVote('UPVOTE')}
                                 >
@@ -320,7 +404,6 @@ export function CommentItem({
                 isDeleting={isDeleting}
             />
 
-            {/* Removed standalone toggle button since it's now inline */}
         </div>
     );
 }

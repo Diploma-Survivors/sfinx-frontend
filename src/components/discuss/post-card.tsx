@@ -1,8 +1,10 @@
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DiscussService, type Post } from '@/services/discuss-service';
 import { ArrowUp, Eye, MessageSquare, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface PostCardProps {
@@ -10,6 +12,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
+    const router = useRouter();
     const [upvotes, setUpvotes] = useState(post.upvoteCount);
     const [hasVoted, setHasVoted] = useState(false);
 
@@ -31,11 +34,17 @@ export function PostCard({ post }: PostCardProps) {
         setUpvotes(prev => newHasVoted ? prev + 1 : prev - 1);
 
         try {
-            await DiscussService.votePost(post.id, newHasVoted ? 'up' : 'down');
+            await DiscussService.votePost(post.id, newHasVoted ? 1 : -1);
         } catch (error) {
             setHasVoted(!newHasVoted);
             setUpvotes(prev => !newHasVoted ? prev + 1 : prev - 1);
         }
+    };
+
+    const handleUsernameClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        router.push(`/profile/${post.author.id}`);
     };
 
     const getTimeAgo = (dateString: string) => {
@@ -70,7 +79,10 @@ export function PostCard({ post }: PostCardProps) {
                                 {getDisplayName().charAt(0).toUpperCase()}
                             </div>
                         )}
-                        <span className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        <span
+                            onClick={handleUsernameClick}
+                            className="text-sm font-medium text-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors cursor-pointer"
+                        >
                             {getDisplayName()}
                         </span>
                         <span className="text-xs text-muted-foreground">

@@ -5,10 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MarkdownRenderer from '@/components/ui/markdown-renderer';
 import { DiscussService, type Post } from '@/services/discuss-service';
-import { ArrowLeft, Bookmark, Flag, Share2, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { ArrowLeft, ArrowBigUp, ArrowBigDown, Bookmark, Flag, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 interface DiscussDetailProps {
     postId: string;
@@ -17,6 +18,9 @@ interface DiscussDetailProps {
 export function DiscussDetail({ postId }: DiscussDetailProps) {
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [userVote, setUserVote] = useState<1 | -1 | null>(null);
+    const [localUpvoteCount, setLocalUpvoteCount] = useState(0);
+    const [localDownvoteCount, setLocalDownvoteCount] = useState(0);
 
     const getDisplayName = () => {
         if (!post) return 'Anonymous';
@@ -34,6 +38,11 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
             try {
                 const data = await DiscussService.getPostById(postId);
                 setPost(data);
+                setLocalUpvoteCount(data?.upvoteCount || 0);
+                setLocalDownvoteCount(data?.downvoteCount || 0);
+
+                const vote = await DiscussService.getUserVoteForPost(postId);
+                setUserVote(vote);
             } catch (error) {
                 console.error('Failed to fetch post:', error);
             } finally {
@@ -42,6 +51,66 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
         };
         fetchPost();
     }, [postId]);
+
+    const handleUpvote = async () => {
+        if (!post) return;
+
+        const previousVote = userVote;
+        const previousUpvoteCount = localUpvoteCount;
+        const previousDownvoteCount = localDownvoteCount;
+
+        try {
+            if (userVote === 1) {
+                // Already upvoted, toggle off
+                setUserVote(null);
+            } else if (userVote === -1) {
+                // Switch from downvote to upvote
+                setUserVote(1);
+            } else {
+                // Add new upvote
+                setUserVote(1);
+            }
+
+            const { upvoteCount, downvoteCount } = await DiscussService.votePost(post.id, 1);
+            setLocalUpvoteCount(upvoteCount);
+            setLocalDownvoteCount(downvoteCount);
+        } catch (error) {
+            console.error('Failed to upvote:', error);
+            setUserVote(previousVote);
+            setLocalUpvoteCount(previousUpvoteCount);
+            setLocalDownvoteCount(previousDownvoteCount);
+        }
+    };
+
+    const handleDownvote = async () => {
+        if (!post) return;
+
+        const previousVote = userVote;
+        const previousUpvoteCount = localUpvoteCount;
+        const previousDownvoteCount = localDownvoteCount;
+
+        try {
+            if (userVote === -1) {
+                // Already downvoted, toggle off
+                setUserVote(null);
+            } else if (userVote === 1) {
+                // Switch from upvote to downvote
+                setUserVote(-1);
+            } else {
+                // Add new downvote
+                setUserVote(-1);
+            }
+
+            const { upvoteCount, downvoteCount } = await DiscussService.votePost(post.id, -1);
+            setLocalUpvoteCount(upvoteCount);
+            setLocalDownvoteCount(downvoteCount);
+        } catch (error) {
+            console.error('Failed to downvote:', error);
+            setUserVote(previousVote);
+            setLocalUpvoteCount(previousUpvoteCount);
+            setLocalDownvoteCount(previousDownvoteCount);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -133,12 +202,28 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
             {/* Actions (Vote) */}
             <div className="flex items-center gap-4 py-8 border-y border-border">
                 <div className="flex items-center bg-muted/50 rounded-lg p-1">
-                    <Button variant="ghost" size="sm" className="hover:bg-background hover:shadow-sm">
-                        <ThumbsUp className="w-4 h-4 mr-2" />
-                        Upvote ({post.upvoteCount})
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleUpvote}
+                        className={cn(
+                            "hover:bg-background hover:shadow-sm transition-all duration-300 gap-1",
+                            userVote === 1 && "text-green-600 hover:text-green-700"
+                        )}
+                    >
+                        <ArrowBigUp className={cn("w-5 h-5", userVote === 1 && "fill-current")} />
+                        <span className="text-xs font-medium min-w-[1ch]">{localUpvoteCount}</span>
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover:bg-background hover:shadow-sm">
-                        <ThumbsDown className="w-4 h-4" />
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleDownvote}
+                        className={cn(
+                            "hover:bg-background hover:shadow-sm transition-all duration-300",
+                            userVote === -1 && "text-blue-500 hover:text-blue-600"
+                        )}
+                    >
+                        <ArrowBigDown className={cn("w-5 h-5", userVote === -1 && "fill-current")} />
                     </Button>
                 </div>
                 <div className="text-sm text-muted-foreground ml-auto">

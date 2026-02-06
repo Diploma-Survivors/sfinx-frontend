@@ -39,6 +39,7 @@ export interface Post {
     slug: string;
     viewCount: number;
     upvoteCount: number;
+    downvoteCount: number;
     commentCount: number;
     isLocked: boolean;
     isDeleted: boolean;
