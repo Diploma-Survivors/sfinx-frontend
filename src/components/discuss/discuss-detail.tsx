@@ -5,9 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MarkdownRenderer from '@/components/ui/markdown-renderer';
 import { DiscussService, type Post } from '@/services/discuss-service';
-import { ArrowLeft, ArrowBigUp, ArrowBigDown, Bookmark, Flag, Share2 } from 'lucide-react';
+import { ArrowLeft, ArrowBigUp, ArrowBigDown, Bookmark, Flag, Share2, Edit } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -16,6 +18,8 @@ interface DiscussDetailProps {
 }
 
 export function DiscussDetail({ postId }: DiscussDetailProps) {
+    const router = useRouter();
+    const { data: session } = useSession();
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [userVote, setUserVote] = useState<1 | -1 | null>(null);
@@ -181,6 +185,11 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
                     </div>
 
                     <div className="flex items-center gap-2">
+                        {session?.user?.id && Number(session.user.id) === post.author.id && (
+                            <Button variant="ghost" size="icon" title="Edit" onClick={() => router.push(`/discuss/${post.id}/edit`)}>
+                                <Edit className="w-4 h-4" />
+                            </Button>
+                        )}
                         <Button variant="ghost" size="icon" title="Save">
                             <Bookmark className="w-4 h-4" />
                         </Button>

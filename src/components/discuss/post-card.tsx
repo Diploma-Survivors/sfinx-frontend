@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DiscussService, type Post } from '@/services/discuss-service';
-import { ArrowUp, Eye, MessageSquare, MoreHorizontal } from 'lucide-react';
+import { type Post } from '@/services/discuss-service';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ArrowBigUp, Edit, Eye, MessageSquare, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 interface PostCardProps {
     post: Post;
@@ -13,8 +19,19 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
     const router = useRouter();
-    const [upvotes, setUpvotes] = useState(post.upvoteCount);
-    const [hasVoted, setHasVoted] = useState(false);
+    const { data: session } = useSession();
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const { text, images } = useMemo(() => {
+        const imgRegex = /!\[.*?\]\((.*?)\)/g;
+        const imgs: string[] = [];
+        let match;
+        while ((match = imgRegex.exec(post.content)) !== null) {
+            imgs.push(match[1]);
+        }
+        const cleanText = post.content.replace(imgRegex, '').trim();
+        return { text: cleanText, images: imgs };
+    }, [post.content]);
 
     const getDisplayName = () => {
         return post.author.fullName || post.author.username || 'Anonymous';
@@ -25,26 +42,22 @@ export function PostCard({ post }: PostCardProps) {
         return `${process.env.NEXT_PUBLIC_S3_URL}/${post.author.avatarKey}`;
     };
 
-    const handleUpvote = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const newHasVoted = !hasVoted;
-        setHasVoted(newHasVoted);
-        setUpvotes(prev => newHasVoted ? prev + 1 : prev - 1);
-
-        try {
-            await DiscussService.votePost(post.id, newHasVoted ? 1 : -1);
-        } catch (error) {
-            setHasVoted(!newHasVoted);
-            setUpvotes(prev => !newHasVoted ? prev + 1 : prev - 1);
-        }
-    };
-
     const handleUsernameClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         router.push(`/profile/${post.author.id}`);
+    };
+
+    const handlePrevImage = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
+    const handleNextImage = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
     };
 
     const getTimeAgo = (dateString: string) => {
@@ -66,43 +79,88 @@ export function PostCard({ post }: PostCardProps) {
     };
 
     return (
-        <div className="group border-b border-border py-4 px-2 hover:bg-muted/30 transition-colors first:pt-2">
-            <Link href={`/discuss/${post.id}`} className="block space-y-3">
+        <div className="group border-b border-border py-6 px-4 hover:bg-muted/30 transition-colors first:pt-4">
+            <Link href={`/discuss/${post.id}`} className="block space-y-4">
                 {/* Header: Avatar, Name, Time */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {getAvatarUrl() ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={getAvatarUrl()!} alt={getDisplayName()} className="w-8 h-8 rounded-full object-cover" />
+                            <img src={getAvatarUrl()!} alt={getDisplayName()} className="w-10 h-10 rounded-full object-cover" />
                         ) : (
-                            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent text-xs font-semibold">
+                            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-semibold">
                                 {getDisplayName().charAt(0).toUpperCase()}
                             </div>
                         )}
                         <span
                             onClick={handleUsernameClick}
-                            className="text-sm font-medium text-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors cursor-pointer"
+                            className="text-base font-medium text-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors cursor-pointer"
                         >
                             {getDisplayName()}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-sm text-muted-foreground">
                             • {getTimeAgo(post.createdAt)}
                         </span>
                     </div>
 
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                    {session?.user?.id && Number(session.user.id) === post.author.id && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <MoreHorizontal className="h-5 w-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                                <DropdownMenuItem onClick={() => router.push(`/discuss/${post.id}/edit`)}>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </div>
 
-                {/* Title & Content */}
-                <div className="space-y-1">
-                    <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-amber-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1">
-                        {post.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                        {post.content.replace(/[#*`_]/g, '').substring(0, 200)}...
-                    </p>
+                {/* Content Area: Title + Text (Left) & Image (Right) */}
+                <div className="flex justify-between gap-6">
+                    <div className="flex-1 space-y-2 min-w-0">
+                        <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-amber-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1">
+                            {post.title}
+                        </h3>
+                        <p className="text-base text-muted-foreground line-clamp-3 break-words">
+                            {text.replace(/[#*`_]/g, '').substring(0, 250)}...
+                        </p>
+                    </div>
+
+                    {images.length > 0 && (
+                        <div className="relative w-[200px] h-[130px] shrink-0 group/image">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={images[currentImageIndex]}
+                                alt="Post preview"
+                                className="w-full h-full object-cover rounded-lg border border-border bg-muted/50"
+                            />
+
+                            {images.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={handlePrevImage}
+                                        className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 text-white opacity-0 group-hover/image:opacity-100 transition-opacity hover:bg-black/70"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={handleNextImage}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 text-white opacity-0 group-hover/image:opacity-100 transition-opacity hover:bg-black/70"
+                                    >
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                    <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/50 text-xs text-white font-medium opacity-0 group-hover/image:opacity-100 transition-opacity">
+                                        {currentImageIndex + 1}/{images.length}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Footer: Tags & Stats */}
@@ -117,8 +175,8 @@ export function PostCard({ post }: PostCardProps) {
 
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
-                            <ArrowUp className="w-4 h-4" />
-                            <span>{upvotes}</span>
+                            <ArrowBigUp className="w-4 h-4" />
+                            <span>{post.upvoteCount}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Eye className="w-4 h-4" />

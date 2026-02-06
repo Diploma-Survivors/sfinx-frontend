@@ -44,7 +44,7 @@ export class DiscussService {
         return response.data.data;
     }
 
-    static async getPosts(
+    static async    getPosts(
         filters?: FilterPostDto
     ): Promise<PaginatedResult<Post>> {
         const params = new URLSearchParams();
@@ -55,9 +55,11 @@ export class DiscussService {
         if (filters?.tagIds) {
             filters.tagIds.forEach(id => params.append('tagIds', id.toString()));
         }
+        if (filters?.sortBy) params.append('sortBy', filters.sortBy);
+        if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
 
         const response = await clientApi.get<{ data: PaginatedResult<Post> }>(
-            `${this.BASE_URL}?${params.toString()}`
+            `${this.BASE_URL}/getAll?${params.toString()}`
         );
 
         return response.data.data;
@@ -105,7 +107,6 @@ export class DiscussService {
         await clientApi.delete(`${this.BASE_URL}/${id}`);
     }
 
-    // Legacy method for backward compatibility
     static async getPostById(id: string): Promise<Post | null> {
         try {
             return await this.getPost(id);

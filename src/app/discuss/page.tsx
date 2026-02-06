@@ -1,6 +1,7 @@
 'use client';
 
 import { DiscussList } from '@/components/discuss/discuss-list';
+import { TrendingTopics } from '@/components/discuss/trending-topics';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -43,30 +44,7 @@ export default function DiscussPage() {
                         </Link>
 
                         {/* Trending / Info Card */}
-                        <Card className="bg-card/50 border-border/60 backdrop-blur-sm">
-                            <CardHeader className="pb-2 border-b border-border/40">
-                                <CardTitle className="text-base flex items-center gap-2">
-                                    <Trophy className="w-4 h-4 text-yellow-500" />
-                                    Trending Topics
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pt-3 space-y-4">
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between text-sm group cursor-pointer">
-                                        <span className="text-foreground/80 group-hover:text-accent transition-colors">#AmazonInterview</span>
-                                        <span className="text-muted-foreground text-xs">1.2k posts</span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-sm group cursor-pointer">
-                                        <span className="text-foreground/80 group-hover:text-accent transition-colors">#SystemDesign</span>
-                                        <span className="text-muted-foreground text-xs">850 posts</span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-sm group cursor-pointer">
-                                        <span className="text-foreground/80 group-hover:text-accent transition-colors">#LeetCodeWeekly</span>
-                                        <span className="text-muted-foreground text-xs">500 posts</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <TrendingTopics />
                     </div>
                 </div>
 

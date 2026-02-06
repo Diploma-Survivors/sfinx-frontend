@@ -1,13 +1,19 @@
 import type { DecodedAccessToken } from '@/types/states';
 import { jwtDecode } from 'jwt-decode';
 import NextAuth from 'next-auth';
-import type { NextAuthOptions } from 'next-auth';
-import { getServerSession } from 'next-auth'; // Add this import
+import type { DefaultSession, NextAuthOptions } from 'next-auth'; // Added DefaultSession
+import { getServerSession } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 declare module 'next-auth' {
   interface Session {
+    user?: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    } & DefaultSession["user"];
     deviceId?: string;
     accessToken?: string;
     redirect?: string;
@@ -151,6 +157,9 @@ export const authOptions: NextAuthOptions = {
       session.accessToken = token.accessToken as string;
       session.redirect = token.redirect as string;
       session.deviceId = token.deviceId as string;
+      if (session.user) {
+        session.user.id = token.userId as string;
+      }
       return session;
     },
     async redirect({ url }) {

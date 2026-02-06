@@ -76,6 +76,8 @@ export interface FilterPostDto {
     limit?: number;
     search?: string;
     tagIds?: number[];
+    sortBy?: string;
+    sortOrder?: 'ASC' | 'DESC';
 }
 
 export interface FilterTagDto {
