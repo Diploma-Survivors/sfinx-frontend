@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { DiscussService, type Tag } from '@/services/discuss-service';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useTransition } from 'react';
 import { useDebounce } from '@/hooks/use-debounce';
 
 interface TopicSelectorProps {
@@ -19,6 +19,7 @@ export function TopicSelector({ selectedTags, onTagsChange, suggestedTags = [] }
     const [searchQuery, setSearchQuery] = useState('');
     const [fetchedTags, setFetchedTags] = useState<Tag[]>(suggestedTags);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
 
     // Debounce search query
     const [debouncedSearch] = useDebounce(searchQuery, 300);
@@ -46,11 +47,15 @@ export function TopicSelector({ selectedTags, onTagsChange, suggestedTags = [] }
     }, [open, debouncedSearch, fetchTags]);
 
     const toggleTag = (tag: Tag) => {
-        if (selectedTags.find(t => t.id === tag.id)) {
-            onTagsChange(selectedTags.filter(t => t.id !== tag.id));
-        } else {
-            onTagsChange([...selectedTags, tag]);
-        }
+        startTransition(() => {
+            if (selectedTags.find(t => t.id === tag.id)) {
+                onTagsChange(selectedTags.filter(t => t.id !== tag.id));
+            } else {
+                onTagsChange([...selectedTags, tag]);
+            }
+        });
+
+        setTimeout(() => setOpen(false), 150);
     };
 
     return (
@@ -85,7 +90,11 @@ export function TopicSelector({ selectedTags, onTagsChange, suggestedTags = [] }
                                         const isSelected = selectedTags.some(t => t.id === tag.id);
                                         if (isSelected) return null;
                                         return (
-                                            <CommandItem key={tag.id} onSelect={() => { toggleTag(tag); setOpen(false); }}>
+                                            <CommandItem
+                                                key={tag.id}
+                                                onSelect={() => toggleTag(tag)}
+                                                disabled={isPending}
+                                            >
                                                 {tag.name}
                                             </CommandItem>
                                         );

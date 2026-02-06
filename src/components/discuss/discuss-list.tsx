@@ -4,6 +4,7 @@ import { PostCard } from '@/components/discuss/post-card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DiscussFilterBar } from '@/components/discuss/discuss-filter-bar';
+import { DiscussListSkeleton } from '@/components/discuss/discuss-skeleton';
 import { DiscussService, type Post } from '@/services/discuss-service';
 import { toastService } from '@/services/toasts-service';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -70,10 +71,9 @@ export function DiscussList({ onTagSelect, externalTagSelection }: DiscussListPr
             }
         };
 
-        // Debounce search
         const timeoutId = setTimeout(() => {
             fetchPosts();
-        }, 300);
+        }, searchQuery ? 300 : 0);
 
         return () => clearTimeout(timeoutId);
     }, [activeTab, sortOrder, page, searchQuery, selectedTags]);
@@ -99,9 +99,7 @@ export function DiscussList({ onTagSelect, externalTagSelection }: DiscussListPr
 
             <div>
                 {isLoading ? (
-                    Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-48 rounded-xl border border-border bg-card/50 animate-pulse mb-4" />
-                    ))
+                    <DiscussListSkeleton count={5} />
                 ) : Array.isArray(posts) && posts.length > 0 ? (
                     <div className="space-y-4">
                         {posts.map((post) => (
