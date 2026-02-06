@@ -211,7 +211,7 @@ export function CommentItem({
     return (
         <div className={cn(
             "relative animate-in fade-in slide-in-from-top-1",
-            depth > 0 ? "mt-4" : "py-4 border-b border-border/40 last:border-0"
+            depth > 0 ? "mt-2" : "py-2 border-b border-border/40 last:border-0"
         )}>
             <div className={cn(
                 "group flex gap-4 p-3 rounded-xl transition-all",
@@ -379,7 +379,7 @@ export function CommentItem({
                     !areRepliesExpanded && "hidden"
                 )}>
                     {areRepliesExpanded && (
-                        <div className="space-y-4">
+                        <div className="space-y-2">
                             {comment.replies.map((reply, index) => (
                                 <CommentItem
                                     key={reply.id}
