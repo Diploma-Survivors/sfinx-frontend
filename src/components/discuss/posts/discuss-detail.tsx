@@ -8,9 +8,8 @@ import { DiscussService, type Post } from '@/services/discuss-service';
 import { ArrowLeft, ArrowBigUp, ArrowBigDown, Bookmark, Flag, Share2, Edit } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 interface DiscussDetailProps {
@@ -25,6 +24,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
     const [userVote, setUserVote] = useState<1 | -1 | null>(null);
     const [localUpvoteCount, setLocalUpvoteCount] = useState(0);
     const [localDownvoteCount, setLocalDownvoteCount] = useState(0);
+    const viewCountedRef = useRef<string | null>(null);
 
     const getDisplayName = () => {
         if (!post) return 'Anonymous';
@@ -54,6 +54,13 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
             }
         };
         fetchPost();
+    }, [postId]);
+
+    useEffect(() => {
+        if (viewCountedRef.current !== postId) {
+            DiscussService.incrementViewCount(postId);
+            viewCountedRef.current = postId;
+        }
     }, [postId]);
 
     const handleUpvote = async () => {
@@ -145,7 +152,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 pb-12">
+        <div className="max-w-4xl mx-auto space-y-4 pb-8">
             {/* Back Button */}
             <Link href="/discuss" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -153,7 +160,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
             </Link>
 
             {/* Header */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex gap-2 mb-2">
                     {post.tags.map(tag => (
                         <Badge key={tag.id} variant="secondary">
@@ -166,10 +173,9 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
                     {post.title}
                 </h1>
 
-                <div className="flex items-center justify-between border-b border-border pb-6">
+                <div className="flex items-center justify-between pb-4">
                     <div className="flex items-center gap-3">
                         {getAvatarUrl() ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img src={getAvatarUrl()!} alt={getDisplayName()} className="w-10 h-10 rounded-full border border-border" />
                         ) : (
                             <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
@@ -209,7 +215,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
             </div>
 
             {/* Actions (Vote) */}
-            <div className="flex items-center gap-4 py-8 border-y border-border">
+            <div className="flex items-center gap-4 py-4">
                 <div className="flex items-center bg-muted/50 rounded-lg p-1">
                     <Button
                         variant="ghost"

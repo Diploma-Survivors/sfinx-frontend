@@ -229,4 +229,12 @@ export class DiscussService {
         );
         return response.data.data;
     }
+
+    static async incrementViewCount(postId: string): Promise<void> {
+        try {
+            await clientApi.post(`${this.BASE_URL}/${postId}/view`);
+        } catch (error) {
+            console.error('Failed to increment view count:', error);
+        }
+    }
 }
