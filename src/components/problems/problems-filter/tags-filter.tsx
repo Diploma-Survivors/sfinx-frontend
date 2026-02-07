@@ -1,9 +1,24 @@
-import { Input } from '@/components/ui/input';
+'use client';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import type { Tag } from '@/types/tags';
-import { Check, CheckCircle2, Search } from 'lucide-react';
-import React, { useState } from 'react';
+import type { Tag } from '@/types/problems';
+import { Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 interface TagFilterProps {
   tags: Tag[];
@@ -20,84 +35,107 @@ export default function TagFilter({
   isLoading,
   onTagToggle,
   onClearAll,
+  displayLimit = 10,
 }: TagFilterProps) {
   const { t } = useTranslation('problems');
-  const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredTags = tags.filter((tag) =>
-    tag.name.toLowerCase().includes(search.toLowerCase())
+  const selectedTags = tags.filter((tag) => selectedTagIds.includes(tag.id));
+
+  const availableTags = tags.filter((tag) => !selectedTagIds.includes(tag.id));
+
+  const filteredTags = availableTags.filter((tag) =>
+    tag.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleSelect = (tagId: number) => {
+    onTagToggle(tagId, true);
+    setSearchQuery('');
+    setOpen(false);
+  };
+
+  const handleRemove = (tagId: number) => {
+    onTagToggle(tagId, false);
+  };
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-semibold text-foreground">
-          {t('select_tags')}:
-        </label>
-        {selectedTagIds.length > 0 && (
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            {t('tags')}
+          </label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 border-dashed gap-1 text-muted-foreground hover:text-foreground px-2"
+              >
+                <Plus className="h-3 w-3" />
+                <span className="text-xs">{t('tags')}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-[200px]" align="start">
+              <Command>
+                <CommandInput
+                  placeholder={t('search_tags')}
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
+                <CommandList>
+                  {isLoading ? (
+                    <div className="py-6 text-center text-sm text-muted-foreground">
+                      {t('loading')}
+                    </div>
+                  ) : filteredTags.length === 0 ? (
+                    <CommandEmpty>{t('no_tags_found')}</CommandEmpty>
+                  ) : (
+                    filteredTags.map((tag) => (
+                      <CommandItem
+                        key={tag.id}
+                        value={tag.name}
+                        onSelect={() => handleSelect(tag.id)}
+                      >
+                        {tag.name}
+                      </CommandItem>
+                    ))
+                  )}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        {selectedTags.length > 0 && (
           <button
             type="button"
             onClick={onClearAll}
-            className="cursor-pointer text-xs text-destructive hover:underline font-medium transition-colors"
+            className="text-[10px] font-medium text-muted-foreground hover:text-foreground"
           >
-            {t('clear_all')} ({selectedTagIds.length})
+            {t('clear_all')}
           </button>
         )}
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-        <Input
-          placeholder={t('search_tags')}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="h-8 pl-8 text-xs bg-background"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="p-4 text-center text-sm text-muted-foreground">
-          {t('loading')}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1 max-h-64 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-border">
-          {filteredTags.length === 0 ? (
-            <div className="text-xs text-muted-foreground text-center py-2">
-              {t('no_tags_found')}
-            </div>
-          ) : (
-            filteredTags.map((tag) => {
-              const isSelected = selectedTagIds.includes(tag.id);
-
-              return (
-                <button
-                  key={tag.id}
-                  type="button"
-                  onClick={() => onTagToggle(tag.id, isSelected)}
-                  className={cn(
-                    'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors border text-left',
-                    isSelected
-                      ? 'bg-primary/10 text-primary border-primary/20'
-                      : 'bg-background text-muted-foreground border-transparent hover:bg-muted'
-                  )}
-                >
-                  <div
-                    className={cn(
-                      'w-4 h-4 rounded border flex items-center justify-center flex-shrink-0',
-                      isSelected
-                        ? 'bg-primary border-primary'
-                        : 'bg-background border-muted-foreground/30'
-                    )}
-                  >
-                    {isSelected && (
-                      <Check className="w-3 h-3 text-primary-foreground" />
-                    )}
-                  </div>
-                  <span className="truncate">{tag.name}</span>
-                </button>
-              );
-            })
-          )}
+      {selectedTags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {selectedTags.map((tag) => (
+            <Badge
+              key={tag.id}
+              variant="secondary"
+              className="gap-1 pr-1 bg-primary/10 text-primary border-primary/20 hover:bg-primary/15"
+            >
+              {tag.name}
+              <button
+                type="button"
+                onClick={() => handleRemove(tag.id)}
+                className="ml-1 rounded-sm hover:bg-primary/20 p-0.5"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
         </div>
       )}
     </div>

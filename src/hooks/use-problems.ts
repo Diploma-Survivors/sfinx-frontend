@@ -1,6 +1,7 @@
 import { ProblemsService } from '@/services/problems-service';
 import { TagsService } from '@/services/tags-service';
 import { TopicsService } from '@/services/topics-service';
+import { favoriteListService } from '@/services/favorite-list-service';
 import {
   type GetProblemListRequest,
   type Problem,
@@ -117,14 +118,36 @@ export default function useProblems(): UseProblemsReturn {
       try {
         setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-        const response = await ProblemsService.getProblemList(requestParams);
+        let data: Problem[] = [];
+        let meta: ProblemMeta | null = null;
+
+        if (requestParams.filters?.listId) {
+          const listId = parseInt(requestParams.filters.listId);
+          if (!isNaN(listId)) {
+            const problems = await favoriteListService.getProblems(listId);
+            data = Array.isArray(problems) ? problems : [];
+            meta = {
+              page: 1,
+              limit: data.length > 0 ? data.length : 10,
+              total: data.length,
+              totalPages: 1,
+              hasPreviousPage: false,
+              hasNextPage: false,
+            };
+          }
+        } else {
+          const response = await ProblemsService.getProblemList(requestParams);
+          data = response?.data?.data?.data || [];
+          meta = response?.data?.data?.meta || null;
+        }
+
         setState((prev) => ({
           ...prev,
           problems:
             requestParams.page === 1
-              ? response?.data?.data?.data || []
-              : [...prev.problems, ...(response?.data?.data?.data || [])],
-          meta: response?.data?.data?.meta,
+              ? data
+              : [...prev.problems, ...data],
+          meta: meta,
           isLoading: false,
         }));
       } catch (err) {

@@ -1,10 +1,24 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import type { Topic } from '@/types/topics';
-import { Check, CheckCircle2, Search } from 'lucide-react';
-import React from 'react';
+import type { Topic } from '@/types/problems';
+import { Plus, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 interface TopicFilterProps {
   topics: Topic[];
@@ -14,8 +28,6 @@ interface TopicFilterProps {
   onClearAll: () => void;
 }
 
-import { useTranslation } from 'react-i18next';
-
 export default function TopicFilter({
   topics,
   selectedTopicIds,
@@ -24,82 +36,108 @@ export default function TopicFilter({
   onClearAll,
 }: TopicFilterProps) {
   const { t } = useTranslation('problems');
-  const [search, setSearch] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredTopics = topics.filter((topic) =>
-    topic.name.toLowerCase().includes(search.toLowerCase())
+  const selectedTopics = topics.filter((topic) =>
+    selectedTopicIds.includes(topic.id)
   );
 
+  const availableTopics = topics.filter(
+    (topic) => !selectedTopicIds.includes(topic.id)
+  );
+
+  const filteredTopics = availableTopics.filter((topic) =>
+    topic.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSelect = (topicId: number) => {
+    onTopicToggle(topicId, true);
+    setSearchQuery('');
+    setOpen(false);
+  };
+
+  const handleRemove = (topicId: number) => {
+    onTopicToggle(topicId, false);
+  };
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-semibold text-foreground">
-          {t('topic_label')}:
-        </label>
-        {selectedTopicIds.length > 0 && (
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            {t('topics')}
+          </label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 border-dashed gap-1 text-muted-foreground hover:text-foreground px-2"
+              >
+                <Plus className="h-3 w-3" />
+                <span className="text-xs">{t('topics')}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-[200px]" align="start">
+              <Command>
+                <CommandInput
+                  placeholder={t('search_topics')}
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
+                <CommandList>
+                  {isLoading ? (
+                    <div className="py-6 text-center text-sm text-muted-foreground">
+                      {t('loading')}
+                    </div>
+                  ) : filteredTopics.length === 0 ? (
+                    <CommandEmpty>{t('no_topics_found')}</CommandEmpty>
+                  ) : (
+                    filteredTopics.map((topic) => (
+                      <CommandItem
+                        key={topic.id}
+                        value={topic.name}
+                        onSelect={() => handleSelect(topic.id)}
+                      >
+                        {topic.name}
+                      </CommandItem>
+                    ))
+                  )}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        {selectedTopics.length > 0 && (
           <button
             type="button"
             onClick={onClearAll}
-            className="cursor-pointer text-xs text-destructive hover:underline font-medium transition-colors"
+            className="text-[10px] font-medium text-muted-foreground hover:text-foreground"
           >
-            {t('clear_all')} ({selectedTopicIds.length})
+            {t('clear_all')}
           </button>
         )}
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-        <Input
-          placeholder={t('search_topics')}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="h-8 pl-8 text-xs bg-background"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="p-4 text-center text-sm text-muted-foreground">
-          {t('loading')}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1 max-h-64 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-border">
-          {filteredTopics.length === 0 ? (
-            <div className="text-xs text-muted-foreground text-center py-2">
-              {t('no_topics_found')}
-            </div>
-          ) : (
-            filteredTopics.map((topic) => {
-              const isSelected = selectedTopicIds.includes(topic.id);
-
-              return (
-                <button
-                  key={topic.id}
-                  type="button"
-                  onClick={() => onTopicToggle(topic.id, isSelected)}
-                  className={cn(
-                    'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors border text-left',
-                    isSelected
-                      ? 'bg-primary/10 text-primary border-primary/20'
-                      : 'bg-background text-muted-foreground border-transparent hover:bg-muted'
-                  )}
-                >
-                  <div
-                    className={cn(
-                      'w-4 h-4 rounded border flex items-center justify-center flex-shrink-0',
-                      isSelected
-                        ? 'bg-primary border-primary'
-                        : 'bg-background border-muted-foreground/30'
-                    )}
-                  >
-                    {isSelected && (
-                      <Check className="w-3 h-3 text-primary-foreground" />
-                    )}
-                  </div>
-                  <span className="truncate">{topic.name}</span>
-                </button>
-              );
-            })
-          )}
+      {selectedTopics.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {selectedTopics.map((topic) => (
+            <Badge
+              key={topic.id}
+              variant="secondary"
+              className="gap-1 pr-1 bg-primary/10 text-primary border-primary/20 hover:bg-primary/15"
+            >
+              {topic.name}
+              <button
+                type="button"
+                onClick={() => handleRemove(topic.id)}
+                className="ml-1 rounded-sm hover:bg-primary/20 p-0.5"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
         </div>
       )}
     </div>

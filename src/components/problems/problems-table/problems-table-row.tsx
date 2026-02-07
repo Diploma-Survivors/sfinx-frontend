@@ -7,10 +7,11 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
 import type { Problem } from '@/types/problems';
-import { CheckCircle2, Circle, Clock, Lock } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, Crown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { PremiumModal } from '@/components/problems/premium-modal';
+import SaveToListButton from '@/components/problems/favorite-list/save-to-list-button';
 
 interface ProblemTableRowProps {
   problem: Problem;
@@ -21,7 +22,6 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
   const { user } = useApp();
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
-  // Difficulty Badge Logic
   const getDifficultyColor = (difficulty: ProblemDifficulty) => {
     switch (difficulty) {
       case ProblemDifficulty.EASY:
@@ -99,7 +99,7 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
           {problem.isPremium && (
             <Tooltip content="Premium Problem">
               <div className="flex justify-center items-center">
-                <Lock className="w-3.5 h-3.5 text-yellow-500" />
+                <Crown className="w-4.5 h-4.5 text-[oklch(0.55_0.18_60)] fill-[oklch(0.55_0.18_60)]/20" />
               </div>
             </Tooltip>
           )}
@@ -124,6 +124,13 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
               ? `${Number(problem.acceptanceRate).toFixed(1)}%`
               : '-'}
           </span>
+        </TableCell>
+
+        {/* Save to List */}
+        <TableCell className="text-center w-16 px-2">
+          <div className="flex justify-center items-center">
+            <SaveToListButton problemId={problem.id} />
+          </div>
         </TableCell>
       </TableRow>
 

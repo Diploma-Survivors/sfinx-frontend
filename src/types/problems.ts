@@ -3,6 +3,8 @@ import type { SampleTestCase } from './testcases';
 import type { Topic } from './topics';
 import type { UserProfile } from './user';
 
+export type { Tag, Topic };
+
 export enum ProblemDifficulty {
   EASY = 'easy',
   MEDIUM = 'medium',
@@ -33,7 +35,20 @@ export interface ProblemFilters {
   status?: ProblemStatus;
   topicIds?: number[];
   tagIds?: number[];
+  listId?: string;
 }
+
+export interface ProblemList {
+  id: string;
+  name: string;
+  icon: string;
+  isPublic: boolean;
+  isDefault: boolean;
+  problemIds: number[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 
 export interface GetProblemListRequest {
   page?: number;

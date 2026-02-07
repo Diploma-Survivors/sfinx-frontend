@@ -10,6 +10,7 @@ import { CheckCircle2, Circle, Clock, RotateCcw, Search } from 'lucide-react';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import DifficultyFilter from './difficulty-filter';
+import MyListsFilter from '../favorite-list/my-lists';
 import TagFilter from './tags-filter';
 import TopicFilter from './topics-filter';
 
@@ -42,8 +43,8 @@ export default function ProblemFilter({
     (filterKey: 'topicIds' | 'tagIds', itemId: number, isSelected: boolean) => {
       const currentItems = filters[filterKey] || [];
       const newItems = isSelected
-        ? currentItems.filter((id: number) => id !== itemId)
-        : [...currentItems, itemId];
+        ? [...currentItems, itemId]
+        : currentItems.filter((id: number) => id !== itemId);
 
       onFiltersChange({ ...filters, [filterKey]: newItems });
     },
@@ -81,7 +82,7 @@ export default function ProblemFilter({
 
       <div className="space-y-6">
         {/* Status Filter */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               {t('status')}
@@ -98,72 +99,44 @@ export default function ProblemFilter({
               </button>
             )}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
-              ProblemStatus.SOLVED,
-              ProblemStatus.ATTEMPTED,
-              ProblemStatus.NOT_STARTED,
+              {
+                value: ProblemStatus.SOLVED,
+                label: t('status_solved'),
+                activeClass: 'bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/15',
+                inactiveClass: 'border-border/40 hover:border-green-500/30 hover:bg-green-500/5'
+              },
+              {
+                value: ProblemStatus.ATTEMPTED,
+                label: t('status_attempted'),
+                activeClass: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/30 hover:bg-yellow-500/15',
+                inactiveClass: 'border-border/40 hover:border-yellow-500/30 hover:bg-yellow-500/5'
+              },
+              {
+                value: ProblemStatus.NOT_STARTED,
+                label: t('status_not_started'),
+                activeClass: 'bg-gray-500/10 text-gray-600 border-gray-500/30 hover:bg-gray-500/15',
+                inactiveClass: 'border-border/40 hover:border-gray-500/30 hover:bg-gray-500/5'
+              },
             ].map((status) => {
-              const isSelected = filters.status === status;
-
-              const getStatusColor = (s: ProblemStatus) => {
-                if (!isSelected)
-                  return 'bg-background text-muted-foreground border-transparent hover:bg-muted';
-                switch (s) {
-                  case ProblemStatus.SOLVED:
-                    return 'bg-green-500/10 text-green-600 border-green-200 dark:border-green-800';
-                  case ProblemStatus.ATTEMPTED:
-                    return 'bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-800';
-                  case ProblemStatus.NOT_STARTED:
-                    return 'bg-gray-500/10 text-gray-600 border-gray-200 dark:border-gray-800';
-                  default:
-                    return 'bg-background text-muted-foreground border-transparent';
-                }
-              };
-
-              const getStatusIcon = (s: ProblemStatus) => {
-                switch (s) {
-                  case ProblemStatus.SOLVED:
-                    return <CheckCircle2 className="w-4 h-4 mr-2" />;
-                  case ProblemStatus.ATTEMPTED:
-                    return <Circle className="w-4 h-4 mr-2" />;
-                  case ProblemStatus.NOT_STARTED:
-                    return <div className="w-4 h-4 mr-2" />;
-                  default:
-                    return <div className="w-4 h-4 mr-2" />;
-                }
-              };
-
-              const getStatusLabel = (s: ProblemStatus) => {
-                switch (s) {
-                  case ProblemStatus.SOLVED:
-                    return t('status_solved');
-                  case ProblemStatus.ATTEMPTED:
-                    return t('status_attempted');
-                  case ProblemStatus.NOT_STARTED:
-                    return t('status_not_started');
-                  default:
-                    return '';
-                }
-              };
-
+              const isSelected = filters.status === status.value;
               return (
                 <button
-                  key={status}
+                  key={status.value}
                   type="button"
                   onClick={() =>
                     onFiltersChange({
                       ...filters,
-                      status: isSelected ? undefined : status,
+                      status: isSelected ? undefined : status.value,
                     })
                   }
                   className={cn(
-                    'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors border',
-                    getStatusColor(status)
+                    'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border',
+                    isSelected ? status.activeClass : `text-muted-foreground ${status.inactiveClass}`
                   )}
                 >
-                  {getStatusIcon(status)}
-                  {getStatusLabel(status)}
+                  {status.label}
                 </button>
               );
             })}
@@ -171,57 +144,47 @@ export default function ProblemFilter({
         </div>
 
         {/* Difficulty Filter */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {t('difficulty')}
-            </label>
-          </div>
-          <DifficultyFilter
-            selectedDifficulty={filters.difficulty}
-            onDifficultyChange={(difficulty) =>
-              onFiltersChange({ ...filters, difficulty })
-            }
-          />
-        </div>
+        <DifficultyFilter
+          selectedDifficulty={filters.difficulty}
+          onDifficultyChange={(difficulty) =>
+            onFiltersChange({ ...filters, difficulty })
+          }
+        />
 
         {/* Topic Filter */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {t('topics')}
-            </label>
-          </div>
-          <TopicFilter
-            topics={topics}
-            selectedTopicIds={filters.topicIds || []}
-            isLoading={isLoading}
-            onTopicToggle={(topicId, isSelected) =>
-              toggleArrayFilter('topicIds', topicId, isSelected)
-            }
-            onClearAll={() => onFiltersChange({ ...filters, topicIds: [] })}
-          />
-        </div>
+        <TopicFilter
+          topics={topics}
+          selectedTopicIds={filters.topicIds || []}
+          isLoading={isLoading}
+          onTopicToggle={(topicId, isSelected) =>
+            toggleArrayFilter('topicIds', topicId, isSelected)
+          }
+          onClearAll={() => onFiltersChange({ ...filters, topicIds: [] })}
+        />
 
         {/* Tag Filter */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {t('tags')}
-            </label>
-          </div>
-          <TagFilter
-            tags={tags}
-            selectedTagIds={filters.tagIds || []}
-            isLoading={isLoading}
-            onTagToggle={(tagId, isSelected) =>
-              toggleArrayFilter('tagIds', tagId, isSelected)
-            }
-            onClearAll={() => onFiltersChange({ ...filters, tagIds: [] })}
-            displayLimit={5}
-          />
-        </div>
+        <TagFilter
+          tags={tags}
+          selectedTagIds={filters.tagIds || []}
+          isLoading={isLoading}
+          onTagToggle={(tagId, isSelected) =>
+            toggleArrayFilter('tagIds', tagId, isSelected)
+          }
+          onClearAll={() => onFiltersChange({ ...filters, tagIds: [] })}
+          displayLimit={5}
+        />
       </div>
+
+      {/* Divider */}
+      <div className="h-px bg-border" />
+
+      {/* My Lists */}
+      <MyListsFilter
+        selectedListId={filters.listId}
+        onListSelect={(listId) =>
+          onFiltersChange({ ...filters, listId })
+        }
+      />
     </div>
   );
 }
