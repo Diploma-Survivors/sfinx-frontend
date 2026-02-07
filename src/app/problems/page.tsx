@@ -5,7 +5,7 @@ import ProblemFilter from '@/components/problems/problems-filter/problems-filter
 import SortControls from '@/components/problems/problems-filter/sort-controls';
 import ProblemTable from '@/components/problems/problems-table/problems-table';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import useProblems from '@/hooks/use-problems';
 import { cn } from '@/lib/utils';
 import { Filter } from 'lucide-react';
@@ -99,6 +99,7 @@ export default function ProblemsPage() {
                     side="left"
                     className="w-[300px] sm:w-[400px] p-6"
                   >
+                    <SheetTitle className="sr-only">{t('filters')}</SheetTitle>
                     <div className="mt-6">
                       <ProblemFilter
                         keyWord={keyword}
