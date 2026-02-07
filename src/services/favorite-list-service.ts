@@ -25,6 +25,11 @@ export const favoriteListService = {
         return response.data.data;
     },
 
+    getById: async (id: number) => {
+        const response = await clientApi.get<ApiResponse<FavoriteList>>(`/favorite-lists/${id}`);
+        return response.data.data;
+    },
+
     delete: async (id: number) => {
         await clientApi.delete(`/favorite-lists/${id}`);
     },

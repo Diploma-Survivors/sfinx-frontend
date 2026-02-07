@@ -50,7 +50,6 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
             setIsCreating(true);
             await favoriteListService.create({
                 name: newListName,
-                description: newListDescription,
                 isPublic: newListIsPublic,
                 icon: newListIcon,
             });
@@ -117,7 +116,7 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
 
     return (
         <>
-            <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="ghost"

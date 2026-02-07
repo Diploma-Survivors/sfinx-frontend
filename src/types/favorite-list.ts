@@ -8,6 +8,11 @@ export interface FavoriteList {
     isPublic: boolean;
     isDefault: boolean;
     userId: number;
+    user?: {
+        id: number;
+        username: string;
+        avatar?: string;
+    };
     createdAt: string;
     updatedAt: string;
     problems?: Problem[];

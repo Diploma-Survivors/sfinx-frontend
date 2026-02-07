@@ -12,6 +12,19 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { PremiumModal } from '@/components/problems/premium-modal';
 import SaveToListButton from '@/components/problems/favorite-list/save-to-list-button';
+import { useParams, usePathname } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
+import AddToCollectionSubMenu from '@/components/problems/favorite-list/add-to-list-submenu';
+import { favoriteListService } from '@/services/favorite-list-service';
+import { toastService } from '@/services/toasts-service';
+import { mutate } from 'swr';
 
 interface ProblemTableRowProps {
   problem: Problem;
@@ -19,8 +32,25 @@ interface ProblemTableRowProps {
 
 export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
   const router = useRouter();
+  const params = useParams();
+  const pathname = usePathname();
   const { user } = useApp();
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+
+  // Check if we are in a collection view
+  const isCollectionPage = pathname?.includes('/problems/collection/');
+  const collectionId = isCollectionPage && params?.id ? parseInt(params.id as string) : null;
+
+  const handleRemoveFromList = async (listId: number) => {
+    try {
+      await favoriteListService.removeProblem(listId, problem.id);
+      toastService.success('Problem removed from list');
+      // Trigger a re-fetch of the collection problems
+      await mutate(`/favorite-lists/${listId}/problems`);
+    } catch (error) {
+      toastService.error('Failed to remove problem from list');
+    }
+  };
 
   const getDifficultyColor = (difficulty: ProblemDifficulty) => {
     switch (difficulty) {
@@ -126,10 +156,30 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
           </span>
         </TableCell>
 
-        {/* Save to List */}
-        <TableCell className="text-center w-16 px-2">
+        {/* Save to List or Context Menu */}
+        <TableCell className="text-center w-16 px-2" onClick={(e) => e.stopPropagation()}>
           <div className="flex justify-center items-center">
-            <SaveToListButton problemId={problem.id} />
+            {collectionId ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => handleRemoveFromList(collectionId)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    <span>Remove from List</span>
+                  </DropdownMenuItem>
+                  <AddToCollectionSubMenu problemId={problem.id} />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <SaveToListButton problemId={problem.id} />
+            )}
           </div>
         </TableCell>
       </TableRow>

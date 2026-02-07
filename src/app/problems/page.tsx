@@ -11,9 +11,14 @@ import { cn } from '@/lib/utils';
 import { Filter } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
+import FavoriteListOverview from '@/components/problems/favorite-list/favorite-list-overview';
+import type { FavoriteList } from '@/types/favorite-list';
+import { ProblemStatus } from '@/types/problems';
 
 export default function ProblemsPage() {
   const { t } = useTranslation('problems');
+  const router = useRouter();
   const {
     // State
     problems,
@@ -43,6 +48,8 @@ export default function ProblemsPage() {
   } = useProblems();
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+
 
   return (
     <div className="min-h-screen bg-background">

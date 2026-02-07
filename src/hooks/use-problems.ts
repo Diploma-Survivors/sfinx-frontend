@@ -121,25 +121,9 @@ export default function useProblems(): UseProblemsReturn {
         let data: Problem[] = [];
         let meta: ProblemMeta | null = null;
 
-        if (requestParams.filters?.listId) {
-          const listId = parseInt(requestParams.filters.listId);
-          if (!isNaN(listId)) {
-            const problems = await favoriteListService.getProblems(listId);
-            data = Array.isArray(problems) ? problems : [];
-            meta = {
-              page: 1,
-              limit: data.length > 0 ? data.length : 10,
-              total: data.length,
-              totalPages: 1,
-              hasPreviousPage: false,
-              hasNextPage: false,
-            };
-          }
-        } else {
-          const response = await ProblemsService.getProblemList(requestParams);
-          data = response?.data?.data?.data || [];
-          meta = response?.data?.data?.meta || null;
-        }
+        const response = await ProblemsService.getProblemList(requestParams);
+        data = response?.data?.data?.data || [];
+        meta = response?.data?.data?.meta || null;
 
         setState((prev) => ({
           ...prev,
