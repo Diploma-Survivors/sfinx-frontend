@@ -15,13 +15,32 @@ export const favoriteListService = {
         return response.data.data;
     },
 
-    create: async (data: { name: string; isPublic: boolean; icon?: string }) => {
-        const response = await clientApi.post<ApiResponse<FavoriteList>>('/favorite-lists', data);
+    create: async (data: {
+        name: string;
+        description?: string;
+        isPublic: boolean;
+        icon?: string;
+    }) => {
+        const response = await clientApi.post<ApiResponse<FavoriteList>>(
+            '/favorite-lists',
+            data
+        );
         return response.data.data;
     },
 
-    update: async (id: number, data: { name?: string; isPublic?: boolean; icon?: string }) => {
-        const response = await clientApi.patch<ApiResponse<FavoriteList>>(`/favorite-lists/${id}`, data);
+    update: async (
+        id: number,
+        data: {
+            name?: string;
+            description?: string;
+            isPublic?: boolean;
+            icon?: string;
+        }
+    ) => {
+        const response = await clientApi.patch<ApiResponse<FavoriteList>>(
+            `/favorite-lists/${id}`,
+            data
+        );
         return response.data.data;
     },
 

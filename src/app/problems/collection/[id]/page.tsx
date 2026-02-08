@@ -24,7 +24,7 @@ export default function CollectionPage() {
     const id = params.id as string;
     const listId = parseInt(id);
 
-    const { data: list, isLoading: isListLoading, error: listError } = useSWR<FavoriteList>(
+    const { data: list, isLoading: isListLoading, error: listError, mutate: mutateList } = useSWR<FavoriteList>(
         listId ? `/favorite-lists/${listId}` : null,
         () => favoriteListService.getById(listId)
     );
@@ -64,11 +64,12 @@ export default function CollectionPage() {
                 ) : list ? (
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Left Column: List Info & Stats */}
-                        <div className="w-full lg:w-[450px] shrink-0 space-y-8">
+                        <div className="w-full lg:w-[350px] shrink-0 space-y-8">
                             <FavoriteListOverview
                                 list={list}
                                 problems={problems}
                                 onProblemsUpdated={() => mutateProblems()}
+                                onListUpdated={() => mutateList()}
                                 onPractice={() => {
                                     const firstUnsolved = problems.find(
                                         (p) => p.status !== ProblemStatus.SOLVED

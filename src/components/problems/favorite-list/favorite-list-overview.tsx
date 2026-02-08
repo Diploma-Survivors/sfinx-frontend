@@ -9,7 +9,6 @@ import type { Problem } from '@/types/problems';
 import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
 import {
     CheckCircle2,
-    MoreHorizontal,
     Play,
     Share2,
     Trash2,
@@ -24,6 +23,7 @@ import 'react-circular-progressbar/dist/styles.css';
 
 import { useState } from 'react';
 import { AddProblemsToCollectionModal } from './add-problems-to-collection-modal';
+import { EditListModal } from './edit-list-modal';
 import { useRouter } from 'next/navigation';
 
 interface FavoriteListOverviewProps {
@@ -31,6 +31,7 @@ interface FavoriteListOverviewProps {
     problems: Problem[];
     onPractice?: () => void;
     onProblemsUpdated?: () => void;
+    onListUpdated?: () => void;
 }
 
 export default function FavoriteListOverview({
@@ -38,10 +39,12 @@ export default function FavoriteListOverview({
     problems,
     onPractice,
     onProblemsUpdated,
+    onListUpdated,
 }: FavoriteListOverviewProps) {
     const { t } = useTranslation('problems');
     const router = useRouter();
     const [isAddProblemsModalOpen, setIsAddProblemsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const totalProblems = problems.length;
     const solvedProblems = problems.filter(
@@ -111,9 +114,9 @@ export default function FavoriteListOverview({
         <div className="flex flex-col gap-6">
             {/* List Info Card */}
             <Card className="border-none shadow-none bg-transparent p-0">
-                <div className="flex items-start gap-6">
-                    {renderIcon(list.icon)}
-                    <div className="space-y-4 flex-1">
+                <div>
+                    <div className="space-y-4">
+                        {renderIcon(list.icon)}
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -149,8 +152,14 @@ export default function FavoriteListOverview({
                             >
                                 <Plus className="h-4 w-4" />
                             </Button>
-                            <Button variant="outline" size="icon" className="rounded-full">
-                                <MoreHorizontal className="h-4 w-4" />
+                            {/* Edit Button */}
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="rounded-full"
+                                onClick={() => setIsEditModalOpen(true)}
+                            >
+                                <PenSquare className="h-4 w-4" />
                             </Button>
                         </div>
 
@@ -229,6 +238,15 @@ export default function FavoriteListOverview({
                 currentProblemIds={problems.map((p) => p.id)}
                 onSuccess={() => {
                     onProblemsUpdated?.();
+                }}
+            />
+
+            <EditListModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                list={list}
+                onSuccess={() => {
+                    onListUpdated?.();
                 }}
             />
         </div>
