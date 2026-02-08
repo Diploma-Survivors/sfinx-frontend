@@ -16,23 +16,32 @@ import {
     PenSquare,
     Lock,
     Globe,
+    Plus,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
+import { useState } from 'react';
+import { AddProblemsToCollectionModal } from './add-problems-to-collection-modal';
+import { useRouter } from 'next/navigation';
+
 interface FavoriteListOverviewProps {
     list: FavoriteList;
     problems: Problem[];
     onPractice?: () => void;
+    onProblemsUpdated?: () => void;
 }
 
 export default function FavoriteListOverview({
     list,
     problems,
     onPractice,
+    onProblemsUpdated,
 }: FavoriteListOverviewProps) {
     const { t } = useTranslation('problems');
+    const router = useRouter();
+    const [isAddProblemsModalOpen, setIsAddProblemsModalOpen] = useState(false);
 
     const totalProblems = problems.length;
     const solvedProblems = problems.filter(
@@ -132,8 +141,13 @@ export default function FavoriteListOverview({
                                 <Play className="h-4 w-4 fill-current" />
                                 {t('practice', 'Practice')}
                             </Button>
-                            <Button variant="outline" size="icon" className="rounded-full">
-                                <Share2 className="h-4 w-4" />
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="rounded-full"
+                                onClick={() => setIsAddProblemsModalOpen(true)}
+                            >
+                                <Plus className="h-4 w-4" />
                             </Button>
                             <Button variant="outline" size="icon" className="rounded-full">
                                 <MoreHorizontal className="h-4 w-4" />
@@ -207,6 +221,16 @@ export default function FavoriteListOverview({
                     </div>
                 </CardContent>
             </Card>
+
+            <AddProblemsToCollectionModal
+                isOpen={isAddProblemsModalOpen}
+                onClose={() => setIsAddProblemsModalOpen(false)}
+                listId={list.id}
+                currentProblemIds={problems.map((p) => p.id)}
+                onSuccess={() => {
+                    onProblemsUpdated?.();
+                }}
+            />
         </div>
     );
 }

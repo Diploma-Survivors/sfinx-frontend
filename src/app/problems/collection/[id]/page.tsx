@@ -29,7 +29,7 @@ export default function CollectionPage() {
         () => favoriteListService.getById(listId)
     );
 
-    const { data: problems = [], isLoading: isProblemsLoading, error: problemsError } = useSWR<Problem[]>(
+    const { data: problems = [], isLoading: isProblemsLoading, error: problemsError, mutate: mutateProblems } = useSWR<Problem[]>(
         listId ? `/favorite-lists/${listId}/problems` : null,
         () => favoriteListService.getProblems(listId)
     );
@@ -37,7 +37,6 @@ export default function CollectionPage() {
     const isLoading = isListLoading || isProblemsLoading;
     const error = listError || problemsError ? 'Failed to load collection.' : null;
 
-    // Fetching handled by useSWR
 
     if (error) {
         return (
@@ -69,6 +68,7 @@ export default function CollectionPage() {
                             <FavoriteListOverview
                                 list={list}
                                 problems={problems}
+                                onProblemsUpdated={() => mutateProblems()}
                                 onPractice={() => {
                                     const firstUnsolved = problems.find(
                                         (p) => p.status !== ProblemStatus.SOLVED

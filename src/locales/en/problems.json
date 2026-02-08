@@ -185,5 +185,14 @@
   "no_tags_found": "No tags found",
   "search_languages": "Search languages...",
   "create_solution_success": "Solution created successfully",
-  "search_tags": "Search tags..."
+  "search_tags": "Search tags...",
+  "add_questions": "Add Questions",
+  "search_questions": "Search questions...",
+  "no_results": "No results found",
+  "start_typing": "Start typing to search for questions",
+  "problems_added": "Problems added to collection",
+  "failed_to_add_problems": "Failed to add problems",
+  "add_to_list": "Add to List",
+  "failed_to_load_problems": "Failed to load problems",
+  "no_more_questions": "No more questions to load"
 }
