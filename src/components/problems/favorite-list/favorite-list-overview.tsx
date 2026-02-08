@@ -17,6 +17,7 @@ import {
     Globe,
     Plus,
 } from 'lucide-react';
+import { favoriteListService } from '@/services/favorite-list-service';
 import { useTranslation } from 'react-i18next';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -93,19 +94,68 @@ export default function FavoriteListOverview({
         },
     };
 
-    const renderIcon = (icon: string) => {
-        if (icon.startsWith('http')) {
-            return (
-                <img
-                    src={icon}
-                    alt="icon"
-                    className="h-16 w-16 rounded-xl object-cover shadow-sm"
-                />
-            );
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleIconClick = () => {
+        document.getElementById('list-icon-upload')?.click();
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validation
+        if (!file.type.startsWith('image/')) {
+            // Toast error
+            return;
         }
-        return (
-            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-accent/10 text-3xl">
+
+        try {
+            setIsUploading(true);
+            await favoriteListService.uploadIcon(list.id, file);
+            onListUpdated?.();
+        } catch (error) {
+            console.error('Failed to upload icon', error);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const renderIcon = (icon: string) => {
+        const content = icon.startsWith('http') ? (
+            <img
+                src={icon}
+                alt="icon"
+                className="h-16 w-16 rounded-xl object-cover shadow-sm transition-opacity group-hover:opacity-75"
+            />
+        ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-accent/10 text-3xl transition-opacity group-hover:opacity-75">
                 {icon}
+            </div>
+        );
+
+        return (
+            <div
+                className="relative group cursor-pointer inline-block"
+                onClick={handleIconClick}
+                title={t('change_icon', 'Change Icon')}
+            >
+                {content}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <PenSquare className="w-6 h-6 text-white drop-shadow-md" />
+                </div>
+                {isUploading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    </div>
+                )}
+                <input
+                    type="file"
+                    id="list-icon-upload"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                />
             </div>
         );
     };

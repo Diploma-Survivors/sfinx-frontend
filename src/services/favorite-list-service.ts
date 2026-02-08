@@ -76,4 +76,20 @@ export const favoriteListService = {
         const response = await clientApi.get<ApiResponse<any>>(`/favorite-lists/${listId}/problems`);
         return response.data.data;
     },
+
+    uploadIcon: async (listId: number, file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await clientApi.post<ApiResponse<FavoriteList>>(
+            `/favorite-lists/${listId}/icon`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+        return response.data.data;
+    },
 };
