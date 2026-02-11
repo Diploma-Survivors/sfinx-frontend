@@ -67,9 +67,9 @@ export const favoriteListService = {
         return response.data.data;
     },
 
-    getPublicLists: async (limit = 10) => {
+    getPublicLists: async (limit = 10, sort: 'newest' | 'trending' = 'newest') => {
         const response = await clientApi.get<ApiResponse<FavoriteList[]>>('/favorite-lists/public', {
-            params: { limit },
+            params: { limit, sort },
         });
         return response.data.data;
     },

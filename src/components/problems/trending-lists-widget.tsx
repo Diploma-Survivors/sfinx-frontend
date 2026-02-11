@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { favoriteListService } from '@/services/favorite-list-service';
 import type { FavoriteList } from '@/types/favorite-list';
-import { Flame, Star } from 'lucide-react';
+import { Flame, Star, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ export default function TrendingListsWidget() {
     useEffect(() => {
         const fetchLists = async () => {
             try {
-                const data = await favoriteListService.getPublicLists(5);
+                const data = await favoriteListService.getPublicLists(5, 'trending');
                 setLists(data);
             } catch (error) {
                 console.error('Failed to fetch trending lists', error);
@@ -87,6 +87,10 @@ export default function TrendingListsWidget() {
                                 <div className="flex">
                                     <Badge variant="secondary" className="rounded-md px-1.5 py-0 text-[10px] font-normal h-5">
                                         {list.problems?.length || 0} problems
+                                    </Badge>
+                                    <Badge variant="secondary" className="ml-1 rounded-md px-1.5 py-0 text-[10px] font-normal h-5 flex items-center gap-1">
+                                        <Bookmark className="h-3 w-3" />
+                                        {list.savedCount || 0}
                                     </Badge>
                                 </div>
                             </div>

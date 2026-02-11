@@ -16,6 +16,7 @@ export interface FavoriteList {
     createdAt: string;
     updatedAt: string;
     problems?: Problem[];
+    savedCount: number;
 }
 
 export interface CreateFavoriteListDto {

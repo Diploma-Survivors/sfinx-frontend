@@ -18,6 +18,7 @@ import {
     Globe,
     Plus,
     Copy,
+    Bookmark,
 } from 'lucide-react';
 import { favoriteListService } from '@/services/favorite-list-service';
 import { useTranslation } from 'react-i18next';
@@ -274,7 +275,7 @@ export default function FavoriteListOverview({
                                     {isSaving ? (
                                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                                     ) : (
-                                        <Copy className={cn("h-4 w-4", isSaved && "fill-current")} />
+                                        <Bookmark className={cn("h-4 w-4", isSaved && "fill-current")} />
                                     )}
                                     {isSaved ? t('saved', 'Saved') : t('save_list', 'Save list')}
                                 </Button>
@@ -307,9 +308,7 @@ export default function FavoriteListOverview({
                                         backgroundColor: 'transparent',
                                     })}
                                 />
-                                <div className="mt-2 text-center text-xs font-medium text-muted-foreground">
-                                    {t('solved', 'Solved')}
-                                </div>
+
                             </div>
 
                             <div className="flex-1 space-y-3">
