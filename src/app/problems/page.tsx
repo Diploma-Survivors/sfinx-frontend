@@ -1,5 +1,7 @@
 'use client';
 
+import TrendingListsWidget from '@/components/problems/trending-lists-widget';
+
 import ProblemListSkeleton from '@/components/problems/problem-list-skeleton';
 import ProblemFilter from '@/components/problems/problems-filter/problems-filter';
 import SortControls from '@/components/problems/problems-filter/sort-controls';
@@ -12,9 +14,7 @@ import { Filter } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
-import FavoriteListOverview from '@/components/problems/favorite-list/favorite-list-overview';
-import type { FavoriteList } from '@/types/favorite-list';
-import { ProblemStatus } from '@/types/problems';
+
 
 export default function ProblemsPage() {
   const { t } = useTranslation('problems');
@@ -153,6 +153,13 @@ export default function ProblemsPage() {
             )}
           </div>
         </main>
+
+        {/* Right Sidebar - Trending Lists */}
+        <aside className="hidden xl:block w-[300px] shrink-0 border-l border-border bg-card sticky left-0 top-16 h-[calc(100vh-4rem)] z-30">
+          <div className="h-full overflow-y-auto p-6">
+            <TrendingListsWidget />
+          </div>
+        </aside>
       </div>
     </div>
   );

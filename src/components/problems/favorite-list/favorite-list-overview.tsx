@@ -1,5 +1,6 @@
 'use client';
 
+import { useApp } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -16,16 +17,18 @@ import {
     Lock,
     Globe,
     Plus,
+    Copy,
 } from 'lucide-react';
 import { favoriteListService } from '@/services/favorite-list-service';
 import { useTranslation } from 'react-i18next';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AddProblemsToCollectionModal } from './add-problems-to-collection-modal';
 import { EditListModal } from './edit-list-modal';
 import { useRouter } from 'next/navigation';
+import { toastService } from '@/services/toasts-service';
 
 interface FavoriteListOverviewProps {
     list: FavoriteList;
@@ -44,8 +47,11 @@ export default function FavoriteListOverview({
 }: FavoriteListOverviewProps) {
     const { t } = useTranslation('problems');
     const router = useRouter();
+    const { user } = useApp();
     const [isAddProblemsModalOpen, setIsAddProblemsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const isOwner = user?.id === list.userId;
 
     const totalProblems = problems.length;
     const solvedProblems = problems.filter(
@@ -95,9 +101,48 @@ export default function FavoriteListOverview({
     };
 
     const [isUploading, setIsUploading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+
+    useEffect(() => {
+        const checkSavedStatus = async () => {
+            if (user && !isOwner) {
+                try {
+                    const savedLists = await favoriteListService.getSavedLists();
+                    setIsSaved(savedLists.some(l => l.id === list.id));
+                } catch (error) {
+                    console.error('Failed to check saved status', error);
+                }
+            }
+        };
+        checkSavedStatus();
+    }, [user, isOwner, list.id]);
+
+    const handleToggleSave = async () => {
+        try {
+            setIsSaving(true);
+            if (isSaved) {
+                await favoriteListService.unsave(list.id);
+                setIsSaved(false);
+                toastService.success(t('list_unsaved', 'List removed from your saved lists'));
+            } else {
+                await favoriteListService.save(list.id);
+                setIsSaved(true);
+                toastService.success(t('list_saved', 'List saved to your collection'));
+            }
+            onListUpdated?.();
+        } catch (error) {
+            console.error('Failed to toggle save list', error);
+            toastService.error(t('error_saving', 'Failed to update list status'));
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleIconClick = () => {
-        document.getElementById('list-icon-upload')?.click();
+        if (isOwner) {
+            document.getElementById('list-icon-upload')?.click();
+        }
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,26 +181,30 @@ export default function FavoriteListOverview({
 
         return (
             <div
-                className="relative group cursor-pointer inline-block"
+                className={cn("relative inline-block", isOwner ? "group cursor-pointer" : "")}
                 onClick={handleIconClick}
-                title={t('change_icon', 'Change Icon')}
+                title={isOwner ? t('change_icon', 'Change Icon') : undefined}
             >
                 {content}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <PenSquare className="w-6 h-6 text-white drop-shadow-md" />
-                </div>
-                {isUploading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
-                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    </div>
+                {isOwner && (
+                    <>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <PenSquare className="w-6 h-6 text-white drop-shadow-md" />
+                        </div>
+                        {isUploading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl">
+                                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                            </div>
+                        )}
+                        <input
+                            type="file"
+                            id="list-icon-upload"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
+                    </>
                 )}
-                <input
-                    type="file"
-                    id="list-icon-upload"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                />
             </div>
         );
     };
@@ -194,23 +243,42 @@ export default function FavoriteListOverview({
                                 <Play className="h-4 w-4 fill-current" />
                                 {t('practice', 'Practice')}
                             </Button>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="rounded-full"
-                                onClick={() => setIsAddProblemsModalOpen(true)}
-                            >
-                                <Plus className="h-4 w-4" />
-                            </Button>
-                            {/* Edit Button */}
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="rounded-full"
-                                onClick={() => setIsEditModalOpen(true)}
-                            >
-                                <PenSquare className="h-4 w-4" />
-                            </Button>
+                            {isOwner && (
+                                <>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="rounded-full"
+                                        onClick={() => setIsAddProblemsModalOpen(true)}
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                    </Button>
+                                    {/* Edit Button */}
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="rounded-full"
+                                        onClick={() => setIsEditModalOpen(true)}
+                                    >
+                                        <PenSquare className="h-4 w-4" />
+                                    </Button>
+                                </>
+                            )}
+                            {!isOwner && (
+                                <Button
+                                    variant={isSaved ? "secondary" : "outline"}
+                                    className="gap-2 rounded-full"
+                                    onClick={handleToggleSave}
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? (
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                    ) : (
+                                        <Copy className={cn("h-4 w-4", isSaved && "fill-current")} />
+                                    )}
+                                    {isSaved ? t('saved', 'Saved') : t('save_list', 'Save list')}
+                                </Button>
+                            )}
                         </div>
 
                         {list.description && (

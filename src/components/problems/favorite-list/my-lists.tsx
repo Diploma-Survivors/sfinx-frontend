@@ -51,6 +51,11 @@ export default function MyListsFilter({
         favoriteListService.getAll
     );
 
+    const { data: savedLists = [] } = useSWR<FavoriteList[]>(
+        '/favorite-lists/saved/me',
+        favoriteListService.getSavedLists
+    );
+
     const handleCreateList = async () => {
         if (!newListName.trim()) return;
 
@@ -138,6 +143,43 @@ export default function MyListsFilter({
                     </button>
                 ))}
             </div>
+
+            {/* Saved by me section */}
+            {savedLists.length > 0 && (
+                <>
+                    <div className="my-4 h-[1px] bg-border/40" />
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between h-7">
+                            <label className="text-sm font-semibold text-foreground">
+                                {t('saved_by_me', 'Saved by me')}
+                            </label>
+                        </div>
+                        <div className="space-y-1">
+                            {savedLists.map((list) => (
+                                <button
+                                    key={list.id}
+                                    type="button"
+                                    onClick={() => router.push(`/problems/collection/${list.id}`)}
+                                    className={cn(
+                                        'flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
+                                        selectedListId === list.id.toString()
+                                            ? 'bg-muted text-primary font-medium'
+                                            : 'text-foreground hover:bg-muted'
+                                    )}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        {renderIcon(list.icon)}
+                                        <span className="truncate max-w-[140px] text-left">
+                                            {list.name}
+                                        </span>
+                                    </div>
+
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </>
+            )}
 
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogContent>

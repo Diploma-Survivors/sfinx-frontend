@@ -67,8 +67,10 @@ export const favoriteListService = {
         return response.data.data;
     },
 
-    getPublicLists: async () => {
-        const response = await clientApi.get<ApiResponse<FavoriteList[]>>('/favorite-lists/public');
+    getPublicLists: async (limit = 10) => {
+        const response = await clientApi.get<ApiResponse<FavoriteList[]>>('/favorite-lists/public', {
+            params: { limit },
+        });
         return response.data.data;
     },
 
@@ -90,6 +92,19 @@ export const favoriteListService = {
                 },
             }
         );
+        return response.data.data;
+    },
+
+    save: async (id: number) => {
+        await clientApi.post(`/favorite-lists/${id}/save`);
+    },
+
+    unsave: async (id: number) => {
+        await clientApi.delete(`/favorite-lists/${id}/save`);
+    },
+
+    getSavedLists: async () => {
+        const response = await clientApi.get<ApiResponse<FavoriteList[]>>('/favorite-lists/saved/me');
         return response.data.data;
     },
 };
