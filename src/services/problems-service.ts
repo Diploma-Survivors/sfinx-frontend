@@ -1,18 +1,17 @@
-import clientApi from '@/lib/apis/axios-client';
-import type { ApiResponse } from '@/types/api';
+import clientApi from "@/lib/apis/axios-client";
+import type { ApiResponse } from "@/types/api";
 import {
   type GetProblemListRequest,
   type Problem,
-  ProblemDifficulty,
   type ProblemListItem,
   type ProblemListResponse,
-} from '@/types/problems';
-import type { SampleTestCase } from '@/types/testcases';
-import type { AxiosResponse } from 'axios';
-import qs from 'qs';
+} from "@/types/problems";
+import type { SampleTestCase } from "@/types/testcases";
+import type { AxiosResponse } from "axios";
+import qs from "qs";
 
 async function getProblemList(
-  getProblemListRequest: GetProblemListRequest
+  getProblemListRequest: GetProblemListRequest,
 ): Promise<AxiosResponse<ApiResponse<ProblemListResponse>>> {
   const { filters, ...rest } = getProblemListRequest;
   const params = qs.stringify(
@@ -20,15 +19,15 @@ async function getProblemList(
     {
       allowDots: true,
       skipNulls: true,
-    }
+    },
   );
-  const endpoint = '/problems';
+  const endpoint = "/problems";
   const url = params ? `${endpoint}?${params}` : endpoint;
   return await clientApi.get<ApiResponse<ProblemListResponse>>(url);
 }
 
 async function getProblemById(
-  problemId: number
+  problemId: number,
 ): Promise<AxiosResponse<ApiResponse<Problem>>> {
   const [problemResponse, samplesResponse] = await Promise.all([
     clientApi.get<ApiResponse<Problem>>(`/problems/${problemId}`),
