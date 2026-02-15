@@ -15,5 +15,12 @@
   "previous": "Previous",
   "next": "Next",
   "page_info": "{{current}} / {{total}}",
-  "problem_status": "Problem Status"
+  "problem_status": "Problem Status",
+  "no_contest_history": "No contest history found.",
+  "contests_participated": "Contests Participated",
+  "rating": "Rating",
+  "rating_history": "Rating History",
+  "current_rating": "Current Rating",
+  "max_rating": "Max Rating",
+  "recent_contests": "Recent Contests"
 }
