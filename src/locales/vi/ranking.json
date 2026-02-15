@@ -15,5 +15,12 @@
   "no_users_found": "Không tìm thấy người dùng nào.",
   "previous": "Trang trước",
   "next": "Trang sau",
-  "page_info": "{{current}} / {{total}}"
+  "page_info": "{{current}} / {{total}}",
+  "no_contest_history": "Không tìm thấy lịch sử cuộc thi nào.",
+  "contests_participated": "Số cuộc thi tham gia",
+  "rating": "Điểm xếp hạng",
+  "rating_history": "Lịch sử điểm",
+  "current_rating": "Điểm hiện tại",
+  "max_rating": "Điểm cao nhất",
+  "recent_contests": "Các cuộc thi gần nhất"
 }

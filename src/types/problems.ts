@@ -1,29 +1,29 @@
-import type { Tag } from './tags';
-import type { SampleTestCase } from './testcases';
-import type { Topic } from './topics';
-import type { UserProfile } from './user';
+import type { Tag } from "./tags";
+import type { SampleTestCase } from "./testcases";
+import type { Topic } from "./topics";
+import type { UserProfile } from "./user";
 
 export enum ProblemDifficulty {
-  EASY = 'easy',
-  MEDIUM = 'medium',
-  HARD = 'hard',
+  EASY = "easy",
+  MEDIUM = "medium",
+  HARD = "hard",
 }
 
 export enum SortBy {
-  ID = 'id',
-  DIFFICULTY = 'difficulty',
-  ACCEPTANCE_RATE = 'acceptanceRate',
+  ID = "id",
+  DIFFICULTY = "difficulty",
+  ACCEPTANCE_RATE = "acceptanceRate",
 }
 
 export enum SortOrder {
-  ASC = 'ASC',
-  DESC = 'DESC',
+  ASC = "ASC",
+  DESC = "DESC",
 }
 
 export enum ProblemStatus {
-  NOT_STARTED = 'not-started',
-  ATTEMPTED = 'attempted',
-  SOLVED = 'solved',
+  NOT_STARTED = "not-started",
+  ATTEMPTED = "attempted",
+  SOLVED = "solved",
 }
 
 export interface ProblemFilters {
@@ -33,6 +33,7 @@ export interface ProblemFilters {
   status?: ProblemStatus;
   topicIds?: number[];
   tagIds?: number[];
+  ids?: number[];
 }
 
 export interface GetProblemListRequest {
@@ -57,18 +58,18 @@ export interface ProblemListItem {
 // UI helpers removed in favor of component-level i18n and design system tokens
 export const DIFFICULTY_COLORS = {
   [ProblemDifficulty.EASY]:
-    'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
+    "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800",
   [ProblemDifficulty.MEDIUM]:
-    'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800',
+    "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800",
   [ProblemDifficulty.HARD]:
-    'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800',
+    "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800",
 };
 
 export const getDifficultyColor = (difficulty: ProblemDifficulty | string) => {
-  const normalized = (difficulty || '').toLowerCase() as ProblemDifficulty;
+  const normalized = (difficulty || "").toLowerCase() as ProblemDifficulty;
   return (
     DIFFICULTY_COLORS[normalized] ||
-    'bg-slate-100 text-slate-700 border-slate-200'
+    "bg-slate-100 text-slate-700 border-slate-200"
   );
 };
 
@@ -135,10 +136,10 @@ export interface ProblemListResponse {
 
 export const initialProblemData: Problem = {
   id: 0,
-  title: '',
-  slug: '',
-  description: '',
-  constraints: '',
+  title: "",
+  slug: "",
+  description: "",
+  constraints: "",
   difficulty: ProblemDifficulty.EASY,
   isPremium: false,
   isPublished: true,
@@ -146,7 +147,7 @@ export const initialProblemData: Problem = {
   status: ProblemStatus.NOT_STARTED,
   totalSubmissions: 0,
   totalAccepted: 0,
-  acceptanceRate: '0',
+  acceptanceRate: "0",
   totalAttempts: 0,
   totalSolved: 0,
   averageTimeToSolve: 0,
@@ -158,7 +159,7 @@ export const initialProblemData: Problem = {
   sampleTestcases: [],
   hints: [],
   hasOfficialSolution: false,
-  officialSolutionContent: '',
+  officialSolutionContent: "",
   createdBy: {} as UserProfile, // Placeholder
   updatedBy: {} as UserProfile, // Placeholder
   similarProblems: [],
@@ -168,8 +169,8 @@ export const initialProblemData: Problem = {
   updatedAt: new Date().toISOString(),
 
   // Legacy
-  inputDescription: '',
-  outputDescription: '',
+  inputDescription: "",
+  outputDescription: "",
   testcase: null,
   testcaseSamples: [],
 };

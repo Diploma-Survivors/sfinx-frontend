@@ -48,5 +48,6 @@
     "upgrade_complete_desc": "You are now a Premium member. Enjoy all the exclusive features!",
     "view_billing_history": "View Billing & History",
     "return_dashboard": "Return to Dashboard",
-    "auto_redirect_hint": "Check your email for the receipt."
+    "auto_redirect_hint": "Check your email for the receipt.",
+    "search_solutions": "Search solutions"
 }

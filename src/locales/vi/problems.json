@@ -183,5 +183,6 @@
   "no_tags_found": "Không tìm thấy thẻ",
   "search_tags": "Tìm kiếm thẻ...",
   "search_languages": "Tìm kiếm ngôn ngữ...",
-  "create_solution_success": "Tạo Solution thành công"
+  "create_solution_success": "Tạo Solution thành công",
+  "similar_problems": "Bài toán tương tự"
 }

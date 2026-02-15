@@ -185,5 +185,6 @@
   "no_tags_found": "No tags found",
   "search_languages": "Search languages...",
   "create_solution_success": "Solution created successfully",
-  "search_tags": "Search tags..."
+  "search_tags": "Search tags...",
+  "similar_problems": "Similar Problems"
 }

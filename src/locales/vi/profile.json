@@ -5,6 +5,7 @@
     "solved_problems": "Bài tập đã giải",
     "solved_problems_chart": "Biểu đồ bài tập đã giải",
     "solved": "Đã giải",
+    "solved_on": "Giải vào lúc",
     "easy": "Dễ",
     "medium": "Trung bình",
     "hard": "Khó",
@@ -135,8 +136,14 @@
     "date": "Ngày",
     "description": "Mô tả",
     "amount": "Số tiền",
-    "status": "Trạng thái",
+
     "no_billing_history": "Không có lịch sử thanh toán.",
     "contact_support_billing": "Vui lòng liên hệ hỗ trợ nếu bạn cần hóa đơn.",
-    "billing_history_unavailable": "Lịch sử thanh toán chi tiết hiện không khả dụng."
+    "billing_history_unavailable": "Lịch sử thanh toán chi tiết hiện không khả dụng.",
+    "verified": "Đã xác thực",
+    "premium": "Premium",
+    "premium_since": "Thành viên Premium từ",
+    "premium_expires": "Hết hạn Premium vào",
+    "last_active": "Hoạt động lần cuối",
+    "search_solutions": "Tìm kiếm lời giải tôi đã đăng"
 }
