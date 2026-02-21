@@ -1,6 +1,6 @@
-import type { Problem, ProblemDifficulty, ProblemStatus } from './problems';
-import type { Solution } from './solutions';
-import type { Submission, SubmissionStatus } from './submissions';
+import type { Problem, ProblemDifficulty, ProblemStatus } from "./problems";
+import type { Solution } from "./solutions";
+import type { Submission, SubmissionStatus } from "./submissions";
 
 export interface UserProfile {
   id: number;
@@ -11,7 +11,6 @@ export interface UserProfile {
   bio?: string;
   address?: string;
   phone?: string;
-  rank?: number;
   websiteUrl?: string;
   githubUsername?: string;
   linkedinUrl?: string;
@@ -24,6 +23,9 @@ export interface UserProfile {
   premiumExpiresAt?: string;
   lastLoginAt?: string;
   lastActiveAt?: string;
+  createdAt?: Date;
+  contestRank?: number;
+  problemRank?: number;
 }
 
 export interface UpdateUserProfileRequest {
@@ -95,13 +97,13 @@ export interface UserPracticeHistoryItem {
 }
 
 export enum PracticeHistorySortBy {
-  LAST_SUBMITTED_AT = 'lastSubmittedAt',
-  SUBMISSION_COUNT = 'submissionCount',
+  LAST_SUBMITTED_AT = "lastSubmittedAt",
+  SUBMISSION_COUNT = "submissionCount",
 }
 
 export enum PracticeHistorySortOrder {
-  ASC = 'ASC',
-  DESC = 'DESC',
+  ASC = "ASC",
+  DESC = "DESC",
 }
 
 export interface PracticeHistoryParams {
@@ -131,4 +133,28 @@ export interface UserSolutionsResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+export interface ContestRatingUser {
+  id: number;
+  username: string;
+  fullName: string | null;
+  avatarUrl: string | null;
+}
+
+export interface ContestRatingLeaderboardEntry {
+  rank: number;
+  user: ContestRatingUser;
+  contestRating: number;
+  contestsParticipated: number;
+}
+
+export interface ContestHistoryEntry {
+  contestId: number;
+  contestTitle: string;
+  contestEndTime: string;
+  contestRank: number;
+  ratingBefore: number;
+  ratingAfter: number;
+  ratingDelta: number;
 }

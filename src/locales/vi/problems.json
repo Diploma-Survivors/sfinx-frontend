@@ -192,5 +192,6 @@
   "failed_to_add_problems": "Thêm câu hỏi thất bại",
   "add_to_list": "Thêm vào danh sách",
   "failed_to_load_problems": "Không thể tải danh sách câu hỏi",
-  "no_more_questions": "Đã tải hết câu hỏi"
+  "no_more_questions": "Đã tải hết câu hỏi",
+  "similar_problems": "Bài toán tương tự"
 }

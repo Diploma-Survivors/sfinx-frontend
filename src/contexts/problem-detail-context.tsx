@@ -1,27 +1,28 @@
-'use client';
+"use client";
 
-import { useProblemDescription } from '@/hooks/use-problem-description';
-import { ProblemsService } from '@/services/problems-service';
-import { type SSEResult, sseService } from '@/services/sse-service';
-import { SubmissionsService } from '@/services/submissions-service';
-import { setProblem } from '@/store/slides/problem-slice';
-import type { Problem } from '@/types/problems';
-import type { Language } from '@/types/submissions';
-import type { SampleTestCase } from '@/types/testcases';
-import { useParams } from 'next/navigation';
+import { useProblemDescription } from "@/hooks/use-problem-description";
+import { ProblemsService } from "@/services/problems-service";
+import { type SSEResult, sseService } from "@/services/sse-service";
+import { SubmissionsService } from "@/services/submissions-service";
+import { setProblem } from "@/store/slides/problem-slice";
+import type { Problem } from "@/types/problems";
+import type { Language } from "@/types/submissions";
+import type { SampleTestCase } from "@/types/testcases";
+import { useParams } from "next/navigation";
 import {
   type ReactNode,
   createContext,
   useContext,
   useEffect,
   useState,
-} from 'react';
-import { useDispatch } from 'react-redux';
+} from "react";
+import { useDispatch } from "react-redux";
 
 interface ProblemDetailContextType {
   problem: Problem | null;
   isLoading: boolean;
   languages: Language[];
+  similarProblems: Problem[];
 
   // From useProblemDescription
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -38,8 +39,8 @@ interface ProblemDetailContextType {
   setActiveTestCase: (index: number) => void;
   handleTestCaseChange: (
     id: number,
-    field: 'input' | 'expectedOutput',
-    value: string
+    field: "input" | "expectedOutput",
+    value: string,
   ) => void;
   handleTestCaseAdd: () => void;
   handleTestCaseDelete: (id: number) => void;
@@ -54,12 +55,12 @@ interface ProblemDetailContextType {
   handleSubmit: (
     sourceCode: string,
     languageId: number,
-    contestId?: number
+    contestId?: number,
   ) => Promise<void>;
   clearSubmitResults: () => void;
 }
 
-const ProblemDetailContext = createContext<
+export const ProblemDetailContext = createContext<
   ProblemDetailContextType | undefined
 >(undefined);
 
@@ -72,6 +73,7 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
   const [problem, setProblemState] = useState<Problem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [languages, setLanguages] = useState<Language[]>([]);
+  const [similarProblems, setSimilarProblems] = useState<Problem[]>([]);
 
   // 1. Fetch Problem and Languages
   useEffect(() => {
@@ -88,8 +90,19 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
         setProblemState(problemData.data.data);
         dispatch(setProblem(problemData.data.data)); // Keep redux sync for now
         setLanguages(langResponse);
+
+        // Fetch similar problems if any
+        if (
+          problemData.data.data.similarProblems &&
+          problemData.data.data.similarProblems.length > 0
+        ) {
+          const similarResponse = await ProblemsService.getProblemList({
+            filters: { ids: problemData.data.data.similarProblems },
+          });
+          setSimilarProblems(similarResponse.data.data.data);
+        }
       } catch (error) {
-        console.error('Error fetching problem details:', error);
+        console.error("Error fetching problem details:", error);
       } finally {
         setIsLoading(false);
       }
@@ -111,6 +124,7 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
         value={{
           isLoading: true,
           languages: [],
+          similarProblems: [],
           ...problemDescriptionState, // This contains the dummy problem state
           problem: null, // Override with null for consumers
           testCases:
@@ -130,6 +144,7 @@ export function ProblemDetailProvider({ children }: { children: ReactNode }) {
       value={{
         isLoading: false,
         languages,
+        similarProblems,
         ...problemDescriptionState,
         problem,
         testCases:
@@ -145,7 +160,7 @@ export function useProblemDetail() {
   const context = useContext(ProblemDetailContext);
   if (context === undefined) {
     throw new Error(
-      'useProblemDetail must be used within a ProblemDetailProvider'
+      "useProblemDetail must be used within a ProblemDetailProvider",
     );
   }
   return context;

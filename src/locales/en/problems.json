@@ -194,5 +194,6 @@
   "failed_to_add_problems": "Failed to add problems",
   "add_to_list": "Add to List",
   "failed_to_load_problems": "Failed to load problems",
-  "no_more_questions": "No more questions to load"
+  "no_more_questions": "No more questions to load",
+  "similar_problems": "Similar Problems"
 }

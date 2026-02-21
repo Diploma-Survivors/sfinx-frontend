@@ -5,6 +5,7 @@
     "solved_problems": "Solved Problems",
     "solved_problems_chart": "Solved Problems Chart",
     "solved": "Solved",
+    "solved_on": "Solved on",
     "easy": "Easy",
     "medium": "Medium",
     "hard": "Hard",
@@ -135,8 +136,14 @@
     "date": "Date",
     "description": "Description",
     "amount": "Amount",
-    "status": "Status",
+
     "no_billing_history": "No billing history available.",
     "contact_support_billing": "Please contact support if you need an invoice.",
-    "billing_history_unavailable": "Detailed billing history is currently unavailable."
+    "billing_history_unavailable": "Detailed billing history is currently unavailable.",
+    "verified": "Verified",
+    "premium": "Premium",
+    "premium_since": "Premium member since",
+    "premium_expires": "Premium expires on",
+    "last_active": "Last active",
+    "search_solutions": "Search my solutions were published"
 }
