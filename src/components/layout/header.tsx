@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { UserMenu } from './user-menu';
+import { NotificationBell } from '@/components/notifications/notification-bell';
 
 export default function Header() {
   const { user, clearUserData } = useApp();
@@ -75,9 +76,7 @@ export default function Header() {
                 className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-primary/30 transition-all duration-200"
               />
             </div>
-            <Button variant="ghost" size="icon" className="h-10 w-10 text-black hover:bg-black/5">
-              <Bell className="h-6 w-6" fill="black" />
-            </Button>
+            {user && <NotificationBell />}
           </div>
 
           {/* Separator */}

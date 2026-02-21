@@ -188,7 +188,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
           ))}
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-balance text-foreground">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-balance text-foreground break-all">
           {post.title}
         </h1>
 
@@ -239,7 +239,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
       </div>
 
       {/* Content */}
-      <div className="prose prose-stone dark:prose-invert max-w-none">
+      <div className="prose prose-stone dark:prose-invert max-w-none break-all">
         <MarkdownRenderer content={post.content} />
       </div>
 
