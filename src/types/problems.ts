@@ -36,6 +36,7 @@ export interface ProblemFilters {
   topicIds?: number[];
   tagIds?: number[];
   listId?: string;
+  ids?: number[];
 }
 
 export interface ProblemList {
