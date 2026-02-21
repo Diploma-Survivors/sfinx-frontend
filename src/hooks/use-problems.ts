@@ -117,14 +117,20 @@ export default function useProblems(): UseProblemsReturn {
       try {
         setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
+        let data: Problem[] = [];
+        let meta: ProblemMeta | null = null;
+
         const response = await ProblemsService.getProblemList(requestParams);
+        data = response?.data?.data?.data || [];
+        meta = response?.data?.data?.meta || null;
+
         setState((prev) => ({
           ...prev,
           problems:
             requestParams.page === 1
-              ? response?.data?.data?.data || []
-              : [...prev.problems, ...(response?.data?.data?.data || [])],
-          meta: response?.data?.data?.meta,
+              ? data
+              : [...prev.problems, ...data],
+          meta: meta,
           isLoading: false,
         }));
       } catch (err) {

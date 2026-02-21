@@ -5,7 +5,7 @@ import ContestListSkeleton from '@/components/contest/contest-list-skeleton';
 import ContestSortControls from '@/components/contest/contest-sort-controls';
 import ContestTable from '@/components/contest/contest-table';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import useContests from '@/hooks/use-contests';
 import { Filter } from 'lucide-react';
 import { useState } from 'react';
@@ -90,6 +90,7 @@ export default function ContestsPage() {
                     side="left"
                     className="w-[300px] sm:w-[400px] p-6"
                   >
+                    <SheetTitle className="sr-only">{t('filters')}</SheetTitle>
                     <div className="mt-6">
                       <ContestFilter
                         search={search}

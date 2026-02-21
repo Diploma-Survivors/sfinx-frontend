@@ -184,5 +184,14 @@
   "search_tags": "Tìm kiếm thẻ...",
   "search_languages": "Tìm kiếm ngôn ngữ...",
   "create_solution_success": "Tạo Solution thành công",
+  "add_questions": "Thêm câu hỏi",
+  "search_questions": "Tìm kiếm câu hỏi...",
+  "no_results": "Không tìm thấy kết quả",
+  "start_typing": "Bắt đầu nhập để tìm kiếm câu hỏi",
+  "problems_added": "Đã thêm câu hỏi vào bộ sưu tập",
+  "failed_to_add_problems": "Thêm câu hỏi thất bại",
+  "add_to_list": "Thêm vào danh sách",
+  "failed_to_load_problems": "Không thể tải danh sách câu hỏi",
+  "no_more_questions": "Đã tải hết câu hỏi",
   "similar_problems": "Bài toán tương tự"
 }

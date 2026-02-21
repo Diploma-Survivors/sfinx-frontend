@@ -1,19 +1,24 @@
 'use client';
 
+import TrendingListsWidget from '@/components/problems/trending-lists-widget';
+
 import ProblemListSkeleton from '@/components/problems/problem-list-skeleton';
 import ProblemFilter from '@/components/problems/problems-filter/problems-filter';
 import SortControls from '@/components/problems/problems-filter/sort-controls';
 import ProblemTable from '@/components/problems/problems-table/problems-table';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import useProblems from '@/hooks/use-problems';
 import { cn } from '@/lib/utils';
 import { Filter } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
+
 
 export default function ProblemsPage() {
   const { t } = useTranslation('problems');
+  const router = useRouter();
   const {
     // State
     problems,
@@ -43,6 +48,8 @@ export default function ProblemsPage() {
   } = useProblems();
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -99,6 +106,7 @@ export default function ProblemsPage() {
                     side="left"
                     className="w-[300px] sm:w-[400px] p-6"
                   >
+                    <SheetTitle className="sr-only">{t('filters')}</SheetTitle>
                     <div className="mt-6">
                       <ProblemFilter
                         keyWord={keyword}
@@ -145,6 +153,13 @@ export default function ProblemsPage() {
             )}
           </div>
         </main>
+
+        {/* Right Sidebar - Trending Lists */}
+        <aside className="hidden xl:block w-[300px] shrink-0 border-l border-border bg-card sticky left-0 top-16 h-[calc(100vh-4rem)] z-30">
+          <div className="h-full overflow-y-auto p-6">
+            <TrendingListsWidget />
+          </div>
+        </aside>
       </div>
     </div>
   );
