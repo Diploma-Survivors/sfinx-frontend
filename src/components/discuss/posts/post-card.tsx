@@ -144,10 +144,10 @@ export function PostCard({ post }: PostCardProps) {
         {/* Content Area: Title + Text (Left) & Image (Right) */}
         <div className="flex justify-between gap-6">
           <div className="flex-1 space-y-2 min-w-0">
-            <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-amber-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1">
+            <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-amber-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1 break-all">
               {post.title}
             </h3>
-            <p className="text-base text-muted-foreground line-clamp-3 break-words">
+            <p className="text-base text-muted-foreground line-clamp-3 break-all">
               {text.replace(/[#*`_]/g, "").substring(0, 250)}...
             </p>
           </div>

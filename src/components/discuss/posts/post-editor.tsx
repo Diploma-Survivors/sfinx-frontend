@@ -10,7 +10,7 @@ import { DiscussService, type Tag } from '@/services/discuss-service';
 import { toastService } from '@/services/toasts-service';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-
+import { X } from 'lucide-react';
 const MIN_TITLE_LENGTH = 5;
 const MAX_TITLE_LENGTH = 255;
 const MIN_CONTENT_LENGTH = 10;
@@ -134,11 +134,24 @@ export function PostEditor({
 
                 <div className="py-2 space-y-4 flex-1 flex flex-col overflow-hidden">
 
-                    <TopicSelector
-                        selectedTags={selectedTags}
-                        onTagsChange={setSelectedTags}
-                        suggestedTags={suggestedTags}
-                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                        {selectedTags.map(tag => (
+                            <div key={tag.id} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary text-sm text-secondary-foreground">
+                                {tag.name}
+                                <button
+                                    onClick={() => setSelectedTags(selectedTags.filter(t => t.id !== tag.id))}
+                                    className="ml-1 hover:text-destructive transition-colors"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
+                            </div>
+                        ))}
+                        <TopicSelector
+                            selectedTags={selectedTags}
+                            onTagsChange={setSelectedTags}
+                            suggestedTags={suggestedTags}
+                        />
+                    </div>
 
                     <div className="flex-1 flex flex-col border border-border rounded-lg overflow-hidden shadow-sm">
                         <MarkdownToolbar

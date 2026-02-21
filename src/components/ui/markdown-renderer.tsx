@@ -32,7 +32,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
         p: ({ node, ...props }) => (
           <p
-            className="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed"
+            className="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap"
             {...props}
           />
         ),
