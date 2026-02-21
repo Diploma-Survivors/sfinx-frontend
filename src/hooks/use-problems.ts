@@ -1,7 +1,6 @@
 import { ProblemsService } from '@/services/problems-service';
 import { TagsService } from '@/services/tags-service';
 import { TopicsService } from '@/services/topics-service';
-import { favoriteListService } from '@/services/favorite-list-service';
 import {
   type GetProblemListRequest,
   type Problem,

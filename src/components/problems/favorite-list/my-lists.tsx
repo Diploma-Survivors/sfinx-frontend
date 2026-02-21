@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { favoriteListService } from '@/services/favorite-list-service';
 import type { FavoriteList } from '@/types/favorite-list';
 import useSWR, { mutate } from 'swr';
-import { ChevronDown, FileText, Globe, Lock, Plus } from 'lucide-react';
+import { ChevronDown, Globe, Lock, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

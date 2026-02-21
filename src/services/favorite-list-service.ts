@@ -1,13 +1,7 @@
 import clientApi from '@/lib/apis/axios-client';
 import { FavoriteList } from '@/types/favorite-list';
 
-// Define the response wrapper type based on TransformInterceptor
-interface ApiResponse<T> {
-    data: T;
-    statusCode: number;
-    timestamp: string;
-    path: string;
-}
+import { ApiResponse } from '@/types/api';
 
 export const favoriteListService = {
     getAll: async () => {
