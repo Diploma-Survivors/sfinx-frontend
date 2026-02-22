@@ -24,6 +24,7 @@ import {
   Lightbulb,
   Lock,
   Tag as TagIcon,
+  TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -31,6 +32,7 @@ import { useTranslation } from "react-i18next";
 import { ProblemDiscussion } from "./problem-discussion";
 import { ProblemHints } from "./problem-hints";
 import { ProblemTopicsTags } from "./problem-topics-tags";
+import { ReportProblemModal } from "./report-problem-modal";
 
 interface DescriptionPanelProps {
   problem: Problem;
@@ -43,6 +45,7 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
   const sampleCases: SampleTestCase[] = problem.sampleTestcases || [];
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
   const [isSimilarOpen, setIsSimilarOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   const hintsRef = useRef<HTMLDivElement>(null);
   const topicsRef = useRef<HTMLDivElement>(null);
@@ -83,13 +86,12 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
             {/* Row 2: Meta & Actions */}
             <div className="flex items-center gap-4 flex-wrap">
               <div
-                className={`px-3 py-1 rounded-full text-sm font-semibold border ${
-                  problem.difficulty === "easy"
+                className={`px-3 py-1 rounded-full text-sm font-semibold border ${problem.difficulty === "easy"
                     ? "bg-green-500/10 text-green-600 border-green-500/20"
                     : problem.difficulty === "medium"
                       ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
                       : "bg-red-500/10 text-red-600 border-red-500/20"
-                }`}
+                  }`}
               >
                 {t(`difficulty_${problem.difficulty}`)}
               </div>
@@ -120,6 +122,16 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                 <TagIcon className="w-4 h-4" />
                 {t("topics_tags_title")}
               </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground gap-2 hover:bg-red-500/10 hover:text-red-500"
+                onClick={() => setIsReportOpen(true)}
+              >
+                <TriangleAlert className="w-4 h-4" />
+                Report
+              </Button>
             </div>
           </div>
 
@@ -146,11 +158,10 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                   <button
                     key={`sample-tab-${sample.id ?? sample.input?.slice(0, 20) ?? index}`}
                     onClick={() => setActiveSampleIndex(index)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-                      activeSampleIndex === index
+                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${activeSampleIndex === index
                         ? "bg-secondary text-secondary-foreground shadow-sm"
                         : "bg-muted text-muted-foreground hover:bg-muted/80"
-                    }`}
+                      }`}
                   >
                     {t("case")} {index + 1}
                   </button>
@@ -264,9 +275,8 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                     className="w-9 p-0 text-muted-foreground hover:text-foreground"
                   >
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${
-                        isSimilarOpen ? "" : "-rotate-90"
-                      }`}
+                      className={`h-4 w-4 transition-transform duration-200 ${isSimilarOpen ? "" : "-rotate-90"
+                        }`}
                     />
                     <span className="sr-only">Toggle</span>
                   </Button>
@@ -305,6 +315,12 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
           <ProblemDiscussion problemId={problem.id.toString()} />
         </div>
       </div>
+
+      <ReportProblemModal
+        isOpen={isReportOpen}
+        onOpenChange={setIsReportOpen}
+        problemId={problem.id}
+      />
     </div>
   );
 }
