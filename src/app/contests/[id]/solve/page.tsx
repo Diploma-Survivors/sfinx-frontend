@@ -1,27 +1,23 @@
-'use client';
+"use client";
 
-import ContestDrawer from '@/components/contest/contest-drawer';
-import { ContestSolveSkeleton } from '@/components/contest/contest-solve-skeleton';
-import ContestSolveNavbar from '@/components/contest/solve/contest-solve-navbar';
-import ContestProblemWrapper from '@/components/problems/tabs/description/contest-problem-wrapper';
-import { ContestsService } from '@/services/contests-service';
-import { ProblemsService } from '@/services/problems-service';
-import { setContest as setContestAction } from '@/store/slides/contest-slice';
-import { setProblem } from '@/store/slides/problem-slice';
+import ContestDrawer from "@/components/contest/contest-drawer";
+import { ContestSolveSkeleton } from "@/components/contest/contest-solve-skeleton";
+import ContestSolveNavbar from "@/components/contest/solve/contest-solve-navbar";
+import ContestProblemWrapper from "@/components/problems/tabs/description/contest-problem-wrapper";
+import { ContestsService } from "@/services/contests-service";
+import { ProblemsService } from "@/services/problems-service";
+import { setContest as setContestAction } from "@/store/slides/contest-slice";
+import { setProblem } from "@/store/slides/problem-slice";
 import {
   type Contest,
   INITIAL_CONTEST,
   type LeaderboardEntry,
-} from '@/types/contests';
-import {
-  type Problem,
-  ProblemDifficulty,
-  initialProblemData,
-} from '@/types/problems';
-import { Loader2 } from 'lucide-react';
-import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+} from "@/types/contests";
+import { type Problem, initialProblemData } from "@/types/problems";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function ContestSolvePage() {
   const params = useParams();
@@ -33,7 +29,7 @@ export default function ContestSolvePage() {
     useState<Problem>(initialProblemData);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [userRank, setUserRank] = useState<LeaderboardEntry | undefined>(
-    undefined
+    undefined,
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isProblemLoading, setIsProblemLoading] = useState(false);
@@ -48,7 +44,7 @@ export default function ContestSolvePage() {
       try {
         setIsLoading(true);
         const response = await ContestsService.getContestDetail(contestId);
-        if (response.data && response.data.data) {
+        if (response.data?.data) {
           const contestData = response.data.data;
           setContest(contestData);
           dispatch(setContestAction(contestData));
@@ -59,12 +55,12 @@ export default function ContestSolvePage() {
             contestData.contestProblems.length > 0
           ) {
             fetchProblemDetail(
-              contestData.contestProblems[0].problem.id.toString()
+              contestData.contestProblems[0].problem.id.toString(),
             );
           }
         }
       } catch (error) {
-        console.error('Error fetching contest details:', error);
+        console.error("Error fetching contest details:", error);
       } finally {
         setIsLoading(false);
       }
@@ -87,15 +83,15 @@ export default function ContestSolvePage() {
           ContestsService.getContestLeaderboardMe(contestId),
         ]);
 
-        if (leaderboardRes.data && leaderboardRes.data.data) {
+        if (leaderboardRes.data?.data) {
           setLeaderboard(leaderboardRes.data.data.data);
         }
 
-        if (userRankRes.data && userRankRes.data.data) {
+        if (userRankRes.data?.data) {
           setUserRank(userRankRes.data.data);
         }
       } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error("Error fetching leaderboard:", error);
       }
     };
 
@@ -114,12 +110,12 @@ export default function ContestSolvePage() {
     try {
       setIsProblemLoading(true);
       const response = await ProblemsService.getProblemById(Number(problemId));
-      if (response.data && response.data.data) {
+      if (response.data?.data) {
         setCurrentProblem(response.data.data);
         dispatch(setProblem(response.data.data));
       }
     } catch (error) {
-      console.error('Error fetching problem detail:', error);
+      console.error("Error fetching problem detail:", error);
     } finally {
       setIsProblemLoading(false);
     }
@@ -128,7 +124,7 @@ export default function ContestSolvePage() {
   const currentIndex = useMemo(() => {
     if (!contest.contestProblems) return -1;
     return contest.contestProblems.findIndex(
-      (p) => p.problem.id === currentProblem.id
+      (p) => p.problem.id === currentProblem.id,
     );
   }, [contest.contestProblems, currentProblem.id]);
 
@@ -192,21 +188,30 @@ export default function ContestSolvePage() {
         onClose={() => setIsDrawerOpen(false)}
         contestName={contest.title}
         problems={
-          contest.contestProblems?.map((cp) => ({
-            id: cp.problem.id.toString(),
-            title: cp.problem.title,
-            maxScore:
-              cp.points || cp.problem.difficulty === ProblemDifficulty.EASY
-                ? 100
-                : cp.problem.difficulty === ProblemDifficulty.MEDIUM
-                  ? 200
-                  : 300, // Fallback logic
-            userScore: 0, // Need to fetch user score per problem if available
-            status: cp.problem.status as any, // Type assertion needed or mapping
-            difficulty: cp.problem.difficulty,
-            memoryLimitKb: cp.problem.memoryLimitKb,
-            timeLimitMs: cp.problem.timeLimitMs,
-          })) || []
+          contest.contestProblems?.map((cp) => {
+            let userScore = 0;
+            // Also update score using userRank since it gets fetched more often / responds to submissions
+            if (userRank) {
+              const problemStatus = userRank.problemStatus.find(
+                (p) => p.problemId.toString() === cp.problem.id.toString(),
+              );
+              if (problemStatus?.score !== undefined) {
+                userScore = problemStatus.score;
+              }
+            }
+
+            return {
+              id: cp.problem.id.toString(),
+              title: cp.problem.title,
+              maxScore: cp.points,
+              userScore,
+              status: cp.problem.status as any, // Type assertion needed or mapping
+              difficulty: cp.problem.difficulty,
+              memoryLimitKb: cp.problem.memoryLimitKb,
+              timeLimitMs: cp.problem.timeLimitMs,
+              orderIndex: cp.orderIndex,
+            };
+          }) || []
         }
         leaderboard={leaderboard}
         userRank={userRank}

@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { ContestDescriptionSkeleton } from '@/components/contest/contest-description-skeleton';
-import Timeline from '@/components/contest/timeline';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import MarkdownRenderer from '@/components/ui/markdown-renderer';
-import { cn } from '@/lib/utils';
-import { ContestsService } from '@/services/contests-service';
-import { toastService } from '@/services/toasts-service';
+import { ContestDescriptionSkeleton } from "@/components/contest/contest-description-skeleton";
+import Timeline from "@/components/contest/timeline";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
+import { cn } from "@/lib/utils";
+import { ContestsService } from "@/services/contests-service";
+import { toastService } from "@/services/toasts-service";
 import {
   type Contest,
   ContestStatus,
   ContestUserStatus,
   INITIAL_CONTEST,
-} from '@/types/contests';
-import { getDifficultyColor } from '@/types/problems';
+} from "@/types/contests";
+import { getDifficultyColor } from "@/types/problems";
 import {
   AlertCircle,
   CheckCircle,
@@ -25,15 +25,15 @@ import {
   Loader2,
   Play,
   Trophy,
-} from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+} from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ContestInfoPage() {
   const router = useRouter();
   const params = useParams();
-  const { t } = useTranslation('contests');
+  const { t } = useTranslation("contests");
   const id = params.id as string;
 
   const [contest, setContest] = useState<Contest>(INITIAL_CONTEST);
@@ -47,14 +47,14 @@ export default function ContestInfoPage() {
       try {
         setIsLoading(true);
         const response = await ContestsService.getContestDetail(id);
-        if (response.data && response.data.data) {
+        if (response?.data?.data) {
           setContest(response.data.data);
         } else {
-          setError('Failed to load contest data');
+          setError("Failed to load contest data");
         }
       } catch (err) {
-        console.error('Error fetching contest detail:', err);
-        setError('An error occurred while fetching contest details');
+        console.error("Error fetching contest detail:", err);
+        setError("An error occurred while fetching contest details");
       } finally {
         setIsLoading(false);
       }
@@ -69,7 +69,7 @@ export default function ContestInfoPage() {
       router.push(`/contests/${contest.id}/solve`);
     } catch (err) {
       // toastService.error('Error participating in contest');
-      console.error('Error participating in contest:', err);
+      console.error("Error participating in contest:", err);
     }
   };
 
@@ -121,7 +121,7 @@ export default function ContestInfoPage() {
           className="px-8 font-semibold shadow-sm transition-all"
         >
           <Eye className="w-4 h-4 mr-2" />
-          {t('view_result', { defaultValue: 'View Result' })}
+          {t("view_result", { defaultValue: "View Result" })}
         </Button>
       );
     }
@@ -134,7 +134,7 @@ export default function ContestInfoPage() {
           className="px-8 font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
         >
           <Play className="w-4 h-4 mr-2" />
-          {t('continue_contest')}
+          {t("continue_contest")}
         </Button>
       );
     }
@@ -147,7 +147,7 @@ export default function ContestInfoPage() {
         className="px-8 font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
       >
         <Play className="w-4 h-4 mr-2" />
-        {t('join_contest')}
+        {t("join_contest")}
       </Button>
     );
   };
@@ -167,8 +167,8 @@ export default function ContestInfoPage() {
                 className="bg-primary/10 text-primary hover:bg-primary/20 gap-2 px-3 py-1"
               >
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </span>
                 {t(contest.status)}
               </Badge>
@@ -182,14 +182,14 @@ export default function ContestInfoPage() {
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary" />
                 <span>
-                  {t('duration')}: {contest.durationMinutes}{' '}
-                  {t('minutes', { defaultValue: 'mins' })}
+                  {t("duration")}: {contest.durationMinutes}{" "}
+                  {t("minutes", { defaultValue: "mins" })}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-yellow-500" />
                 <span>
-                  {t('prize_pool')}: {t('none', { defaultValue: 'None' })}
+                  {t("prize_pool")}: {t("none", { defaultValue: "None" })}
                 </span>
               </div>
             </div>
@@ -199,13 +199,13 @@ export default function ContestInfoPage() {
               <Timeline
                 timelineEvents={[
                   {
-                    id: 'start',
-                    name: t('start_time'),
+                    id: "start",
+                    name: t("start_time"),
                     timestamp: contest.startTime,
                   },
                   {
-                    id: 'end',
-                    name: t('end_time'),
+                    id: "end",
+                    name: t("end_time"),
                     timestamp: contest.endTime,
                   },
                 ]}
@@ -221,19 +221,19 @@ export default function ContestInfoPage() {
           {/* Rules */}
           <div
             className={cn(
-              'bg-card rounded-xl border border-border p-6 shadow-sm md:col-span-3'
+              "bg-card rounded-xl border border-border p-6 shadow-sm md:col-span-3",
             )}
           >
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
-              {t('contest_rules')}
+              {t("contest_rules")}
             </h3>
             <div className="space-y-4 text-sm text-muted-foreground">
-              <p>{t('contest_rules_desc')}</p>
+              <p>{t("contest_rules_desc")}</p>
               {contest.description && (
                 <div className="mt-4 pt-4 border-t border-border/50">
                   <h4 className="font-medium text-foreground mb-2">
-                    {t('description')}
+                    {t("description")}
                   </h4>
                   <MarkdownRenderer content={contest.description} />
                 </div>
@@ -245,7 +245,7 @@ export default function ContestInfoPage() {
         {/* Problem List Preview */}
         <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
           <div className="p-6 border-b border-border bg-muted/30">
-            <h3 className="text-lg font-semibold">{t('problems')}</h3>
+            <h3 className="text-lg font-semibold">{t("problems")}</h3>
           </div>
           <div className="divide-y divide-border">
             {contest.contestProblems?.map((cp, idx) => (
@@ -268,7 +268,7 @@ export default function ContestInfoPage() {
                         {cp.problem.difficulty}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        {cp.points ?? 0} {t('points')}
+                        {cp.points ?? 0} {t("points")}
                       </span>
                     </div>
                   </div>
@@ -284,7 +284,7 @@ export default function ContestInfoPage() {
             {(!contest.contestProblems ||
               contest.contestProblems.length === 0) && (
               <div className="p-8 text-center text-muted-foreground">
-                {t('no_problems_available')}
+                {t("no_problems_available")}
               </div>
             )}
           </div>

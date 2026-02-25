@@ -50,5 +50,6 @@
   "start_after": "Bắt đầu trước",
   "start_before": "Bắt đầu sau",
   "continue_contest": "Tiếp tục cuộc thi",
-  "yourRank": "Hạng của bạn"
+  "yourRank": "Hạng của bạn",
+  "leaderboard": "Bảng xếp hạng"
 }

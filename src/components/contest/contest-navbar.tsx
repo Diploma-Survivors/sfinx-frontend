@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { ArrowLeft, FileText, Trophy } from 'lucide-react';
-import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, FileText, Trophy } from "lucide-react";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 interface ContestNavbarProps {
   activeTab: string;
@@ -13,8 +13,8 @@ interface ContestNavbarProps {
 }
 
 const navItems = [
-  { id: 'description', label: 'description', icon: FileText },
-  { id: 'ranking', label: 'ranking', icon: Trophy },
+  { id: "description", label: "description", icon: FileText },
+  { id: "ranking", label: "ranking", icon: Trophy },
 ];
 
 export default function ContestNavbar({
@@ -23,7 +23,7 @@ export default function ContestNavbar({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hideNavigation = false,
 }: ContestNavbarProps) {
-  const { t } = useTranslation('contests');
+  const { t } = useTranslation("contests");
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
@@ -36,7 +36,7 @@ export default function ContestNavbar({
             className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('back')}</span>
+            <span className="hidden sm:inline">{t("back")}</span>
           </Button>
         </Link>
 
@@ -49,14 +49,14 @@ export default function ContestNavbar({
             return (
               <Button
                 key={item.id}
-                variant={isActive ? 'default' : 'ghost'}
+                variant={isActive ? "default" : "ghost"}
                 size="sm"
                 onClick={() => onTabChange(item.id)}
                 className={cn(
-                  'gap-2 h-9 px-4 rounded-lg text-sm font-medium transition-all duration-200',
+                  "gap-2 h-9 px-4 rounded-lg text-sm font-medium transition-all duration-200",
                   isActive
-                    ? 'bg-primary/10 text-primary shadow-none hover:bg-primary/20'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    ? "bg-primary/10 text-primary shadow-none hover:bg-primary/20"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
                 )}
               >
                 <IconComponent className="w-4 h-4" />
@@ -67,7 +67,7 @@ export default function ContestNavbar({
         </div>
 
         {/* Right Side: Empty Placeholder to balance layout (width of back button approx) */}
-        <div className="w-[88px] hidden sm:block"></div>
+        <div className="w-[88px] hidden sm:block" />
       </div>
     </nav>
   );

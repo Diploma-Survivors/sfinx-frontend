@@ -26,10 +26,9 @@ async function getContestList(
 }
 
 async function getContestDetail(id: string) {
-  const response = await clientApi.get(`/contests/${id}`);
+  const response = await clientApi.get<ApiResponse<Contest>>(`/contests/${id}`);
 
-  // TODO: Remove this after backend implements userStatus
-  // response.data.data.userStatus = ContestUserStatus.JOINED;
+  response.data.data.contestProblems = response.data.data.contestProblems.toSorted((a, b) => a.orderIndex - b.orderIndex);
 
   return response;
 }

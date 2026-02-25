@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ForgotPasswordModal } from '@/components/auth/forgot-password-modal';
-import { Button } from '@/components/ui/button';
+import { ForgotPasswordModal } from "@/components/auth/forgot-password-modal";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,29 +9,29 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { PasswordInput } from '@/components/ui/password-input';
-import clientApi from '@/lib/apis/axios-client';
-import { toastService } from '@/services/toasts-service';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { FcGoogle } from 'react-icons/fc';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import clientApi from "@/lib/apis/axios-client";
+import { toastService } from "@/services/toasts-service";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FcGoogle } from "react-icons/fc";
 
 export default function LoginPage() {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation("auth");
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
-  const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/problems';
+  const callbackUrl = searchParams.get("callbackUrl") || "/problems";
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
@@ -41,26 +41,26 @@ export default function LoginPage() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const finalUsername = (formData.get('username') as string) || username;
-    const finalPassword = (formData.get('password') as string) || password;
+    const finalUsername = (formData.get("username") as string) || username;
+    const finalPassword = (formData.get("password") as string) || password;
 
     if (isSignUp) {
       if (password !== confirmPassword) {
-        toastService.error(t('passwords_do_not_match'));
+        toastService.error(t("passwords_do_not_match"));
         return;
       }
 
       try {
-        await clientApi.post('/auth/register', {
+        await clientApi.post("/auth/register", {
           email,
           username,
           password,
           fullName,
         });
-        toastService.success(t('registration_successful'));
+        toastService.success(t("registration_successful"));
 
         // Auto login after successful registration
-        const result = await signIn('credentials', {
+        const result = await signIn("credentials", {
           username: finalUsername,
           password: finalPassword,
           redirect: true,
@@ -72,11 +72,11 @@ export default function LoginPage() {
         }
       } catch (error: any) {
         toastService.error(
-          error.response?.data?.message || t('registration_failed')
+          error.response?.data?.message || t("registration_failed"),
         );
       }
     } else {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         username: finalUsername,
         password: finalPassword,
         redirect: true,
@@ -92,7 +92,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/google';
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
     window.location.href = url;
   };
 
@@ -101,10 +101,10 @@ export default function LoginPage() {
       <Card className="w-full max-w-lg shadow-lg border-border">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold tracking-tight text-primary">
-            {t('welcome_back')}
+            {t("welcome_back")}
           </CardTitle>
           <CardDescription>
-            {isSignUp ? t('create_account_desc') : t('enter_login_info')}
+            {isSignUp ? t("create_account_desc") : t("enter_login_info")}
           </CardDescription>
         </CardHeader>
 
@@ -116,7 +116,7 @@ export default function LoginPage() {
                   <Input
                     id="email"
                     name="email"
-                    placeholder={t('email')}
+                    placeholder={t("email")}
                     type="email"
                     autoCapitalize="none"
                     autoComplete="email"
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   <Input
                     id="fullName"
                     name="fullName"
-                    placeholder={t('full_name')}
+                    placeholder={t("full_name")}
                     type="text"
                     autoComplete="name"
                     value={fullName}
@@ -143,7 +143,7 @@ export default function LoginPage() {
               <Input
                 id="username"
                 name="username"
-                placeholder={t('username')}
+                placeholder={t("username")}
                 type="text"
                 autoCapitalize="none"
                 autoComplete="username"
@@ -156,8 +156,8 @@ export default function LoginPage() {
               <PasswordInput
                 id="password"
                 name="password"
-                placeholder={t('password')}
-                autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                placeholder={t("password")}
+                autoComplete={isSignUp ? "new-password" : "current-password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -170,7 +170,7 @@ export default function LoginPage() {
                   onClick={() => setIsForgotPasswordModalOpen(true)}
                   className="text-sm text-primary hover:underline"
                 >
-                  {t('forgot_password')}?
+                  {t("forgot_password")}?
                 </button>
               </div>
             )}
@@ -179,7 +179,7 @@ export default function LoginPage() {
                 <PasswordInput
                   id="confirm-password"
                   name="confirmPassword"
-                  placeholder={t('confirm_password')}
+                  placeholder={t("confirm_password")}
                   autoComplete="new-password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -189,7 +189,7 @@ export default function LoginPage() {
             )}
 
             <Button className="w-full" type="submit">
-              {isSignUp ? t('sign_up') : t('sign_in')}
+              {isSignUp ? t("sign_up") : t("sign_in")}
             </Button>
           </form>
 
@@ -199,7 +199,7 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                {t('or_login_with')}
+                {t("or_login_with")}
               </span>
             </div>
           </div>
@@ -217,12 +217,12 @@ export default function LoginPage() {
 
         <CardFooter className="flex flex-col space-y-2 text-center text-sm text-muted-foreground">
           <div>
-            {isSignUp ? t('already_have_account') : t('dont_have_account')}{' '}
+            {isSignUp ? t("already_have_account") : t("dont_have_account")}{" "}
             <span
               onClick={toggleMode}
               className="underline underline-offset-4 hover:text-primary cursor-pointer font-medium"
             >
-              {isSignUp ? t('sign_in') : t('sign_up')}
+              {isSignUp ? t("sign_in") : t("sign_up")}
             </span>
           </div>
         </CardFooter>
