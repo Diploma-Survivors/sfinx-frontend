@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '@/lib/i18n';
 import {
   InterviewChat,
@@ -25,8 +25,10 @@ import { SampleTestCasesPanel } from '@/components/problems/tabs/description/pan
 import { Button } from '@/components/ui/button';
 import { type InterviewPhase, useInterview } from '@/hooks/use-interview';
 import { ProblemsService } from '@/services/problems-service';
+import { SubmissionsService } from '@/services/submissions-service';
 import type { SSEResult } from '@/services/sse-service';
 import { toastService } from '@/services/toasts-service';
+import { setProblem } from '@/store/slides/problem-slice';
 import { selectWorkspace } from '@/store/slides/workspace-slice';
 import { MessageRole } from '@/types/interview';
 import { SortBy, SortOrder } from '@/types/problems';
@@ -54,6 +56,7 @@ async function fetchRandomProblem() {
 export default function LiveInterviewPage() {
   const { t } = useTranslation('interview');
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isStarting, setIsStarting] = useState(false);
 
   const {
@@ -86,13 +89,18 @@ export default function LiveInterviewPage() {
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
 
   const workspace = useSelector(selectWorkspace);
-  const currentLanguage = workspace.currentLanguage;
+  const currentLanguageId =
+    interview?.problemId
+      ? workspace.currentLanguage?.[String(interview.problemId)] ?? 46
+      : 46;
   const currentCodeMap = interview?.problemId
     ? workspace.currentCode[String(interview.problemId)]
     : undefined;
-  const code =
-    (currentLanguage?.id && currentCodeMap?.[currentLanguage.id]) || '';
-  const language = String(currentLanguage?.name || 'javascript');
+  const code = currentCodeMap?.[currentLanguageId] || '';
+  const languageObj = workspace.languages?.find(
+    (l) => l.id === currentLanguageId
+  );
+  const language = String(languageObj?.name || 'javascript');
 
   const [testResults, setTestResults] = useState<SSEResult | null>(null);
   const [runError, setRunError] = useState<string | null>(null);
@@ -199,6 +207,8 @@ export default function LiveInterviewPage() {
         setTestCases([{ id: 1, input: '', expectedOutput: '' }]);
       }
       await startInterview(problem.id);
+      dispatch(setProblem(problem));
+      await SubmissionsService.getLanguageList();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Failed to start interview';
