@@ -8,6 +8,7 @@ import { SolutionsList } from "@/components/profile/solutions/solutions-list";
 import { ProblemStatsCard } from "@/components/profile/stats/problem-stats-card";
 import { SubmissionStatsCard } from "@/components/profile/stats/submission-stats-card";
 import { UserContestHistoryTab } from "@/components/profile/contest-history/user-contest-history-tab";
+import { UserContestRatingChart } from "@/components/profile/stats/user-contest-rating-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,7 +26,6 @@ import type {
 import { useRouter } from "next/navigation";
 import { use, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 export default function ProfilePage({
   params,
 }: {
@@ -216,6 +216,8 @@ export default function ProfilePage({
         </div>
 
         <div className="col-span-12 space-y-6 lg:col-span-9">
+          <UserContestRatingChart userId={Number(userIdString)} />
+
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <ProblemStatsCard problemStats={problemStats} />
             <SubmissionStatsCard submissionStats={submissionStats} />

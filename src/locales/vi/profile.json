@@ -146,5 +146,13 @@
     "premium_expires": "Hết hạn Premium vào",
     "last_active": "Hoạt động lần cuối",
     "search_solutions": "Tìm kiếm lời giải tôi đã đăng",
-    "contest_history": "Lịch sử cuộc thi"
+    "contest_history": "Lịch sử cuộc thi",
+    "contest_rating": "Đánh giá Cuộc thi",
+    "no_contest_rating_data": "Chưa có dữ liệu đánh giá cuộc thi.",
+    "current_rating": "Đánh giá hiện tại",
+    "peak_rating": "Đánh giá cao nhất",
+    "global_rank": "Hạng Toàn cầu",
+    "top_percentage": "Top",
+    "rating": "Đánh giá",
+    "no_recent_activity": "Chưa có bài tập nào được giải gần đây"
 }

@@ -23,6 +23,7 @@ import {
   type UserSubmissionStats,
   type ContestRatingLeaderboardEntry,
   type ContestHistoryEntry,
+  type ContestRatingChartData,
 } from "@/types/user";
 import type { AxiosResponse } from "axios";
 
@@ -154,6 +155,12 @@ async function getContestHistory(
   });
 }
 
+async function getContestRatingChart(
+  userId: number,
+): Promise<AxiosResponse<ApiResponse<ContestRatingChartData>>> {
+  return await clientApi.get(`/users/${userId}/contest-rating-chart`);
+}
+
 export const UserService = {
   getUserProfile,
   getMe,
@@ -168,4 +175,5 @@ export const UserService = {
   getUserSolutions,
   getContestRatingLeaderboard,
   getContestHistory,
+  getContestRatingChart,
 };

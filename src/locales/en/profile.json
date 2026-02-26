@@ -146,5 +146,13 @@
     "premium_expires": "Premium expires on",
     "last_active": "Last active",
     "search_solutions": "Search my solutions were published",
-    "contest_history": "Contest History"
+    "contest_history": "Contest History",
+    "contest_rating": "Contest Rating",
+    "no_contest_rating_data": "No contest rating data available.",
+    "current_rating": "Current Rating",
+    "peak_rating": "Peak Rating",
+    "global_rank": "Global Rank",
+    "top_percentage": "Top",
+    "rating": "Rating",
+    "no_recent_activity": "No recent AC problems"
 }
