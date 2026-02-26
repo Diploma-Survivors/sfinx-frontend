@@ -32,9 +32,13 @@ export function UserContestHistory() {
       }
       try {
         setLoading(true);
-        const response = await UserService.getContestHistory(user.id);
+        // Fetch a large number of history entries for the chart on the global ranking page.
+        const response = await UserService.getContestHistory(user.id, {
+          page: 1,
+          limit: 100,
+        });
         // Sort by date ascending for chart
-        const sorted = response.data.data.sort(
+        const sorted = response.data.data.data.sort(
           (a, b) =>
             new Date(a.contestEndTime).getTime() -
             new Date(b.contestEndTime).getTime(),

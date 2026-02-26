@@ -135,8 +135,23 @@ async function getContestRatingLeaderboard(
 
 async function getContestHistory(
   userId: number,
-): Promise<AxiosResponse<ApiResponse<ContestHistoryEntry[]>>> {
-  return await clientApi.get(`/users/${userId}/contest-history`);
+  params?: { page?: number; limit?: number },
+): Promise<
+  AxiosResponse<
+    ApiResponse<{
+      data: ContestHistoryEntry[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
+    }>
+  >
+> {
+  return await clientApi.get(`/users/${userId}/contest-history`, {
+    params,
+  });
 }
 
 export const UserService = {
