@@ -92,8 +92,7 @@ export default function InterviewHistoryPage() {
   };
 
   const handleResume = (interviewId: string) => {
-    // TODO: Implement resume interview flow
-    router.push(`/interview?resume=${interviewId}`);
+    router.push(`/interview/${interviewId}`);
   };
 
   const handleViewDetails = (interviewId: string) => {

@@ -46,6 +46,7 @@ interface UseInterviewReturn {
 
   // Actions
   startInterview: (problemId: number) => Promise<void>;
+  loadInterview: (interviewId: string) => Promise<void>;
   connectVoice: () => Promise<void>;
   sendMessage: (content: string, options?: SendMessageOptions) => Promise<void>;
   endInterview: () => Promise<void>;
@@ -152,6 +153,50 @@ export function useInterview(
       } catch (err) {
         const error =
           err instanceof Error ? err : new Error('Failed to start interview');
+        handleError(error);
+        throw error;
+      } finally {
+        if (isActiveRef.current) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [handleError]
+  );
+
+  /**
+   * Load an existing interview by ID (for session restoration)
+   */
+  const loadInterview = useCallback(
+    async (interviewId: string) => {
+      if (isActiveRef.current) {
+        setIsLoading(true);
+        setError(null);
+      }
+
+      try {
+        const interviewResponse = await InterviewService.getInterview(
+          interviewId
+        );
+        const interviewData = interviewResponse.data.data as Interview;
+
+        if (isActiveRef.current) {
+          setInterview(interviewData);
+          setMessages(interviewData.messages || []);
+          
+          // Set phase based on interview status
+          if (interviewData.status === 'completed') {
+            setEvaluation(interviewData.evaluation || null);
+            setPhase('completed');
+          } else if (interviewData.status === 'active') {
+            setPhase('active');
+          } else {
+            setPhase('greeting');
+          }
+        }
+      } catch (err) {
+        const error =
+          err instanceof Error ? err : new Error('Failed to load interview');
         handleError(error);
         throw error;
       } finally {
@@ -459,6 +504,7 @@ export function useInterview(
     isTyping,
     error,
     startInterview,
+    loadInterview,
     connectVoice,
     sendMessage,
     endInterview,
