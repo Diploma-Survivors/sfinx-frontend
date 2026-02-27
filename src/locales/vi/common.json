@@ -53,5 +53,17 @@
     "notifications": "Thông báo",
     "mark_all_read": "Đánh dấu tất cả đã đọc",
     "no_notifications": "Bạn không có thông báo nào lúc này.",
-    "view_details": "Xem chi tiết"
+    "view_details": "Xem chi tiết",
+    "years_ago_one": "1 năm trước",
+    "years_ago_other": "{{count}} năm trước",
+    "months_ago_one": "1 tháng trước",
+    "months_ago_other": "{{count}} tháng trước",
+    "days_ago_one": "1 ngày trước",
+    "days_ago_other": "{{count}} ngày trước",
+    "hours_ago_one": "1 giờ trước",
+    "hours_ago_other": "{{count}} giờ trước",
+    "minutes_ago_one": "1 phút trước",
+    "minutes_ago_other": "{{count}} phút trước",
+    "seconds_ago_one": "1 giây trước",
+    "seconds_ago_other": "{{count}} giây trước"
 }
