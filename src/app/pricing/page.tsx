@@ -62,10 +62,8 @@ export default function PricingPage() {
         // Create free plan with hardcoded features
         const freePlan: SubscriptionPlan = {
           id: 0,
-          name: t("free", { defaultValue: "Free" }),
-          description: t("free_plan_desc", {
-            defaultValue: "For developers just getting started",
-          }),
+          name: t("free"),
+          description: t("free_plan_desc"),
           priceUsd: 0,
           durationMonths: 0,
           isActive: true,
@@ -73,33 +71,25 @@ export default function PricingPage() {
             {
               id: 0,
               key: "unlimited_practice",
-              name: t("feature_unlimited_practice", {
-                defaultValue: "Unlimited practice problems",
-              }),
+              name: t("feature_unlimited_practice"),
               isActive: true,
             },
             {
               id: 0,
               key: "basic_eval",
-              name: t("feature_basic_eval", {
-                defaultValue: "Basic code evaluation",
-              }),
+              name: t("feature_basic_eval"),
               isActive: true,
             },
             {
               id: 0,
               key: "community",
-              name: t("feature_community", {
-                defaultValue: "Community support",
-              }),
+              name: t("feature_community"),
               isActive: true,
             },
             {
               id: 0,
               key: "limited_metrics",
-              name: t("feature_limited_metrics", {
-                defaultValue: "Limited performance insights",
-              }),
+              name: t("feature_limited_metrics"),
               isActive: true,
             },
           ],
@@ -247,14 +237,14 @@ export default function PricingPage() {
         >
           <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20 mb-4">
             <Crown className="mr-1.5 h-3.5 w-3.5" />
-            Premium Access
+            {t("premium_access", { defaultValue: "Premium Access" })}
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl mb-6">
-            Simple,{" "}
+            {t("pricing_simple", { defaultValue: "Simple, " })}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">
-              Transparent
-            </span>{" "}
-            Pricing
+              {t("pricing_transparent", { defaultValue: "Transparent" })}
+            </span>
+            {t("pricing_pricing", { defaultValue: " Pricing" })}
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
             {t("pricing_subtitle", {
@@ -331,10 +321,12 @@ export default function PricingPage() {
                       <span className="ml-1 text-sm font-medium text-muted-foreground">
                         /
                         {plan.durationMonths === 1
-                          ? "month"
+                          ? t("duration_month", { defaultValue: "month" })
                           : plan.durationMonths === 12
-                            ? "year"
-                            : "forever"}
+                            ? t("duration_year", { defaultValue: "year" })
+                            : t("duration_forever", {
+                                defaultValue: "forever",
+                              })}
                       </span>
                     </div>
 
@@ -427,12 +419,16 @@ export default function PricingPage() {
             <br />
             {isPrenium && (
               <span className="text-primary font-medium mt-2 block">
-                You are currently a Premium member.
+                {t("currently_premium", {
+                  defaultValue: "You are currently a Premium member.",
+                })}
                 <span
                   className="underline cursor-pointer ml-1 hover:text-primary/80"
                   onClick={() => router.push("/settings?tab=billing")}
                 >
-                  Manage Subscription
+                  {t("manage_subscription", {
+                    defaultValue: "Manage Subscription",
+                  })}
                 </span>
               </span>
             )}
