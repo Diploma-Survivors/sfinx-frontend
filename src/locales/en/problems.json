@@ -246,5 +246,22 @@
   "describe_list": "Describe your list",
   "private": "Private",
   "creating": "Creating...",
-  "create_list": "Create List"
+  "create_list": "Create List",
+  "failed_load_collection": "Failed to load collection.",
+  "go_back": "Go Back",
+  "back_to_problems": "Back to Problems",
+  "problems_in_list": "Problems",
+  "list_saved": "List saved to your collection",
+  "list_unsaved": "List removed from your saved lists",
+  "error_saving": "Failed to update list status",
+  "change_icon": "Change Icon",
+  "questions": "questions",
+  "public": "Public",
+  "practice": "Practice",
+  "save_list": "Save list",
+  "saved": "Saved",
+  "list_updated": "List updated successfully",
+  "update_failed": "Failed to update list",
+  "edit_list": "Edit List",
+  "save_changes": "Save Changes"
 }

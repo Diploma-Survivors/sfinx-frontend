@@ -42,14 +42,13 @@ export default function CollectionPage() {
   );
 
   const isLoading = isListLoading || isProblemsLoading;
-  const error =
-    listError || problemsError ? "Failed to load collection." : null;
+  const error = listError || problemsError ? t("failed_load_collection") : null;
 
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <p className="text-destructive mb-4">{error}</p>
-        <Button onClick={() => router.back()}>{t("go_back", "Go Back")}</Button>
+        <Button onClick={() => router.back()}>{t("go_back")}</Button>
       </div>
     );
   }
@@ -65,7 +64,7 @@ export default function CollectionPage() {
             onClick={() => router.push("/problems")}
           >
             <ArrowLeft className="h-4 w-4" />
-            {t("back_to_problems", "Back to Problems")}
+            {t("back_to_problems")}
           </Button>
         </div>
 
@@ -97,7 +96,7 @@ export default function CollectionPage() {
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                  {t("problems_in_list", "Problems")}
+                  {t("problems_in_list")}
                 </h1>
               </div>
               <div className="rounded-xl border bg-card text-card-foreground shadow-sm">

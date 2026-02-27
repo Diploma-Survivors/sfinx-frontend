@@ -244,5 +244,22 @@
   "describe_list": "Mô tả danh sách của bạn",
   "private": "Riêng tư",
   "creating": "Đang tạo...",
-  "create_list": "Tạo danh sách"
+  "create_list": "Tạo danh sách",
+  "failed_load_collection": "Không thể tải danh sách.",
+  "go_back": "Quay lại",
+  "back_to_problems": "Quay lại danh sách bài tập",
+  "problems_in_list": "Bài tập",
+  "list_saved": "Đã lưu danh sách vào bộ sưu tập",
+  "list_unsaved": "Đã xóa danh sách khỏi các danh sách đã lưu",
+  "error_saving": "Không thể cập nhật trạng thái danh sách",
+  "change_icon": "Thay đổi biểu tượng",
+  "questions": "câu hỏi",
+  "public": "Công khai",
+  "practice": "Luyện tập",
+  "save_list": "Lưu danh sách",
+  "saved": "Đã lưu",
+  "list_updated": "Cập nhật danh sách thành công",
+  "update_failed": "Cập nhật danh sách thất bại",
+  "edit_list": "Chỉnh sửa danh sách",
+  "save_changes": "Lưu thay đổi"
 }
