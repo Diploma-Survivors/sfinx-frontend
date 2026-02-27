@@ -201,7 +201,9 @@ export default function LiveInterviewPage() {
       await startInterview(problem.id);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to start interview";
+        error instanceof Error
+          ? error.message
+          : t("live.failed_to_start_interview");
       toastService.error(message);
     } finally {
       setIsStarting(false);
@@ -420,10 +422,10 @@ export default function LiveInterviewPage() {
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">
-            Connecting to voice room...
+            {t("live.connecting_voice_room")}
           </h2>
           <p className="text-muted-foreground">
-            Please allow microphone access when prompted
+            {t("live.allow_microphone_access")}
           </p>
         </div>
       </div>
@@ -435,9 +437,11 @@ export default function LiveInterviewPage() {
       <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-muted/30">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Ending interview...</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            {t("live.ending_interview")}
+          </h2>
           <p className="text-muted-foreground">
-            Generating your evaluation report
+            {t("live.generating_evaluation_report")}
           </p>
         </div>
       </div>
@@ -461,10 +465,10 @@ export default function LiveInterviewPage() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <p className="text-muted-foreground mb-4">
-                  Voice mode unavailable. Continuing with text chat.
+                  {t("live.voice_unavailable_fallback")}
                 </p>
                 <Button onClick={() => window.location.reload()}>
-                  Retry Connection
+                  {t("live.retry_connection")}
                 </Button>
               </div>
             </div>
@@ -483,9 +487,7 @@ export default function LiveInterviewPage() {
           }}
           onError={(error) => {
             console.error("[LiveKit] Error:", error);
-            toastService.error(
-              "Voice connection error. Falling back to text mode.",
-            );
+            toastService.error(t("live.voice_connection_error_fallback"));
             setVoiceEnabled(false);
             setIsVoiceConnected(false);
           }}
@@ -513,11 +515,11 @@ export default function LiveInterviewPage() {
             {voiceEnabled && isVoiceConnected && (
               <div className="px-4 py-2 border-b bg-muted/10 flex items-center gap-3">
                 <span className="text-xs text-muted-foreground">
-                  Microphone:
+                  {t("live.microphone_label")}
                 </span>
                 <AudioLevelIndicator />
                 <span className="text-xs text-muted-foreground ml-2">
-                  Speak now - your voice is being transcribed
+                  {t("live.speak_now_transcribing")}
                 </span>
               </div>
             )}

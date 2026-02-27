@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -10,13 +10,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   type PermissionState,
   checkMicrophonePermission,
-} from '@/lib/permissions';
-import type { ProblemSnapshot } from '@/types/interview';
+} from "@/lib/permissions";
+import type { ProblemSnapshot } from "@/types/interview";
 import {
   AlertCircle,
   Clock,
@@ -24,10 +24,10 @@ import {
   Mic,
   MicOff,
   PhoneOff,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConnectionAlert, ConnectionStatus } from './livekit';
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ConnectionAlert, ConnectionStatus } from "./livekit";
 
 interface InterviewHeaderProps {
   interviewTime: number;
@@ -48,9 +48,9 @@ export function InterviewHeader({
   isEnding = false,
   problem,
 }: InterviewHeaderProps) {
-  const { t } = useTranslation('interview');
+  const { t } = useTranslation("interview");
   const [micPermission, setMicPermission] =
-    useState<PermissionState>('unknown');
+    useState<PermissionState>("unknown");
 
   // Check microphone permission on mount and when voiceEnabled changes
   useEffect(() => {
@@ -60,10 +60,10 @@ export function InterviewHeader({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const showMicWarning = voiceEnabled && micPermission === 'denied';
+  const showMicWarning = voiceEnabled && micPermission === "denied";
 
   return (
     <header className="border-b bg-card flex-shrink-0">
@@ -76,11 +76,11 @@ export function InterviewHeader({
           <div className="h-5 w-px bg-border" />
           <div className="min-w-0">
             <h1 className="text-sm font-medium truncate">
-              {problem?.title || t('header.problem')}
+              {problem?.title || t("header.problem")}
             </h1>
             <p className="text-xs text-muted-foreground truncate">
-              {problem?.difficulty || t('header.difficulty')} •{' '}
-              {t('header.category')}
+              {problem?.difficulty || t("header.difficulty")} •{" "}
+              {t("header.category")}
             </p>
           </div>
         </div>
@@ -95,14 +95,14 @@ export function InterviewHeader({
           {showMicWarning && (
             <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium bg-destructive/10 text-destructive">
               <AlertCircle className="h-3.5 w-3.5" />
-              <span>Mic blocked</span>
+              <span>{t("header_ext.mic_blocked")}</span>
             </div>
           )}
 
           {/* Voice Toggle */}
           <Button
             onClick={onVoiceToggle}
-            variant={voiceEnabled ? 'default' : 'outline'}
+            variant={voiceEnabled ? "default" : "outline"}
             size="sm"
             className="h-8 text-xs gap-1.5"
             disabled={isEnding}
@@ -113,7 +113,7 @@ export function InterviewHeader({
               <MicOff className="w-3.5 h-3.5" />
             )}
             <span className="hidden sm:inline">
-              {voiceEnabled ? t('voice.on') : t('voice.off')}
+              {voiceEnabled ? t("voice.on") : t("voice.off")}
             </span>
           </Button>
 
@@ -131,26 +131,26 @@ export function InterviewHeader({
                 ) : (
                   <PhoneOff className="w-3.5 h-3.5" />
                 )}
-                <span className="hidden sm:inline">{t('header.end')}</span>
+                <span className="hidden sm:inline">{t("header.end")}</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-destructive" />
-                  {t('endDialog.title')}
+                  {t("endDialog.title")}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  {t('endDialog.description')}
+                  {t("endDialog.description")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>{t('endDialog.cancel')}</AlertDialogCancel>
+                <AlertDialogCancel>{t("endDialog.cancel")}</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={onEndInterview}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
-                  {t('endDialog.confirm')}
+                  {t("endDialog.confirm")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -170,10 +170,7 @@ export function InterviewHeader({
         <div className="px-4 pb-2">
           <div className="flex items-center gap-2 px-3 py-2 text-xs rounded-md bg-destructive/10 text-destructive">
             <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
-            <span>
-              Microphone access is blocked. Please allow microphone access in
-              your browser settings to use voice mode.
-            </span>
+            <span>{t("header_ext.mic_blocked_desc")}</span>
           </div>
         </div>
       )}

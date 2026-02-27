@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { logger } from '@/lib/logger';
-import { AlertCircle } from 'lucide-react';
-import type React from 'react';
-import { Component, type ReactNode } from 'react';
+import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
+import { AlertCircle } from "lucide-react";
+import type React from "react";
+import { Component, type ReactNode } from "react";
+import { withTranslation, type WithTranslation } from "react-i18next";
 
-interface LiveKitErrorBoundaryProps {
+interface LiveKitErrorBoundaryProps extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error) => void;
@@ -24,7 +25,7 @@ interface LiveKitErrorBoundaryState {
  * This prevents the entire interview page from crashing if the voice
  * connection fails.
  */
-export class LiveKitErrorBoundary extends Component<
+class LiveKitErrorBoundaryComponent extends Component<
   LiveKitErrorBoundaryProps,
   LiveKitErrorBoundaryState
 > {
@@ -38,7 +39,7 @@ export class LiveKitErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    logger.error('LiveKit component error', {
+    logger.error("LiveKit component error", {
       error: error.message,
       stack: error.stack,
       componentStack: errorInfo.componentStack,
@@ -63,14 +64,15 @@ export class LiveKitErrorBoundary extends Component<
           <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
             <AlertCircle className="w-6 h-6 text-destructive" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">Voice Connection Error</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            {this.props.t("livekit.voice_connection_error")}
+          </h3>
           <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-            We encountered an issue with the voice connection. You can continue
-            with text-based chat or try reconnecting.
+            {this.props.t("livekit.connection_issue_message")}
           </p>
           <div className="flex gap-2">
             <Button onClick={this.handleRetry} variant="outline">
-              Try Again
+              {this.props.t("livekit.try_again")}
             </Button>
           </div>
         </div>
@@ -81,26 +83,30 @@ export class LiveKitErrorBoundary extends Component<
   }
 }
 
+export const LiveKitErrorBoundary = withTranslation("interview")(
+  LiveKitErrorBoundaryComponent,
+);
+
 /**
  * Hook to handle LiveKit-specific errors
  */
 export function useLiveKitErrorHandler() {
   return {
     handleError: (error: Error) => {
-      logger.error('LiveKit connection error', { error: error.message });
+      logger.error("LiveKit connection error", { error: error.message });
 
       // Return user-friendly error message
-      if (error.message.includes('permissions')) {
-        return 'Microphone permission denied. Please allow access and try again.';
+      if (error.message.includes("permissions")) {
+        return "Microphone permission denied. Please allow access and try again.";
       }
-      if (error.message.includes('network')) {
-        return 'Network error. Please check your connection.';
+      if (error.message.includes("network")) {
+        return "Network error. Please check your connection.";
       }
-      if (error.message.includes('token')) {
-        return 'Session expired. Please refresh the page.';
+      if (error.message.includes("token")) {
+        return "Session expired. Please refresh the page.";
       }
 
-      return 'Voice connection failed. Falling back to text mode.';
+      return "Voice connection failed. Falling back to text mode.";
     },
   };
 }

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import type { InterviewEvaluation } from '@/types/interview';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import type { InterviewEvaluation } from "@/types/interview";
 import {
   ArrowRight,
   Brain,
@@ -13,8 +13,8 @@ import {
   MessageSquare,
   RotateCcw,
   TrendingUp,
-} from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface InterviewFeedbackProps {
   interviewTime: number;
@@ -29,61 +29,61 @@ export function InterviewFeedback({
   onStartNew,
   onViewHistory,
 }: InterviewFeedbackProps) {
-  const { t } = useTranslation('interview');
+  const { t } = useTranslation("interview");
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Default/mock scores if no evaluation provided
   const scores = evaluation
     ? [
         {
-          key: 'problemSolving',
+          key: "problemSolving",
           score: evaluation.problemSolvingScore,
           icon: Brain,
-          color: 'text-purple-500',
+          color: "text-purple-500",
         },
         {
-          key: 'communication',
+          key: "communication",
           score: evaluation.communicationScore,
           icon: MessageSquare,
-          color: 'text-blue-500',
+          color: "text-blue-500",
         },
         {
-          key: 'codeQuality',
+          key: "codeQuality",
           score: evaluation.codeQualityScore,
           icon: Code2,
-          color: 'text-green-500',
+          color: "text-green-500",
         },
         {
-          key: 'technical',
+          key: "technical",
           score: evaluation.technicalScore,
           icon: TrendingUp,
-          color: 'text-orange-500',
+          color: "text-orange-500",
         },
       ]
     : [
         {
-          key: 'problemSolving',
+          key: "problemSolving",
           score: 0,
           icon: Brain,
-          color: 'text-purple-500',
+          color: "text-purple-500",
         },
         {
-          key: 'communication',
+          key: "communication",
           score: 0,
           icon: MessageSquare,
-          color: 'text-blue-500',
+          color: "text-blue-500",
         },
-        { key: 'codeQuality', score: 0, icon: Code2, color: 'text-green-500' },
+        { key: "codeQuality", score: 0, icon: Code2, color: "text-green-500" },
         {
-          key: 'technical',
+          key: "technical",
           score: 0,
           icon: TrendingUp,
-          color: 'text-orange-500',
+          color: "text-orange-500",
         },
       ];
 
@@ -98,7 +98,7 @@ export function InterviewFeedback({
           <div className="p-5 border-b bg-muted/30">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-xl font-bold">{t('feedback.title')}</h1>
+                <h1 className="text-xl font-bold">{t("feedback.title")}</h1>
                 <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                   <Clock className="w-4 h-4" />
                   <span>{formatTime(interviewTime)}</span>
@@ -108,7 +108,9 @@ export function InterviewFeedback({
                 <div className="text-3xl font-bold text-primary">
                   {overallScore}
                 </div>
-                <div className="text-xs text-muted-foreground">Overall</div>
+                <div className="text-xs text-muted-foreground">
+                  {t("feedback.overall")}
+                </div>
               </div>
             </div>
           </div>
@@ -136,7 +138,7 @@ export function InterviewFeedback({
             {evaluation?.detailedFeedback && (
               <div className="p-4 rounded-lg bg-muted/30 border">
                 <h3 className="text-sm font-semibold mb-2">
-                  Detailed Feedback
+                  {t("feedback.detailed_feedback")}
                 </h3>
                 <p className="text-sm text-foreground/80 leading-relaxed">
                   {evaluation.detailedFeedback}
@@ -149,7 +151,7 @@ export function InterviewFeedback({
               <div>
                 <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  {t('feedback.strengths')}
+                  {t("feedback.strengths")}
                 </h3>
                 <ul className="space-y-1.5">
                   {strengths.map((strength, i) => (
@@ -170,7 +172,7 @@ export function InterviewFeedback({
               <div>
                 <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
                   <Lightbulb className="w-4 h-4 text-yellow-500" />
-                  {t('feedback.improvements')}
+                  {t("feedback.improvements")}
                 </h3>
                 <ul className="space-y-1.5">
                   {improvements.map((improvement, i) => (
@@ -192,7 +194,7 @@ export function InterviewFeedback({
                 <div>
                   <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    {t('feedback.strengths')}
+                    {t("feedback.strengths")}
                   </h3>
                   <ul className="space-y-1.5">
                     {[1, 2, 3].map((i) => (
@@ -212,7 +214,7 @@ export function InterviewFeedback({
                 <div>
                   <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
                     <Lightbulb className="w-4 h-4 text-yellow-500" />
-                    {t('feedback.improvements')}
+                    {t("feedback.improvements")}
                   </h3>
                   <ul className="space-y-1.5">
                     {[1, 2, 3].map((i) => (
@@ -241,13 +243,13 @@ export function InterviewFeedback({
                   onClick={onViewHistory}
                   className="flex-1"
                 >
-                  {t('feedback.viewHistory')}
+                  {t("feedback.viewHistory")}
                 </Button>
               )}
               {onStartNew && (
                 <Button onClick={onStartNew} className="flex-1">
                   <RotateCcw className="w-3.5 h-3.5 mr-1" />
-                  {t('feedback.newInterview')}
+                  {t("feedback.newInterview")}
                 </Button>
               )}
             </div>

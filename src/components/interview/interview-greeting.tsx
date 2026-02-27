@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Code2,
   Loader2,
@@ -10,9 +10,9 @@ import {
   Sparkles,
   Trophy,
   Volume2,
-} from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+} from "lucide-react";
+import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface InterviewGreetingProps {
   voiceEnabled: boolean;
@@ -27,13 +27,13 @@ export function InterviewGreeting({
   onStartInterview,
   isLoading = false,
 }: InterviewGreetingProps) {
-  const { t } = useTranslation('interview');
+  const { t } = useTranslation("interview");
 
   const steps = [
-    { icon: Code2, key: 'solve' },
-    { icon: MessageSquare, key: 'explain' },
-    { icon: Mic, key: 'feedback' },
-    { icon: Trophy, key: 'scores' },
+    { icon: Code2, key: "solve" },
+    { icon: MessageSquare, key: "explain" },
+    { icon: Mic, key: "feedback" },
+    { icon: Trophy, key: "scores" },
   ];
 
   return (
@@ -42,10 +42,10 @@ export function InterviewGreeting({
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
             <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-              {t('title')}
+              {t("title")}
             </span>
           </h1>
-          <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
+          <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
         </div>
 
         <Card className="p-5 space-y-5">
@@ -69,11 +69,11 @@ export function InterviewGreeting({
             <Sparkles className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
             <div className="text-sm">
               <p className="font-medium text-blue-600">
-                Random Problem Selection
+                {t("greeting.random_problem_selection")}
               </p>
               <p className="text-blue-600/70 text-xs mt-0.5">
-                {/* TODO: Implement problem selection UI */}A random problem
-                will be selected for you. Problem selection UI coming soon!
+                {/* TODO: Implement problem selection UI */}
+                {t("greeting.random_problem_desc")}
               </p>
             </div>
           </div>
@@ -85,24 +85,24 @@ export function InterviewGreeting({
           >
             <div className="flex items-center gap-3">
               <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center ${voiceEnabled ? 'bg-primary/10' : 'bg-muted'}`}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center ${voiceEnabled ? "bg-primary/10" : "bg-muted"}`}
               >
                 <Volume2
-                  className={`w-4 h-4 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`}
+                  className={`w-4 h-4 ${voiceEnabled ? "text-primary" : "text-muted-foreground"}`}
                 />
               </div>
               <div className="text-left">
-                <p className="text-sm font-medium">{t('voice.title')}</p>
+                <p className="text-sm font-medium">{t("voice.title")}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t('voice.description')}
+                  {t("voice.description")}
                 </p>
               </div>
             </div>
             <div
-              className={`w-10 h-6 rounded-full transition-colors ${voiceEnabled ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+              className={`w-10 h-6 rounded-full transition-colors ${voiceEnabled ? "bg-primary" : "bg-muted-foreground/30"}`}
             >
               <div
-                className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform ${voiceEnabled ? 'translate-x-5' : 'translate-x-1'}`}
+                className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform ${voiceEnabled ? "translate-x-5" : "translate-x-1"}`}
               />
             </div>
           </button>
@@ -115,16 +115,16 @@ export function InterviewGreeting({
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Starting...
+                {t("greeting.starting")}
               </>
             ) : (
-              t('start')
+              t("start")
             )}
           </Button>
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-4">
-          {t('duration')} • {t('noPressure')}
+          {t("duration")} • {t("noPressure")}
         </p>
       </div>
     </div>
