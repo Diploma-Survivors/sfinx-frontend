@@ -5,9 +5,13 @@
   "noPressure": "No pressure, practice at your own pace",
   "steps": {
     "solve": "Solve coding problems in real-time",
+    "solve_desc": "Showcase your abilities through interactive problem-solving.",
     "explain": "Explain your approach and thinking",
+    "explain_desc": "Detail your thought process and methodologies.",
     "feedback": "Get instant AI feedback and guidance",
-    "scores": "Receive detailed performance scores"
+    "feedback_desc": "Receive actionable insights automatically.",
+    "scores": "Receive detailed performance scores",
+    "scores_desc": "Review comprehensive scoring across metrics."
   },
   "voice": {
     "title": "Voice Interaction",
@@ -113,8 +117,12 @@
     "duration_format": "{{mins}}m {{secs}}s"
   },
   "greeting": {
+    "experience_natural_ai": "Experience a natural, AI-driven assessment tailored to your skills.",
+    "ready_to_begin": "Ready to begin?",
+    "configure_env": "Configure your environment before starting.",
     "random_problem_selection": "Random Problem Selection",
     "random_problem_desc": "A random problem will be selected for you. Problem selection UI coming soon!",
+    "challenge_curated_desc": "A challenge will be curated specifically to test your core algorithmic thinking.",
     "starting": "Starting..."
   },
   "header_ext": {

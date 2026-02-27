@@ -1,13 +1,17 @@
 {
   "title": "Phỏng vấn trực tiếp",
-  "subtitle": "Luyện tập phỏng vấn coding với phản hồi AI theo thờigian thực.",
+  "subtitle": "Luyện tập phỏng vấn coding với phản hồi AI theo thời gian thực.",
   "duration": "Khoảng 15-20 phút",
   "noPressure": "Không áp lực, luyện tập theo tốc độ của bạn",
   "steps": {
     "solve": "Giải bài toán lập trình theo thờigian thực",
+    "solve_desc": "Thể hiện khả năng qua việc giải quyết bài toán tương tác.",
     "explain": "Giải thích cách tiếp cận và suy nghĩ của bạn",
+    "explain_desc": "Trình bày chi tiết quá trình suy nghĩ và phương pháp của bạn.",
     "feedback": "Nhận phản hồi và hướng dẫn từ AI ngay lập tức",
-    "scores": "Nhận điểm số chi tiết về hiệu suất"
+    "feedback_desc": "Nhận thông tin phản hồi có giá trị tự động.",
+    "scores": "Nhận điểm số chi tiết về hiệu suất",
+    "scores_desc": "Xem chi tiết điểm số trên nhiều tiêu chí."
   },
   "voice": {
     "title": "Tương tác bằng giọng nói",
@@ -113,8 +117,12 @@
     "duration_format": "{{mins}}p {{secs}}g"
   },
   "greeting": {
+    "experience_natural_ai": "Trải nghiệm bài đánh giá qua AI, tự nhiên và sát với kỹ năng của bạn.",
+    "ready_to_begin": "Sẵn sàng bắt đầu?",
+    "configure_env": "Cấu hình môi trường trước khi bắt đầu.",
     "random_problem_selection": "Chọn bài toán tự động",
     "random_problem_desc": "Một bài toán ngẫu nhiên sẽ được chọn cho bạn. Giao diện chọn bài toán sắp ra mắt!",
+    "challenge_curated_desc": "Thử thách này sẽ được tinh chỉnh đặc biệt để kiểm tra tư duy thuật toán cốt lõi của bạn.",
     "starting": "Đang bắt đầu..."
   },
   "header_ext": {
