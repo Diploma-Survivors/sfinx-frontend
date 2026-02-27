@@ -121,7 +121,7 @@ export default function ContestInfoPage() {
           className="px-8 font-semibold shadow-sm transition-all"
         >
           <Eye className="w-4 h-4 mr-2" />
-          {t("view_result", { defaultValue: "View Result" })}
+          {t("view_result")}
         </Button>
       );
     }
@@ -170,7 +170,9 @@ export default function ContestInfoPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </span>
-                {t(contest.status)}
+                {t(`status_${contest.status?.toLowerCase()}`, {
+                  defaultValue: contest.status,
+                })}
               </Badge>
             </div>
 
@@ -182,14 +184,13 @@ export default function ContestInfoPage() {
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary" />
                 <span>
-                  {t("duration")}: {contest.durationMinutes}{" "}
-                  {t("minutes", { defaultValue: "mins" })}
+                  {t("duration")}: {contest.durationMinutes} {t("minutes")}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-yellow-500" />
                 <span>
-                  {t("prize_pool")}: {t("none", { defaultValue: "None" })}
+                  {t("prize_pool")}: {t("none")}
                 </span>
               </div>
             </div>
@@ -265,7 +266,10 @@ export default function ContestInfoPage() {
                       <Badge
                         className={`${getDifficultyColor(cp.problem.difficulty)} text-[10px] h-5`}
                       >
-                        {cp.problem.difficulty}
+                        {t(
+                          `difficulty_${cp.problem.difficulty?.toLowerCase()}`,
+                          { defaultValue: cp.problem.difficulty },
+                        )}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
                         {cp.points ?? 0} {t("points")}
@@ -284,7 +288,9 @@ export default function ContestInfoPage() {
             {(!contest.contestProblems ||
               contest.contestProblems.length === 0) && (
               <div className="p-8 text-center text-muted-foreground">
-                {t("no_problems_available")}
+                {t("no_problems_available", {
+                  defaultValue: "No problems available",
+                })}
               </div>
             )}
           </div>

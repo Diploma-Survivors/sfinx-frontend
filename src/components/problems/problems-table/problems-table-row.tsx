@@ -1,30 +1,31 @@
-'use client';
+"use client";
 
-import { useApp } from '@/contexts/app-context';
-import { Badge } from '@/components/ui/badge';
-import { TableCell, TableRow } from '@/components/ui/table';
-import { Tooltip } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
-import type { Problem } from '@/types/problems';
-import { CheckCircle2, Circle, Clock, Crown } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { PremiumModal } from '@/components/problems/premium-modal';
-import SaveToListButton from '@/components/problems/favorite-list/save-to-list-button';
-import { useParams, usePathname } from 'next/navigation';
+import { useApp } from "@/contexts/app-context";
+import { Badge } from "@/components/ui/badge";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { Tooltip } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { ProblemDifficulty, ProblemStatus } from "@/types/problems";
+import type { Problem } from "@/types/problems";
+import { CheckCircle2, Circle, Clock, Crown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { PremiumModal } from "@/components/problems/premium-modal";
+import SaveToListButton from "@/components/problems/favorite-list/save-to-list-button";
+import { useParams, usePathname } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
-import AddToCollectionSubMenu from '@/components/problems/favorite-list/add-to-list-submenu';
-import { favoriteListService } from '@/services/favorite-list-service';
-import { toastService } from '@/services/toasts-service';
-import { mutate } from 'swr';
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal, Trash2 } from "lucide-react";
+import AddToCollectionSubMenu from "@/components/problems/favorite-list/add-to-list-submenu";
+import { favoriteListService } from "@/services/favorite-list-service";
+import { toastService } from "@/services/toasts-service";
+import { mutate } from "swr";
+import { useTranslation } from "react-i18next";
 
 interface ProblemTableRowProps {
   problem: Problem;
@@ -36,39 +37,41 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
   const pathname = usePathname();
   const { user } = useApp();
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const { t } = useTranslation("problems");
 
   // Check if we are in a collection view
-  const isCollectionPage = pathname?.includes('/problems/collection/');
-  const collectionId = isCollectionPage && params?.id ? parseInt(params.id as string) : null;
+  const isCollectionPage = pathname?.includes("/problems/collection/");
+  const collectionId =
+    isCollectionPage && params?.id ? parseInt(params.id as string) : null;
 
   const handleRemoveFromList = async (listId: number) => {
     try {
       await favoriteListService.removeProblem(listId, problem.id);
-      toastService.success('Problem removed from list');
+      toastService.success(t("remove_from_list_success"));
       // Trigger a re-fetch of the collection problems
       await mutate(`/favorite-lists/${listId}/problems`);
     } catch (error) {
-      toastService.error('Failed to remove problem from list');
+      toastService.error(t("remove_from_list_error"));
     }
   };
 
   const getDifficultyColor = (difficulty: ProblemDifficulty) => {
     switch (difficulty) {
       case ProblemDifficulty.EASY:
-        return 'text-green-600 bg-green-500/10 border-green-200 dark:text-green-400 dark:border-green-800';
+        return "text-green-600 bg-green-500/10 border-green-200 dark:text-green-400 dark:border-green-800";
       case ProblemDifficulty.MEDIUM:
-        return 'text-yellow-600 bg-yellow-500/10 border-yellow-200 dark:text-yellow-400 dark:border-yellow-800';
+        return "text-yellow-600 bg-yellow-500/10 border-yellow-200 dark:text-yellow-400 dark:border-yellow-800";
       case ProblemDifficulty.HARD:
-        return 'text-red-600 bg-red-500/10 border-red-200 dark:text-red-400 dark:border-red-800';
+        return "text-red-600 bg-red-500/10 border-red-200 dark:text-red-400 dark:border-red-800";
       default:
-        return 'text-muted-foreground bg-muted border-border';
+        return "text-muted-foreground bg-muted border-border";
     }
   };
 
   const getDifficultyLabel = (difficulty: ProblemDifficulty) => {
     return difficulty
-      ? difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
-      : 'Unknown';
+      ? t(`difficulty_${difficulty.toLowerCase()}`)
+      : t("unknown");
   };
 
   const handleRowClick = () => {
@@ -127,7 +130,7 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
         {/* Premium Status */}
         <TableCell className="p-0 w-4 text-center">
           {problem.isPremium && (
-            <Tooltip content="Premium Problem">
+            <Tooltip content={t("premium_problem")}>
               <div className="flex justify-center items-center">
                 <Crown className="w-4.5 h-4.5 text-[oklch(0.55_0.18_60)] fill-[oklch(0.55_0.18_60)]/20" />
               </div>
@@ -139,8 +142,8 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
         <TableCell className="w-32">
           <span
             className={cn(
-              'inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium w-20',
-              getDifficultyColor(problem.difficulty)
+              "inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium w-20",
+              getDifficultyColor(problem.difficulty),
             )}
           >
             {getDifficultyLabel(problem.difficulty)}
@@ -152,12 +155,15 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
           <span className="text-muted-foreground text-sm font-mono">
             {problem.acceptanceRate !== undefined
               ? `${Number(problem.acceptanceRate).toFixed(1)}%`
-              : '-'}
+              : "-"}
           </span>
         </TableCell>
 
         {/* Save to List or Context Menu */}
-        <TableCell className="text-center w-16 px-2" onClick={(e) => e.stopPropagation()}>
+        <TableCell
+          className="text-center w-16 px-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="flex justify-center items-center">
             {collectionId ? (
               <DropdownMenu>
@@ -172,7 +178,7 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
                     onClick={() => handleRemoveFromList(collectionId)}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Remove from List</span>
+                    <span>{t("remove_from_list")}</span>
                   </DropdownMenuItem>
                   <AddToCollectionSubMenu problemId={problem.id} />
                 </DropdownMenuContent>

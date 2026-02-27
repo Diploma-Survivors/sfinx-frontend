@@ -1,7 +1,7 @@
-import { getStatusMeta } from '@/lib/utils/testcase-status';
-import type { SSEResult } from '@/services/sse-service';
-import type { SampleTestCase } from '@/types/testcases';
-import { useTranslation } from 'react-i18next';
+import { getStatusMeta } from "@/lib/utils/testcase-status";
+import type { SSEResult } from "@/services/sse-service";
+import type { SampleTestCase } from "@/types/testcases";
+import { useTranslation } from "react-i18next";
 
 interface ResultTabProps {
   testCases: SampleTestCase[];
@@ -19,21 +19,21 @@ export function ResultTab({
   runError = null,
 }: ResultTabProps) {
   const hasResults = (testResults?.testResults?.length ?? 0) > 0;
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   if (!testCases[activeTestCase]) return null;
 
   if (!hasResults) {
     return (
       <div
-        className={`w-full py-20 text-center font-semibold flex items-center justify-center gap-3 ${runError ? 'text-red-600' : 'text-slate-700 dark:text-slate-300'}`}
+        className={`w-full py-20 text-center font-semibold flex items-center justify-center gap-3 ${runError ? "text-red-600" : "text-slate-700 dark:text-slate-300"}`}
       >
         {isRunning && (
           <div className="w-4 h-4 border-2 border-slate-400/30 border-t-slate-500 rounded-full animate-spin" />
         )}
         <span>
           {isRunning
-            ? t('running_sample_testcases')
-            : runError || t('must_run_to_see_results')}
+            ? t("running_sample_testcases")
+            : runError || t("must_run_to_see_results")}
         </span>
       </div>
     );
@@ -41,7 +41,7 @@ export function ResultTab({
 
   const getTestResult = (
     testResults: SSEResult | null | undefined,
-    index: number
+    index: number,
   ) => {
     if (
       !testResults ||
@@ -68,10 +68,10 @@ export function ResultTab({
             {testResult && (
               <>
                 <span className="text-slate-700 dark:text-slate-200 font-semibold">
-                  Runtime: {testResult.time} ms
+                  {t("runtime")}: {testResult.time} ms
                 </span>
                 <span className="text-slate-700 dark:text-slate-200 font-semibold">
-                  Memory: {testResult.memory} KB
+                  {t("memory")}: {testResult.memory} KB
                 </span>
               </>
             )}
@@ -82,25 +82,25 @@ export function ResultTab({
       <div>
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Input
+            {t("input")}
           </h4>
         </div>
         <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
           <pre className="text-sm font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
-            {testCases[activeTestCase].input || '(no input)'}
+            {testCases[activeTestCase].input || t("no_input")}
           </pre>
         </div>
       </div>
 
       <div>
         <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
-          Expected Output
+          {t("expected_output")}
         </h4>
         <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
           <pre className="text-slate-800 dark:text-slate-200 font-mono text-sm whitespace-pre-wrap">
             {testResult?.expectedOutput ??
               (testCases[activeTestCase].expectedOutput ||
-                'No expected output')}
+                t("no_expected_output"))}
           </pre>
         </div>
       </div>
@@ -108,11 +108,11 @@ export function ResultTab({
       {testResult && (
         <div>
           <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
-            Your Output
+            {t("your_output")}
           </h4>
           <div className="bg-slate-200 dark:bg-slate-600 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
             <pre className="text-black dark:text-black font-mono text-sm whitespace-pre-wrap">
-              {testResult.stdout || '(no output)'}
+              {testResult.stdout || t("no_output")}
             </pre>
             {testResult.stderr && (
               <pre className="text-black dark:text-black font-mono text-sm whitespace-pre-wrap mt-2">

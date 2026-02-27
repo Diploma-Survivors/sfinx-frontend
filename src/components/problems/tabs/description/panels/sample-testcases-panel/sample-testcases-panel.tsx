@@ -1,11 +1,12 @@
 // import removed: getStatusMeta is handled inside child components now
-import type { SSEResult } from '@/services/sse-service';
-import type { SampleTestCase } from '@/types/testcases';
-import { CheckCircle, Code } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { CaseTabs } from './case-tabs';
-import { ResultTab } from './result-tab';
-import { TestcaseTab } from './testcase-tab';
+import type { SSEResult } from "@/services/sse-service";
+import type { SampleTestCase } from "@/types/testcases";
+import { CheckCircle, Code } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { CaseTabs } from "./case-tabs";
+import { ResultTab } from "./result-tab";
+import { TestcaseTab } from "./testcase-tab";
 
 interface SampleTestCasesPanelProps {
   height: number;
@@ -18,8 +19,8 @@ interface SampleTestCasesPanelProps {
   onTestCaseDelete: (id: number) => void;
   onTestCaseChange: (
     id: number,
-    field: 'input' | 'expectedOutput',
-    value: string
+    field: "input" | "expectedOutput",
+    value: string,
   ) => void;
   onActiveTestCaseChange: (index: number) => void;
 }
@@ -36,19 +37,20 @@ export function SampleTestCasesPanel({
   onTestCaseChange,
   onActiveTestCaseChange,
 }: SampleTestCasesPanelProps) {
-  const [activeTab, setActiveTab] = useState<'testcase' | 'result'>('testcase');
+  const { t } = useTranslation("problems");
+  const [activeTab, setActiveTab] = useState<"testcase" | "result">("testcase");
 
   // Auto switch to Result tab when results arrive
   useEffect(() => {
     if (testResults?.testResults && testResults.testResults.length > 0) {
-      setActiveTab('result');
+      setActiveTab("result");
     }
   }, [testResults]);
 
   // Auto switch to Result tab when starting to run
   useEffect(() => {
     if (isRunning) {
-      setActiveTab('result');
+      setActiveTab("result");
     }
   }, [isRunning]);
 
@@ -65,35 +67,35 @@ export function SampleTestCasesPanel({
         <div className="flex items-center gap-1">
           {/* Testcase tab */}
           <button
-            onClick={() => setActiveTab('testcase')}
+            onClick={() => setActiveTab("testcase")}
             className={`h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all duration-200 cursor-pointer ${
-              activeTab === 'testcase'
-                ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              activeTab === "testcase"
+                ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
           >
             <CheckCircle className="w-3.5 h-3.5" />
-            Testcase
+            {t("testcase")}
           </button>
 
           {/* Result tab */}
           <button
-            onClick={() => setActiveTab('result')}
+            onClick={() => setActiveTab("result")}
             className={`h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all duration-200 cursor-pointer ${
-              activeTab === 'result'
-                ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              activeTab === "result"
+                ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
           >
             <Code className="w-3.5 h-3.5" />
-            Test Result
+            {t("test_result")}
           </button>
         </div>
       </div>
 
       <div className="flex-1 flex flex-col p-4 relative overflow-y-auto min-h-0">
         {/* Show CaseTabs in all cases except when on the 'result' tab with no results yet */}
-        {!(activeTab === 'result' && !hasResults) && (
+        {!(activeTab === "result" && !hasResults) && (
           <CaseTabs
             activeTab={activeTab}
             hasResults={hasResults}
@@ -109,7 +111,7 @@ export function SampleTestCasesPanel({
         {/* Content */}
         {testCases[activeTestCase] && (
           <div className="space-y-6 animate-in fade-in-50 duration-300">
-            {activeTab === 'result' ? (
+            {activeTab === "result" ? (
               <ResultTab
                 testCases={testCases}
                 activeTestCase={activeTestCase}

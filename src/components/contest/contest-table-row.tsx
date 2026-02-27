@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/ui/badge';
-import { TableCell, TableRow } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
+import { Badge } from "@/components/ui/badge";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import {
   type Contest,
   ContestStatus,
   ContestUserStatus,
-} from '@/types/contests';
+} from "@/types/contests";
 import {
   Calendar,
   CalendarClock,
@@ -18,9 +18,9 @@ import {
   Timer,
   User,
   Zap,
-} from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 interface ContestTableRowProps {
   contest: Contest;
@@ -28,11 +28,11 @@ interface ContestTableRowProps {
 
 export default function ContestTableRow({ contest }: ContestTableRowProps) {
   const router = useRouter();
-  const { t, i18n } = useTranslation('contests');
+  const { t, i18n } = useTranslation("contests");
 
   const getStatusIcon = (
     status: ContestUserStatus,
-    contestStatus: ContestStatus
+    contestStatus: ContestStatus,
   ) => {
     // 1. User has joined and contest is currently live (Active)
     if (
@@ -62,30 +62,34 @@ export default function ContestTableRow({ contest }: ContestTableRowProps) {
   };
 
   const getStatusLabel = (status: ContestStatus) => {
-    if (status === ContestStatus.SCHEDULED) return t('scheduled');
-    if (status === ContestStatus.RUNNING) return t('running');
-    if (status === ContestStatus.ENDED) return t('ended');
+    if (status === ContestStatus.SCHEDULED) return t("scheduled");
+    if (status === ContestStatus.RUNNING) return t("running");
+    if (status === ContestStatus.ENDED) return t("ended");
     return status;
   };
 
   const formatDateTime = (dateString: string) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     return date.toLocaleString(i18n.language, {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatDuration = (minutes?: number) => {
-    if (!minutes) return '-';
+    if (!minutes) return "-";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
-    if (hours > 0) return `${hours}h`;
-    return `${mins}m`;
+    if (hours > 0 && mins > 0)
+      return t("duration_hm", {
+        hours,
+        mins: mins.toString().padStart(2, "0"),
+      });
+    if (hours > 0) return t("duration_h", { hours });
+    return t("duration_m", { mins });
   };
 
   return (
@@ -138,10 +142,10 @@ export default function ContestTableRow({ contest }: ContestTableRowProps) {
         <Badge
           variant="outline"
           className={cn(
-            'font-normal text-xs',
+            "font-normal text-xs",
             contest.status === ContestStatus.RUNNING
-              ? 'text-green-600 border-green-200 bg-green-50'
-              : 'text-muted-foreground'
+              ? "text-green-600 border-green-200 bg-green-50"
+              : "text-muted-foreground",
           )}
         >
           {getStatusLabel(contest.status)}

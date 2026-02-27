@@ -1,23 +1,23 @@
-import MonacoEditor from '@/components/problems/tabs/description/panels/editor-panel/monaco-editor';
-import { Button } from '@/components/ui/button';
-import { useApp } from '@/contexts/app-context';
-import { ContestsService } from '@/services/contests-service';
-import { selectContest } from '@/store/slides/contest-slice';
-import { selectProblem } from '@/store/slides/problem-slice';
+import MonacoEditor from "@/components/problems/tabs/description/panels/editor-panel/monaco-editor";
+import { Button } from "@/components/ui/button";
+import { useApp } from "@/contexts/app-context";
+import { ContestsService } from "@/services/contests-service";
+import { selectContest } from "@/store/slides/contest-slice";
+import { selectProblem } from "@/store/slides/problem-slice";
 import {
   selectWorkspace,
   setWorkspace,
   updateCurrentCode,
   updateCurrentLanguage,
-} from '@/store/slides/workspace-slice';
-import { CONTEST_SUBMISSION_STRATEGY_DESCRIPTION } from '@/types/contests';
-import { getDefaultCode } from '@/types/languages';
-import { AlertCircle, CheckCircle, Play, Send } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+} from "@/store/slides/workspace-slice";
+import { CONTEST_SUBMISSION_STRATEGY_DESCRIPTION } from "@/types/contests";
+import { getDefaultCode } from "@/types/languages";
+import { AlertCircle, CheckCircle, Play, Send } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 interface EditorPanelProps {
   height: number;
@@ -28,7 +28,7 @@ interface EditorPanelProps {
   onSubmit: (
     sourceCode: string,
     languageId: number,
-    contestId?: number
+    contestId?: number,
   ) => void;
 }
 
@@ -41,9 +41,9 @@ export function EditorPanel({
   onSubmit,
 }: EditorPanelProps) {
   const pathname = usePathname();
-  const segments = pathname.split('/');
+  const segments = pathname.split("/");
   const contestId =
-    segments[1] === 'contests' && segments[2]
+    segments[1] === "contests" && segments[2]
       ? Number.parseInt(segments[2], 10)
       : undefined;
 
@@ -51,14 +51,15 @@ export function EditorPanel({
   const workspace = useSelector(selectWorkspace);
   const problem = useSelector(selectProblem);
   const { isLoggedin, isEmailVerified } = useApp();
-  const { t: tCommon } = useTranslation('common');
+  const { t: tCommon } = useTranslation("common");
+  const { t } = useTranslation("problems");
 
   const currentLanguageId = workspace?.currentLanguage?.[problem.id] ?? 46;
   const currentCode =
     workspace?.currentCode?.[problem.id]?.[currentLanguageId] ??
     workspace?.languages?.find((lang) => lang.id === currentLanguageId)
       ?.starterCode ??
-    'Write your code here';
+    "Write your code here";
 
   const handleRunClick = () => {
     onRun(currentCode, currentLanguageId);
@@ -76,7 +77,7 @@ export function EditorPanel({
 
   const onLanguageIdChange = (languageId: number) => {
     dispatch(
-      updateCurrentLanguage({ problemId: problem.id.toString(), languageId })
+      updateCurrentLanguage({ problemId: problem.id.toString(), languageId }),
     );
   };
 
@@ -86,7 +87,7 @@ export function EditorPanel({
         problemId: problem.id,
         languageId: currentLanguageId,
         code,
-      })
+      }),
     );
   };
 
@@ -112,8 +113,8 @@ export function EditorPanel({
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>
                   {!isLoggedin
-                    ? tCommon('login_required_action')
-                    : tCommon('email_verification_required_action')}
+                    ? tCommon("login_required_action")
+                    : tCommon("email_verification_required_action")}
                 </span>
               </div>
             )}
@@ -130,12 +131,12 @@ export function EditorPanel({
               {isRunning ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                  Running...
+                  {t("running")}
                 </>
               ) : (
                 <>
                   <Play className="w-3.5 h-3.5 mr-2" />
-                  Run
+                  {t("run")}
                 </>
               )}
             </Button>
@@ -148,12 +149,12 @@ export function EditorPanel({
               {isSubmitting ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2" />
-                  Submitting...
+                  {t("submitting")}
                 </>
               ) : (
                 <>
                   <Send className="w-3.5 h-3.5 mr-2" />
-                  Submit
+                  {t("submit")}
                 </>
               )}
             </Button>
