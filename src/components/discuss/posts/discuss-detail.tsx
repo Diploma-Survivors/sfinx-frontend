@@ -19,12 +19,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface DiscussDetailProps {
   postId: string;
 }
 
 export function DiscussDetail({ postId }: DiscussDetailProps) {
+  const { t } = useTranslation("discuss");
   const router = useRouter();
   const { data: session } = useSession();
   const [post, setPost] = useState<Post | null>(null);
@@ -35,8 +37,8 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
   const viewCountedRef = useRef<string | null>(null);
 
   const getDisplayName = () => {
-    if (!post) return "Anonymous";
-    return post.author.fullName || post.author.username || "Anonymous";
+    if (!post) return t("anonymous");
+    return post.author.fullName || post.author.username || t("anonymous");
   };
 
   const getAvatarUrl = () => {
@@ -156,12 +158,10 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <h2 className="text-2xl font-bold mb-2">Post not found</h2>
-        <p className="text-muted-foreground mb-6">
-          The post you are looking for does not exist or has been removed.
-        </p>
+        <h2 className="text-2xl font-bold mb-2">{t("post_not_found")}</h2>
+        <p className="text-muted-foreground mb-6">{t("post_not_found_desc")}</p>
         <Link href="/discuss">
-          <Button variant="outline">Back to Discussions</Button>
+          <Button variant="outline">{t("back_to_discussions")}</Button>
         </Link>
       </div>
     );
@@ -175,7 +175,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
         className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Discussions
+        {t("back_to_discussions")}
       </Link>
 
       {/* Header */}
@@ -208,7 +208,9 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
             <div>
               <div className="font-semibold">{getDisplayName()}</div>
               <div className="text-sm text-muted-foreground">
-                Posted {new Date(post.createdAt).toLocaleDateString()}
+                {t("posted_on", {
+                  date: new Date(post.createdAt).toLocaleDateString(),
+                })}
               </div>
             </div>
           </div>
@@ -219,19 +221,19 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  title="Edit"
+                  title={t("edit")}
                   onClick={() => router.push(`/discuss/${post.id}/edit`)}
                 >
                   <Edit className="w-4 h-4" />
                 </Button>
               )}
-            <Button variant="ghost" size="icon" title="Save">
+            <Button variant="ghost" size="icon" title={t("save_post")}>
               <Bookmark className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" title="Report">
+            <Button variant="ghost" size="icon" title={t("report_post")}>
               <Flag className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" title="Share">
+            <Button variant="ghost" size="icon" title={t("share_post")}>
               <Share2 className="w-4 h-4" />
             </Button>
           </div>
@@ -277,7 +279,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
           </Button>
         </div>
         <div className="text-sm text-muted-foreground ml-auto">
-          {post.viewCount} Views
+          {t("views", { count: post.viewCount })}
         </div>
       </div>
 

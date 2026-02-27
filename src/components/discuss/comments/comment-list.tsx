@@ -3,6 +3,7 @@
 import type { Comment } from "@/types/discuss";
 import { CommentItem } from "./comment-item";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 interface CommentListProps {
   comments: Comment[];
@@ -19,6 +20,8 @@ export function CommentList({
   onReplySuccess,
   onDeleteSuccess,
 }: CommentListProps) {
+  const { t } = useTranslation("discuss");
+
   if (isLoading) {
     return (
       <div className="space-y-8 animate-in fade-in">
@@ -38,7 +41,7 @@ export function CommentList({
   if (comments.length === 0) {
     return (
       <div className="text-center py-16 text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border/50 animate-in fade-in zoom-in-95">
-        <p>No comments yet. Be the first to share your thoughts!</p>
+        <p>{t("no_comments_yet")}</p>
       </div>
     );
   }

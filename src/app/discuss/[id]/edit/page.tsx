@@ -10,8 +10,10 @@ import { toastService } from "@/services/toasts-service";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslation } from "react-i18next";
 
 export default function EditPostPage() {
+  const { t } = useTranslation("discuss");
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
@@ -27,7 +29,7 @@ export default function EditPostPage() {
         if (data) {
           setPost(data);
           if (session?.user?.id && data.author.id !== Number(session.user.id)) {
-            toastService.error("You are not authorized to edit this post");
+            toastService.error(t("not_authorized_edit"));
             router.push(`/discuss/${postId}`);
           }
         } else {
@@ -36,7 +38,7 @@ export default function EditPostPage() {
         }
       } catch (error) {
         console.error("Failed to fetch post:", error);
-        toastService.error("Failed to load post");
+        toastService.error(t("failed_load_post"));
       } finally {
         setIsLoading(false);
       }
@@ -63,12 +65,12 @@ export default function EditPostPage() {
         content: data.content,
         tags: data.tags,
       });
-      toastService.success("Post updated successfully!");
+      toastService.success(t("post_updated_success"));
       router.push(`/discuss/${params?.id}`);
       router.refresh();
     } catch (error) {
       console.error("Failed to update post:", error);
-      toastService.error("Failed to update post. Please try again.");
+      toastService.error(t("failed_update_post"));
       throw error;
     }
   };
@@ -96,8 +98,8 @@ export default function EditPostPage() {
       }}
       onSubmit={handleUpdate}
       onCancel={handleCancel}
-      submitLabel="Update"
-      pageTitle="Edit Post"
+      submitLabel={t("update_post_btn")}
+      pageTitle={t("edit_post_title")}
     />
   );
 }
