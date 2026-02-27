@@ -1,5 +1,5 @@
-import clientApi from '@/lib/apis/axios-client';
-import type { ApiResponse } from '@/types/api';
+import clientApi from "@/lib/apis/axios-client";
+import type { ApiResponse } from "@/types/api";
 import {
   CONTEST_STATUS_COLORS,
   type Contest,
@@ -9,26 +9,28 @@ import {
   ContestUserStatus,
   type LeaderboardEntry,
   type LeaderboardResponse,
-} from '@/types/contests';
-import type { AxiosResponse } from 'axios';
-import qs from 'qs';
+} from "@/types/contests";
+import type { AxiosResponse } from "axios";
+import qs from "qs";
 
 async function getContestList(
-  getContestListRequest: ContestListRequest
+  getContestListRequest: ContestListRequest,
 ): Promise<AxiosResponse<ApiResponse<ContestListResponse>>> {
   const queryString = qs.stringify(getContestListRequest, {
     allowDots: true,
     skipNulls: true,
   });
 
-  const url = queryString ? `/contests?${queryString}` : '/contests';
+  const url = queryString ? `/contests?${queryString}` : "/contests";
   return await clientApi.get(url);
 }
 
 async function getContestDetail(id: string) {
   const response = await clientApi.get<ApiResponse<Contest>>(`/contests/${id}`);
 
-  response.data.data.contestProblems = response.data.data.contestProblems.toSorted((a, b) => a.orderIndex - b.orderIndex);
+  response.data.data.contestProblems = [
+    ...response.data.data.contestProblems,
+  ].sort((a, b) => a.orderIndex - b.orderIndex);
 
   return response;
 }
@@ -47,7 +49,7 @@ async function participateContest(id: string) {
 
 async function getContestLeaderboard(
   id: string,
-  params?: { page?: number; limit?: number; search?: string }
+  params?: { page?: number; limit?: number; search?: string },
 ): Promise<AxiosResponse<ApiResponse<LeaderboardResponse>>> {
   const queryString = qs.stringify(params, {
     allowDots: true,
@@ -60,7 +62,7 @@ async function getContestLeaderboard(
 }
 
 async function getContestLeaderboardMe(
-  id: string
+  id: string,
 ): Promise<AxiosResponse<ApiResponse<LeaderboardEntry>>> {
   return await clientApi.get(`/contests/${id}/leaderboard/me`);
 }

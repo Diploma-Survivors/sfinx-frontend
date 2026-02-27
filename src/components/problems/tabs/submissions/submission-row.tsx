@@ -46,7 +46,7 @@ export default function SubmissionRow({
       }`}
       onClick={() => onSelect(submission)}
       style={{
-        animationDelay: `${index * 50} ms`,
+        animationDelay: `${index * 50}ms`,
         animation: "fadeInUp 0.25s ease-out forwards",
       }}
     >

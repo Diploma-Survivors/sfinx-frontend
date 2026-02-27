@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import type { LiveKitTokenResponse } from '@/types/interview';
+import type { LiveKitTokenResponse } from "@/types/interview";
 import {
   LiveKitRoom,
   RoomAudioRenderer,
   useRoomContext,
-} from '@livekit/components-react';
-import { Room } from 'livekit-client';
-import { type ReactNode, useCallback, useEffect, useState } from 'react';
+} from "@livekit/components-react";
+import { Room } from "livekit-client";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 interface LiveKitProviderProps {
   token: LiveKitTokenResponse | null;
@@ -32,19 +32,19 @@ function RoomConnector({
   const room = useRoomContext();
 
   useEffect(() => {
-    console.log('[RoomConnector] Effect:', {
+    console.log("[RoomConnector] Effect:", {
       shouldConnect,
       state: room.state,
     });
 
     if (shouldConnect) {
-      if (room.state === 'disconnected') {
-        console.log('[RoomConnector] Connecting...');
+      if (room.state === "disconnected") {
+        console.log("[RoomConnector] Connecting...");
         // The room will auto-connect via LiveKitRoom's connect prop
       }
     } else {
-      if (room.state === 'connected' || room.state === 'connecting') {
-        console.log('[RoomConnector] Disconnecting...');
+      if (room.state === "connected" || room.state === "connecting") {
+        console.log("[RoomConnector] Disconnecting...");
         room.disconnect();
       }
     }
@@ -53,20 +53,20 @@ function RoomConnector({
   // Track connection state changes
   useEffect(() => {
     const handleConnected = () => {
-      console.log('[RoomConnector] Room connected');
+      console.log("[RoomConnector] Room connected");
       onConnected?.();
     };
     const handleDisconnected = () => {
-      console.log('[RoomConnector] Room disconnected');
+      console.log("[RoomConnector] Room disconnected");
       onDisconnected?.();
     };
 
-    room.on('connected', handleConnected);
-    room.on('disconnected', handleDisconnected);
+    room.on("connected", handleConnected);
+    room.on("disconnected", handleDisconnected);
 
     return () => {
-      room.off('connected', handleConnected);
-      room.off('disconnected', handleDisconnected);
+      room.off("connected", handleConnected);
+      room.off("disconnected", handleDisconnected);
     };
   }, [room, onConnected, onDisconnected]);
 
@@ -97,18 +97,18 @@ export function LiveKitProvider({
 
   const handleConnected = useCallback(() => {
     setConnectionAttempts(0);
-    console.log('[LiveKitProvider] Connected callback');
+    console.log("[LiveKitProvider] Connected callback");
     onConnected?.();
   }, [onConnected]);
 
   const handleDisconnected = useCallback(() => {
-    console.log('[LiveKitProvider] Disconnected callback');
+    console.log("[LiveKitProvider] Disconnected callback");
     onDisconnected?.();
   }, [onDisconnected]);
 
   const handleError = useCallback(
     (error: Error) => {
-      console.error('[LiveKitProvider] Error:', error);
+      console.error("[LiveKitProvider] Error:", error);
       setConnectionAttempts((prev) => {
         const next = prev + 1;
         if (next >= 3) {
@@ -117,7 +117,7 @@ export function LiveKitProvider({
         return next;
       });
     },
-    [onError]
+    [onError],
   );
 
   // Prevent SSR issues
@@ -128,14 +128,14 @@ export function LiveKitProvider({
   // If no token, render children without LiveKitRoom
   // This completely removes the room and triggers disconnection
   if (!token) {
-    console.log('[LiveKitProvider] No token, rendering without LiveKit');
+    console.log("[LiveKitProvider] No token, rendering without LiveKit");
     return <>{children}</>;
   }
 
   const maxRetries = 3;
   const shouldConnect = connectionAttempts < maxRetries;
 
-  console.log('[LiveKitProvider] Rendering with token:', {
+  console.log("[LiveKitProvider] Rendering with token:", {
     roomName: token.roomName,
     shouldConnect,
     connectionAttempts,
@@ -155,8 +155,8 @@ export function LiveKitProvider({
       onError={handleError}
       data-lk-theme="default"
       style={{
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
       }}
     >
       <RoomConnector

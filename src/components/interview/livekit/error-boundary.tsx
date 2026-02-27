@@ -90,23 +90,35 @@ export const LiveKitErrorBoundary = withTranslation("interview")(
 /**
  * Hook to handle LiveKit-specific errors
  */
-export function useLiveKitErrorHandler() {
+export function useLiveKitErrorHandler(t: any) {
   return {
     handleError: (error: Error) => {
       logger.error("LiveKit connection error", { error: error.message });
 
       // Return user-friendly error message
       if (error.message.includes("permissions")) {
-        return "Microphone permission denied. Please allow access and try again.";
+        return t(
+          "live.mic_permission_denied",
+          "Microphone permission denied. Please allow access and try again.",
+        );
       }
       if (error.message.includes("network")) {
-        return "Network error. Please check your connection.";
+        return t(
+          "live.network_error",
+          "Network error. Please check your connection.",
+        );
       }
       if (error.message.includes("token")) {
-        return "Session expired. Please refresh the page.";
+        return t(
+          "live.session_expired",
+          "Session expired. Please refresh the page.",
+        );
       }
 
-      return "Voice connection failed. Falling back to text mode.";
+      return t(
+        "live.voice_connection_failed",
+        "Voice connection failed. Falling back to text mode.",
+      );
     },
   };
 }

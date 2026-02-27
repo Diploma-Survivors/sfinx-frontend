@@ -33,6 +33,7 @@
     "previous_page": "Previous",
     "next_page": "Next",
     "page_info": "Page {{current}} / {{total}}",
+    "page_n_of_m": "Page {{current}} of {{total}}",
     "edit_info": "Edit Information",
     "change_avatar": "Change avatar",
     "first_name": "First Name",
@@ -156,6 +157,10 @@
     "rating": "Rating",
     "no_recent_activity": "No recent AC problems",
     "discuss": "Discuss",
-    "no_dicuss_yet": "No discuss yet",
-    "user_not_found": "User not found"
+    "no_discussions_yet": "No discuss yet",
+    "user_not_found": "User not found",
+    "contest": "Contest",
+    "rating_check": "Rating Check",
+    "new_rating": "New Rating",
+    "no_contest_history": "No contest participation history found."
 }

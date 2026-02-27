@@ -33,6 +33,7 @@
     "previous_page": "Trang trước",
     "next_page": "Trang sau",
     "page_info": "Trang {{current}} / {{total}}",
+    "page_n_of_m": "Trang {{current}} / {{total}}",
     "edit_info": "Chỉnh sửa thông tin",
     "change_avatar": "Thay đổi ảnh đại diện",
     "first_name": "Họ",
@@ -157,5 +158,9 @@
     "no_recent_activity": "Chưa có bài tập nào được giải gần đây",
     "discuss": "Thảo luận",
     "no_discussions_yet": "Chưa có thảo luận nào",
-    "user_not_found": "Không tìm thấy người dùng"
+    "user_not_found": "Không tìm thấy người dùng",
+    "contest": "Cuộc thi",
+    "rating_check": "Biến động Rating",
+    "new_rating": "Rating mới",
+    "no_contest_history": "Không tìm thấy lịch sử tham gia cuộc thi."
 }

@@ -92,7 +92,11 @@
     "voice_connection_error_fallback": "Lỗi kết nối giọng nói. Chuyển về chế độ văn bản.",
     "microphone_label": "Micro:",
     "speak_now_transcribing": "Hãy nói bây giờ - giọng nói của bạn đang được ghi lại",
-    "failed_to_start_interview": "Bắt đầu phỏng vấn thất bại"
+    "failed_to_start_interview": "Bắt đầu phỏng vấn thất bại",
+    "mic_permission_denied": "Quyền truy cập micro bị từ chối. Vui lòng cấp quyền và thử lại.",
+    "network_error": "Lỗi mạng. Vui lòng kiểm tra kết nối của bạn.",
+    "session_expired": "Phiên đã hết hạn. Vui lòng tải lại trang.",
+    "voice_connection_failed": "Kết nối giọng nói thất bại. Chuyển sang chế độ văn bản."
   },
   "history": {
     "in_progress": "Đang diễn ra",

@@ -90,7 +90,7 @@ export function UserContestHistoryTab({ userId }: UserContestHistoryTabProps) {
   if (history.length === 0) {
     return (
       <div className="py-8 text-center text-muted-foreground">
-        No contest participation history found.
+        {t("no_contest_history")}
       </div>
     );
   }
@@ -101,11 +101,11 @@ export function UserContestHistoryTab({ userId }: UserContestHistoryTabProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Contest</TableHead>
-              <TableHead className="text-right">Rank</TableHead>
-              <TableHead className="text-right">Rating Check</TableHead>
-              <TableHead className="text-right">New Rating</TableHead>
-              <TableHead className="text-right">Date</TableHead>
+              <TableHead>{t("contest")}</TableHead>
+              <TableHead className="text-right">{t("rank")}</TableHead>
+              <TableHead className="text-right">{t("rating_check")}</TableHead>
+              <TableHead className="text-right">{t("new_rating")}</TableHead>
+              <TableHead className="text-right">{t("date")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -137,7 +137,7 @@ export function UserContestHistoryTab({ userId }: UserContestHistoryTabProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between space-x-2 py-4">
           <div className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("page_n_of_m", { current: page, total: totalPages })}
           </div>
           <div className="flex gap-2">
             <Button
@@ -146,7 +146,7 @@ export function UserContestHistoryTab({ userId }: UserContestHistoryTabProps) {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              Previous
+              {t("previous")}
             </Button>
             <Button
               variant="outline"
@@ -154,7 +154,7 @@ export function UserContestHistoryTab({ userId }: UserContestHistoryTabProps) {
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >
-              Next
+              {t("next")}
             </Button>
           </div>
         </div>

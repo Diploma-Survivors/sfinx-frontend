@@ -92,7 +92,11 @@
     "voice_connection_error_fallback": "Voice connection error. Falling back to text mode.",
     "microphone_label": "Microphone:",
     "speak_now_transcribing": "Speak now - your voice is being transcribed",
-    "failed_to_start_interview": "Failed to start interview"
+    "failed_to_start_interview": "Failed to start interview",
+    "mic_permission_denied": "Microphone permission denied. Please allow access and try again.",
+    "network_error": "Network error. Please check your connection.",
+    "session_expired": "Session expired. Please refresh the page.",
+    "voice_connection_failed": "Voice connection failed. Falling back to text mode."
   },
   "history": {
     "in_progress": "In progress",

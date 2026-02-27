@@ -98,7 +98,7 @@ export function UserContestRatingChart({
                 {data.currentRating}
               </span>
             </div>
-            {data.peakRating && (
+            {data.peakRating != null && (
               <div className="flex flex-col sm:items-end">
                 <span className="text-muted-foreground">
                   {t("peak_rating", "Peak Rating")}
@@ -108,7 +108,7 @@ export function UserContestRatingChart({
                 </span>
               </div>
             )}
-            {data.globalRank && (
+            {data.globalRank != null && (
               <div className="flex flex-col sm:items-end">
                 <span className="text-muted-foreground">
                   {t("global_rank", "Global Rank")}
@@ -119,7 +119,7 @@ export function UserContestRatingChart({
                 </span>
               </div>
             )}
-            {data.topPercentage && (
+            {data.topPercentage != null && (
               <div className="flex flex-col sm:items-end">
                 <span className="text-muted-foreground">
                   {t("top_percentage", "Top")}
