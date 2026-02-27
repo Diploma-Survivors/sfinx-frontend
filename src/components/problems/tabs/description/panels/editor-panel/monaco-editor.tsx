@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
-import { SubmissionsService } from '@/services/submissions-service';
-import { toastService } from '@/services/toasts-service';
-import { LANGUAGE_DEFINITIONS, type Language } from '@/types/submissions';
-import Editor from '@monaco-editor/react';
-import { ChevronDown, Copy, Wand2 } from 'lucide-react';
-import type { editor } from 'monaco-editor';
-import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { SubmissionsService } from "@/services/submissions-service";
+import { toastService } from "@/services/toasts-service";
+import { LANGUAGE_DEFINITIONS, type Language } from "@/types/submissions";
+import Editor from "@monaco-editor/react";
+import { ChevronDown, Copy, Wand2 } from "lucide-react";
+import type { editor } from "monaco-editor";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface MonacoEditorProps {
   currentLanguageId: number;
@@ -32,10 +32,10 @@ export default function MonacoEditor({
 }: MonacoEditorProps) {
   const [languageList, setLanguageList] = useState<Language[]>([]);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   // handle editor mount when editor is mounted (just call once when editor is mounted)
   const handleEditorDidMount = (
-    editorInstance: editor.IStandaloneCodeEditor
+    editorInstance: editor.IStandaloneCodeEditor,
   ) => {
     editorRef.current = editorInstance;
   };
@@ -57,18 +57,18 @@ export default function MonacoEditor({
 
   // handle editor change when user changes the code in the editor
   const handleEditorChange = (value?: string) => {
-    const newSourceCode = value || '';
+    const newSourceCode = value || "";
     setCurrentCode(newSourceCode);
   };
 
   const currLanguage = languageList.find(
-    (lang) => lang.id === currentLanguageId
+    (lang) => lang.id === currentLanguageId,
   );
 
   // Copy to clipboard
   const copyToClipboard = () => {
     navigator.clipboard.writeText(currentCode);
-    toastService.success(t('copied_to_clipboard'));
+    toastService.success(t("copied_to_clipboard"));
   };
 
   // Format code using Monaco editor ref (unsupported for python/cpp/java)
@@ -76,7 +76,7 @@ export default function MonacoEditor({
     const instance = editorRef.current;
     if (!instance) return;
 
-    const action = instance.getAction?.('editor.action.formatDocument');
+    const action = instance.getAction?.("editor.action.formatDocument");
     if (action) action.run();
   };
 
@@ -93,7 +93,7 @@ export default function MonacoEditor({
                 size="sm"
                 className="min-w-[150px] w-auto justify-between text-sm font-normal"
               >
-                {currLanguage?.name || 'Select language'}
+                {currLanguage?.name || t("select_language")}
                 <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
               </Button>
             </DropdownMenuTrigger>
@@ -118,10 +118,10 @@ export default function MonacoEditor({
             size="sm"
             onClick={handleFormatCode}
             className="h-8 text-muted-foreground hover:text-foreground"
-            title="Format Code"
+            title={t("format_code")}
           >
             <Wand2 className="w-4 h-4 mr-1.5" />
-            Format
+            {t("format")}
           </Button>
 
           <div className="w-px h-4 bg-border mx-1" />
@@ -132,10 +132,10 @@ export default function MonacoEditor({
             size="sm"
             onClick={copyToClipboard}
             className="h-8 text-muted-foreground hover:text-foreground"
-            title="Copy Code"
+            title={t("copy_code")}
           >
             <Copy className="w-4 h-4 mr-1.5" />
-            Copy
+            {t("copy")}
           </Button>
         </div>
       </div>
@@ -159,8 +159,8 @@ export default function MonacoEditor({
             fontFamily: "'Geist Mono', 'Consolas', 'Monaco', monospace",
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
-            wordWrap: 'on',
-            lineNumbers: 'on',
+            wordWrap: "on",
+            lineNumbers: "on",
             folding: true,
             automaticLayout: true,
             scrollbar: {
@@ -170,7 +170,7 @@ export default function MonacoEditor({
             },
             padding: { top: 16, bottom: 16 },
             overviewRulerBorder: false,
-            renderLineHighlight: 'none',
+            renderLineHighlight: "none",
           }}
         />
       </div>

@@ -1,10 +1,11 @@
-import { getStatusMeta } from '@/lib/utils/testcase-status';
-import type { SSEResult } from '@/services/sse-service';
-import { SubmissionStatus } from '@/types/submissions';
-import type { SampleTestCase } from '@/types/testcases';
-import { Plus, X } from 'lucide-react';
+import { getStatusMeta } from "@/lib/utils/testcase-status";
+import type { SSEResult } from "@/services/sse-service";
+import { SubmissionStatus } from "@/types/submissions";
+import type { SampleTestCase } from "@/types/testcases";
+import { Plus, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-type ActiveTab = 'testcase' | 'result';
+type ActiveTab = "testcase" | "result";
 
 interface CaseTabsProps {
   activeTab: ActiveTab;
@@ -27,24 +28,25 @@ export function CaseTabs({
   onTestCaseDelete,
   onTestCaseAdd,
 }: CaseTabsProps) {
+  const { t } = useTranslation("problems");
   const getStatusColor = (status: string) => {
     switch (status) {
       case SubmissionStatus.ACCEPTED:
-      case 'ACCEPTED':
-        return 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800';
+      case "ACCEPTED":
+        return "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
       case SubmissionStatus.WRONG_ANSWER:
-      case 'WRONG_ANSWER':
-        return 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800';
+      case "WRONG_ANSWER":
+        return "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
       case SubmissionStatus.TIME_LIMIT_EXCEEDED:
-      case 'TIME_LIMIT_EXCEEDED':
-        return 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800';
+      case "TIME_LIMIT_EXCEEDED":
+        return "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800";
       case SubmissionStatus.COMPILATION_ERROR:
-      case 'COMPILATION_ERROR':
+      case "COMPILATION_ERROR":
       case SubmissionStatus.RUNTIME_ERROR:
-      case 'RUNTIME_ERROR':
-        return 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800';
+      case "RUNTIME_ERROR":
+        return "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700';
+        return "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700";
     }
   };
 
@@ -56,7 +58,7 @@ export function CaseTabs({
             ? testResults.testResults[index]
             : null;
         const statusInfo =
-          activeTab === 'result' && testResult
+          activeTab === "result" && testResult
             ? getStatusMeta(testResult.status)
             : null;
 
@@ -64,16 +66,16 @@ export function CaseTabs({
 
         // Determine styling
         let tabStyle =
-          'bg-background border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:border-border/80';
+          "bg-background border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:border-border/80";
 
-        if (activeTab === 'result' && testResult && isActive) {
+        if (activeTab === "result" && testResult && isActive) {
           // In result tab, use status colors ONLY for active tab
           const statusColor = getStatusColor(testResult.status);
           tabStyle = `${statusColor}`;
         } else if (isActive) {
           // Normal active state
           tabStyle =
-            'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/5';
+            "bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/5";
         }
 
         return (
@@ -83,24 +85,24 @@ export function CaseTabs({
               className={`h-8 px-4 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-2 border cursor-pointer ${tabStyle}`}
             >
               {/* Show status icon for result tab */}
-              {activeTab === 'result' && statusInfo ? (
+              {activeTab === "result" && statusInfo ? (
                 <span
-                  className={isActive ? 'text-current' : statusInfo.iconColor}
+                  className={isActive ? "text-current" : statusInfo.iconColor}
                 >
                   {statusInfo.icon}
                 </span>
               ) : null}
-              Case {index + 1}
+              {t("case")} {index + 1}
             </button>
 
-            {activeTab === 'testcase' && testCases.length > 1 && (
+            {activeTab === "testcase" && testCases.length > 1 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onTestCaseDelete(testCase.id ?? 0);
                 }}
                 className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-background border border-border rounded-full p-0.5 shadow-sm hover:bg-destructive hover:border-destructive hover:text-destructive-foreground z-10 cursor-pointer"
-                aria-label="Delete testcase"
+                aria-label={t("delete_testcase")}
               >
                 <X className="w-3 h-3" />
               </button>
@@ -109,13 +111,13 @@ export function CaseTabs({
         );
       })}
 
-      {activeTab === 'testcase' && (
+      {activeTab === "testcase" && (
         <button
           onClick={onTestCaseAdd}
           className="h-8 px-3 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all duration-200 flex items-center gap-1 border border-transparent hover:border-border shrink-0 cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Add</span>
+          <span>{t("add")}</span>
         </button>
       )}
     </div>

@@ -49,5 +49,21 @@
     "view_billing_history": "View Billing & History",
     "return_dashboard": "Return to Dashboard",
     "auto_redirect_hint": "Check your email for the receipt.",
-    "search_solutions": "Search solutions"
+    "search_solutions": "Search solutions",
+    "notifications": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "no_notifications": "You have no notifications right now.",
+    "view_details": "View details",
+    "years_ago_one": "1 year ago",
+    "years_ago_other": "{{count}} years ago",
+    "months_ago_one": "1 month ago",
+    "months_ago_other": "{{count}} months ago",
+    "days_ago_one": "1 day ago",
+    "days_ago_other": "{{count}} days ago",
+    "hours_ago_one": "1 hour ago",
+    "hours_ago_other": "{{count}} hours ago",
+    "minutes_ago_one": "1 minute ago",
+    "minutes_ago_other": "{{count}} minutes ago",
+    "seconds_ago_one": "1 second ago",
+    "seconds_ago_other": "{{count}} seconds ago"
 }

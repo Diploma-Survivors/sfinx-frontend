@@ -5,9 +5,13 @@
   "noPressure": "No pressure, practice at your own pace",
   "steps": {
     "solve": "Solve coding problems in real-time",
+    "solve_desc": "Showcase your abilities through interactive problem-solving.",
     "explain": "Explain your approach and thinking",
+    "explain_desc": "Detail your thought process and methodologies.",
     "feedback": "Get instant AI feedback and guidance",
-    "scores": "Receive detailed performance scores"
+    "feedback_desc": "Receive actionable insights automatically.",
+    "scores": "Receive detailed performance scores",
+    "scores_desc": "Review comprehensive scoring across metrics."
   },
   "voice": {
     "title": "Voice Interaction",
@@ -29,7 +33,9 @@
     "title": "AI Interviewer",
     "placeholder": "Type a message...",
     "empty": "Start the conversation by sending a message",
-    "ended": "Interview has ended"
+    "ended": "Interview has ended",
+    "message_count_one": "{{count}} message",
+    "message_count_other": "{{count}} messages"
   },
   "editor": {
     "title": "Solution"
@@ -56,7 +62,8 @@
     "improvements": "Areas to Improve",
     "viewReport": "View Full Report",
     "viewHistory": "View History",
-    "newInterview": "New Interview"
+    "newInterview": "New Interview",
+    "detailed_feedback": "Detailed Feedback"
   },
   "endDialog": {
     "title": "End Interview?",
@@ -74,5 +81,70 @@
     "1": "Consider testing your code with edge cases before submission",
     "2": "Could have discussed space-time trade-offs in more detail",
     "3": "Practice verbalizing your thought process while coding"
+  },
+  "live": {
+    "connecting_voice_room": "Connecting to voice room...",
+    "allow_microphone_access": "Please allow microphone access when prompted",
+    "ending_interview": "Ending interview...",
+    "generating_evaluation_report": "Generating your evaluation report",
+    "voice_unavailable_fallback": "Voice mode unavailable. Continuing with text chat.",
+    "retry_connection": "Retry Connection",
+    "voice_connection_error_fallback": "Voice connection error. Falling back to text mode.",
+    "microphone_label": "Microphone:",
+    "speak_now_transcribing": "Speak now - your voice is being transcribed",
+    "failed_to_start_interview": "Failed to start interview",
+    "mic_permission_denied": "Microphone permission denied. Please allow access and try again.",
+    "network_error": "Network error. Please check your connection.",
+    "session_expired": "Session expired. Please refresh the page.",
+    "voice_connection_failed": "Voice connection failed. Falling back to text mode."
+  },
+  "history": {
+    "in_progress": "In progress",
+    "status_completed": "Completed",
+    "status_in_progress": "In Progress",
+    "status_abandoned": "Abandoned",
+    "failed_to_load_history": "Failed to load interview history",
+    "back": "Back",
+    "interview_history_title": "Interview History",
+    "try_again": "Try Again",
+    "no_interviews_yet": "No interviews yet",
+    "start_first_mock_interview": "Start your first mock interview to practice your coding skills",
+    "start_interview": "Start Interview",
+    "unknown_problem": "Unknown Problem",
+    "score": "Score",
+    "resume": "Resume",
+    "view_details": "View Details",
+    "score_problem_solving": "Problem Solving",
+    "score_communication": "Communication",
+    "score_code_quality": "Code Quality",
+    "score_technical": "Technical",
+    "duration_format": "{{mins}}m {{secs}}s"
+  },
+  "greeting": {
+    "experience_natural_ai": "Experience a natural, AI-driven assessment tailored to your skills.",
+    "ready_to_begin": "Ready to begin?",
+    "configure_env": "Configure your environment before starting.",
+    "random_problem_selection": "Random Problem Selection",
+    "random_problem_desc": "A random problem will be selected for you. Problem selection UI coming soon!",
+    "challenge_curated_desc": "A challenge will be curated specifically to test your core algorithmic thinking.",
+    "starting": "Starting..."
+  },
+  "header_ext": {
+    "mic_blocked": "Mic blocked",
+    "mic_blocked_desc": "Microphone access is blocked. Please allow microphone access in your browser settings to use voice mode."
+  },
+  "livekit": {
+    "voice_not_connected": "Voice not connected",
+    "end_interview": "End interview",
+    "mute_microphone": "Mute microphone",
+    "unmute_microphone": "Unmute microphone",
+    "voice_off": "Voice Off",
+    "voice_on": "Voice On",
+    "connecting": "Connecting...",
+    "voice_connected": "Voice Connected",
+    "reconnecting": "Reconnecting...",
+    "voice_connection_error": "Voice Connection Error",
+    "connection_issue_message": "We encountered an issue with the voice connection. You can continue with text-based chat or try reconnecting.",
+    "try_again": "Try Again"
   }
 }

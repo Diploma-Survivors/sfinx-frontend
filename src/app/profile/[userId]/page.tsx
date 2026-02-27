@@ -1,54 +1,55 @@
-'use client';
+"use client";
 
-import { ActivityCalendar } from '@/components/profile/activity/activity-calendar';
-import { RecentActivityList } from '@/components/profile/activity/recent-activity-list';
-import { UserDiscussList } from '@/components/profile/discuss/user-discuss-list';
-import { ProfileSidebar } from '@/components/profile/profile-sidebar';
-import { SolutionsList } from '@/components/profile/solutions/solutions-list';
-import { ProblemStatsCard } from '@/components/profile/stats/problem-stats-card';
-import { SubmissionStatsCard } from '@/components/profile/stats/submission-stats-card';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useApp } from '@/contexts/app-context';
-import { DiscussService, type Post } from '@/services/discuss-service';
-import { UserService } from '@/services/user-service';
-import { type Solution, SolutionSortBy } from '@/types/solutions';
+import { ActivityCalendar } from "@/components/profile/activity/activity-calendar";
+import { RecentActivityList } from "@/components/profile/activity/recent-activity-list";
+import { UserDiscussList } from "@/components/profile/discuss/user-discuss-list";
+import { ProfileSidebar } from "@/components/profile/profile-sidebar";
+import { SolutionsList } from "@/components/profile/solutions/solutions-list";
+import { ProblemStatsCard } from "@/components/profile/stats/problem-stats-card";
+import { SubmissionStatsCard } from "@/components/profile/stats/submission-stats-card";
+import { UserContestHistoryTab } from "@/components/profile/contest-history/user-contest-history-tab";
+import { UserContestRatingChart } from "@/components/profile/stats/user-contest-rating-chart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useApp } from "@/contexts/app-context";
+import { DiscussService, type Post } from "@/services/discuss-service";
+import { UserService } from "@/services/user-service";
+import { type Solution, SolutionSortBy } from "@/types/solutions";
 import type {
   UserActivityCalendar,
   UserProblemStats,
   UserProfile,
   UserRecentACProblem,
   UserSubmissionStats,
-} from '@/types/user';
-import { useRouter } from 'next/navigation';
-import { use, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
+} from "@/types/user";
+import { useRouter } from "next/navigation";
+import { use, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 export default function ProfilePage({
   params,
 }: {
   params: Promise<{ userId: string }>;
 }) {
-  const { t } = useTranslation('profile');
+  const { t } = useTranslation("profile");
   const { userId: userIdString } = use(params);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [problemStats, setProblemStats] = useState<UserProblemStats | null>(
-    null
+    null,
   );
   const [submissionStats, setSubmissionStats] =
     useState<UserSubmissionStats | null>(null);
   const [activityCalendar, setActivityCalendar] =
     useState<UserActivityCalendar | null>(null);
   const [recentActivity, setRecentActivity] = useState<UserRecentACProblem[]>(
-    []
+    [],
   );
   const [activityYears, setActivityYears] = useState<number[]>([]);
 
   const [selectedYear, setSelectedYear] = useState<string>(
-    new Date().getFullYear().toString()
+    new Date().getFullYear().toString(),
   );
 
   const [userSolutions, setUserSolutions] = useState<Solution[]>([]);
@@ -58,7 +59,7 @@ export default function ProfilePage({
   const [totalSolutionsPages, setTotalSolutionsPages] = useState(0);
   const solutionsPerPage = 10;
   const [solutionsSortBy, setSolutionsSortBy] = useState<SolutionSortBy>(
-    SolutionSortBy.RECENT
+    SolutionSortBy.RECENT,
   );
 
   const [userPosts, setUserPosts] = useState<Post[]>([]);
@@ -84,33 +85,30 @@ export default function ProfilePage({
         setTotalSolutions(response.data.data.meta.total);
         setTotalSolutionsPages(response.data.data.meta.totalPages);
       } catch (error) {
-        console.error('Error fetching user solutions:', error);
+        console.error("Error fetching user solutions:", error);
       } finally {
         setSolutionsLoading(false);
       }
     },
-    []
+    [],
   );
 
-  const fetchUserPosts = useCallback(
-    async (userId: number, page: number) => {
-      setPostsLoading(true);
-      try {
-        const response = await DiscussService.getUserPosts(userId, {
-          page,
-          limit: postsPerPage,
-          sortBy: 'newest',
-        });
-        setUserPosts(response.data);
-        setTotalPostsPages(response.meta.totalPages);
-      } catch (error) {
-        console.error('Error fetching user posts:', error);
-      } finally {
-        setPostsLoading(false);
-      }
-    },
-    []
-  );
+  const fetchUserPosts = useCallback(async (userId: number, page: number) => {
+    setPostsLoading(true);
+    try {
+      const response = await DiscussService.getUserPosts(userId, {
+        page,
+        limit: postsPerPage,
+        sortBy: "newest",
+      });
+      setUserPosts(response.data);
+      setTotalPostsPages(response.meta.totalPages);
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+    } finally {
+      setPostsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,7 +130,7 @@ export default function ProfilePage({
 
         fetchUserSolutions(userId, solutionsPage, solutionsSortBy);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error("Error fetching profile data:", error);
       } finally {
         setLoading(false);
       }
@@ -149,11 +147,11 @@ export default function ProfilePage({
         const year = Number(selectedYear);
         const response = await UserService.getUserActivityCalendar(
           userId,
-          year
+          year,
         );
         setActivityCalendar(response.data.data);
       } catch (error) {
-        console.error('Error fetching activity calendar:', error);
+        console.error("Error fetching activity calendar:", error);
       }
     };
 
@@ -182,7 +180,7 @@ export default function ProfilePage({
   };
 
   const handleEditProfile = () => {
-    router.push('/settings');
+    router.push("/settings");
   };
 
   if (loading) {
@@ -204,7 +202,7 @@ export default function ProfilePage({
     );
   }
 
-  if (!user) return <div>User not found</div>;
+  if (!user) return <div>{t("user_not_found")}</div>;
 
   return (
     <div className="container mx-auto space-y-6 p-6">
@@ -218,6 +216,8 @@ export default function ProfilePage({
         </div>
 
         <div className="col-span-12 space-y-6 lg:col-span-9">
+          <UserContestRatingChart userId={Number(userIdString)} />
+
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <ProblemStatsCard problemStats={problemStats} />
             <SubmissionStatsCard submissionStats={submissionStats} />
@@ -235,23 +235,26 @@ export default function ProfilePage({
           </Card>
 
           <Tabs defaultValue="recent-ac" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
+            <TabsList className="grid w-full grid-cols-4 lg:w-[800px]">
               <TabsTrigger value="recent-ac">
-                {t('recent_ac_problems')}
+                {t("recent_ac_problems")}
               </TabsTrigger>
-              <TabsTrigger value="solutions">{t('solutions')}</TabsTrigger>
-              <TabsTrigger value="discuss">Discuss</TabsTrigger>
+              <TabsTrigger value="solutions">{t("solutions")}</TabsTrigger>
+              <TabsTrigger value="contest-history">
+                {t("contest_history", "Contest History")}
+              </TabsTrigger>
+              <TabsTrigger value="discuss">{t("discuss")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="recent-ac" className="mt-6">
               <Card className="border border-border bg-card shadow-md">
                 <CardHeader>
-                  <CardTitle>{t('recent_ac_problems')}</CardTitle>
+                  <CardTitle>{t("recent_ac_problems")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {recentActivity.length === 0 ? (
                     <div className="py-8 text-center text-muted-foreground">
-                      {t('no_recent_activity')}
+                      {t("no_recent_activity")}
                     </div>
                   ) : (
                     <RecentActivityList
@@ -266,7 +269,7 @@ export default function ProfilePage({
             <TabsContent value="solutions" className="mt-6">
               <Card className="border border-border bg-card shadow-md">
                 <CardHeader>
-                  <CardTitle>{t('solutions')}</CardTitle>
+                  <CardTitle>{t("solutions")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <SolutionsList
@@ -283,10 +286,23 @@ export default function ProfilePage({
               </Card>
             </TabsContent>
 
+            <TabsContent value="contest-history" className="mt-6">
+              <Card className="border border-border bg-card shadow-md">
+                <CardHeader>
+                  <CardTitle>
+                    {t("contest_history", "Contest History")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <UserContestHistoryTab userId={Number(userIdString)} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="discuss" className="mt-6">
               <Card className="border border-border bg-card shadow-md">
                 <CardHeader>
-                  <CardTitle>Discuss</CardTitle>
+                  <CardTitle>{t("discuss")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <UserDiscussList

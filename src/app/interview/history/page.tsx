@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import '@/lib/i18n';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { InterviewService } from '@/services/interview-service';
-import type { Interview, InterviewStatus } from '@/types/interview';
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "@/lib/i18n";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { InterviewService } from "@/services/interview-service";
+import type { Interview, InterviewStatus } from "@/types/interview";
 import {
   ArrowLeft,
   Calendar,
@@ -18,57 +18,60 @@ import {
   MessageSquare,
   Play,
   TrendingUp,
-} from 'lucide-react';
+} from "lucide-react";
 
-function formatDuration(startedAt: string, endedAt?: string) {
-  if (!endedAt) return 'In progress';
+function formatDuration(startedAt: string, endedAt?: string, t?: any) {
+  if (!endedAt) return t ? t("history.in_progress") : "In progress";
   const start = new Date(startedAt).getTime();
   const end = new Date(endedAt).getTime();
   const seconds = Math.floor((end - start) / 1000);
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
+  if (t) {
+    return t("history.duration_format", { mins, secs });
+  }
   return `${mins}m ${secs}s`;
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
+  return new Date(dateString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 }
 
-function getStatusBadge(status: InterviewStatus) {
+function getStatusBadge(status: InterviewStatus, t: any) {
   switch (status) {
-    case 'completed':
+    case "completed":
       return (
         <Badge
           variant="default"
           className="bg-green-500/10 text-green-600 hover:bg-green-500/20"
         >
           <CheckCircle2 className="w-3 h-3 mr-1" />
-          Completed
+          {t("history.status_completed")}
         </Badge>
       );
-    case 'active':
+    case "active":
       return (
         <Badge
           variant="default"
           className="bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1 animate-pulse" />
-          In Progress
+          {t("history.status_in_progress")}
         </Badge>
       );
-    case 'abandoned':
-      return <Badge variant="secondary">Abandoned</Badge>;
+    case "abandoned":
+      return <Badge variant="secondary">{t("history.status_abandoned")}</Badge>;
     default:
       return <Badge variant="secondary">{status}</Badge>;
   }
 }
 
 export default function InterviewHistoryPage() {
-  const { t } = useTranslation('interview');
+  const { t } = useTranslation("interview");
   const router = useRouter();
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,7 +87,7 @@ export default function InterviewHistoryPage() {
       const response = await InterviewService.getInterviewHistory();
       setInterviews(response.data.data || []);
     } catch (err) {
-      setError('Failed to load interview history');
+      setError(t("history.failed_to_load_history"));
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -107,12 +110,14 @@ export default function InterviewHistoryPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push('/interview')}
+            onClick={() => router.push("/interview")}
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
-            Back
+            {t("history.back")}
           </Button>
-          <h1 className="text-2xl font-bold">Interview History</h1>
+          <h1 className="text-2xl font-bold">
+            {t("history.interview_history_title")}
+          </h1>
         </div>
 
         {/* Content */}
@@ -123,18 +128,20 @@ export default function InterviewHistoryPage() {
         ) : error ? (
           <Card className="p-6 text-center">
             <p className="text-destructive mb-4">{error}</p>
-            <Button onClick={loadInterviews}>Try Again</Button>
+            <Button onClick={loadInterviews}>{t("history.try_again")}</Button>
           </Card>
         ) : interviews.length === 0 ? (
           <Card className="p-12 text-center">
             <MessageSquare className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h2 className="text-lg font-semibold mb-2">No interviews yet</h2>
+            <h2 className="text-lg font-semibold mb-2">
+              {t("history.no_interviews_yet")}
+            </h2>
             <p className="text-muted-foreground mb-4">
-              Start your first mock interview to practice your coding skills
+              {t("history.start_first_mock_interview")}
             </p>
-            <Button onClick={() => router.push('/interview')}>
+            <Button onClick={() => router.push("/interview")}>
               <Play className="w-4 h-4 mr-1" />
-              Start Interview
+              {t("history.start_interview")}
             </Button>
           </Card>
         ) : (
@@ -148,9 +155,10 @@ export default function InterviewHistoryPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold truncate">
-                        {interview.problemSnapshot?.title || 'Unknown Problem'}
+                        {interview.problemSnapshot?.title ||
+                          t("history.unknown_problem")}
                       </h3>
-                      {getStatusBadge(interview.status)}
+                      {getStatusBadge(interview.status, t)}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
@@ -159,33 +167,38 @@ export default function InterviewHistoryPage() {
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
-                        {formatDuration(interview.startedAt, interview.endedAt)}
+                        {formatDuration(
+                          interview.startedAt,
+                          interview.endedAt,
+                          t,
+                        )}
                       </span>
                       {interview.evaluation && (
                         <span className="flex items-center gap-1">
                           <TrendingUp className="w-3.5 h-3.5" />
-                          Score: {interview.evaluation.overallScore}/100
+                          {t("history.score")}:{" "}
+                          {interview.evaluation.overallScore}/100
                         </span>
                       )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {interview.status === 'active' && (
+                    {interview.status === "active" && (
                       <Button
                         size="sm"
                         onClick={() => handleResume(interview.id)}
                       >
-                        Resume
+                        {t("history.resume")}
                       </Button>
                     )}
-                    {interview.status === 'completed' && (
+                    {interview.status === "completed" && (
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleViewDetails(interview.id)}
                       >
-                        View Details
+                        {t("history.view_details")}
                       </Button>
                     )}
                   </div>
@@ -199,7 +212,7 @@ export default function InterviewHistoryPage() {
                         {interview.evaluation.problemSolvingScore}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Problem Solving
+                        {t("history.score_problem_solving")}
                       </div>
                     </div>
                     <div className="text-center">
@@ -207,7 +220,7 @@ export default function InterviewHistoryPage() {
                         {interview.evaluation.communicationScore}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Communication
+                        {t("history.score_communication")}
                       </div>
                     </div>
                     <div className="text-center">
@@ -215,7 +228,7 @@ export default function InterviewHistoryPage() {
                         {interview.evaluation.codeQualityScore}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Code Quality
+                        {t("history.score_code_quality")}
                       </div>
                     </div>
                     <div className="text-center">
@@ -223,7 +236,7 @@ export default function InterviewHistoryPage() {
                         {interview.evaluation.technicalScore}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Technical
+                        {t("history.score_technical")}
                       </div>
                     </div>
                   </div>

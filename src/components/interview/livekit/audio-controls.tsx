@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components/ui/tooltip';
+import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
   useConnectionState,
   useLocalParticipant,
-} from '@livekit/components-react';
-import { ConnectionState } from 'livekit-client';
-import { Loader2, Mic, MicOff, PhoneOff } from 'lucide-react';
-import { useCallback, useState } from 'react';
+} from "@livekit/components-react";
+import { ConnectionState } from "livekit-client";
+import { Loader2, Mic, MicOff, PhoneOff } from "lucide-react";
+import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AudioControlsProps {
   onEndCall?: () => void;
@@ -26,6 +27,7 @@ export function AudioControls({
   const { localParticipant } = useLocalParticipant();
   const connectionState = useConnectionState();
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation("interview");
 
   // Check if connected and microphone is enabled
   const isConnected = connectionState === ConnectionState.Connected;
@@ -38,7 +40,7 @@ export function AudioControls({
     try {
       await localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled);
     } catch (error) {
-      console.error('Failed to toggle microphone:', error);
+      console.error("Failed to toggle microphone:", error);
     } finally {
       setIsLoading(false);
     }
@@ -53,13 +55,13 @@ export function AudioControls({
   if (!isConnected) {
     return (
       <div className="flex items-center gap-2">
-        <Tooltip content="Voice not connected">
+        <Tooltip content={t("livekit.voice_not_connected")}>
           <Button variant="outline" size="sm" className="h-9 w-9 p-0" disabled>
             <MicOff className="h-4 w-4 text-muted-foreground" />
           </Button>
         </Tooltip>
 
-        <Tooltip content="End interview">
+        <Tooltip content={t("livekit.end_interview")}>
           <Button
             variant="destructive"
             size="sm"
@@ -78,10 +80,14 @@ export function AudioControls({
     <div className="flex items-center gap-2">
       {/* Microphone Toggle */}
       <Tooltip
-        content={isMicrophoneEnabled ? 'Mute microphone' : 'Unmute microphone'}
+        content={
+          isMicrophoneEnabled
+            ? t("livekit.mute_microphone")
+            : t("livekit.unmute_microphone")
+        }
       >
         <Button
-          variant={isMicrophoneEnabled ? 'default' : 'destructive'}
+          variant={isMicrophoneEnabled ? "default" : "destructive"}
           size="sm"
           className="h-9 w-9 p-0"
           onClick={toggleMicrophone}
@@ -98,7 +104,7 @@ export function AudioControls({
       </Tooltip>
 
       {/* End Call */}
-      <Tooltip content="End interview">
+      <Tooltip content={t("livekit.end_interview")}>
         <Button
           variant="destructive"
           size="sm"
@@ -120,6 +126,7 @@ export function MicToggleButton({ disabled = false }: { disabled?: boolean }) {
   const { localParticipant } = useLocalParticipant();
   const connectionState = useConnectionState();
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation("interview");
 
   const isConnected = connectionState === ConnectionState.Connected;
   const isMicrophoneEnabled = localParticipant?.isMicrophoneEnabled ?? false;
@@ -131,7 +138,7 @@ export function MicToggleButton({ disabled = false }: { disabled?: boolean }) {
     try {
       await localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled);
     } catch (error) {
-      console.error('Failed to toggle microphone:', error);
+      console.error("Failed to toggle microphone:", error);
     } finally {
       setIsLoading(false);
     }
@@ -147,14 +154,14 @@ export function MicToggleButton({ disabled = false }: { disabled?: boolean }) {
         disabled
       >
         <MicOff className="h-3.5 w-3.5" />
-        Voice Off
+        {t("livekit.voice_off")}
       </Button>
     );
   }
 
   return (
     <Button
-      variant={isMicrophoneEnabled ? 'default' : 'outline'}
+      variant={isMicrophoneEnabled ? "default" : "outline"}
       size="sm"
       className="h-8 text-xs gap-1.5"
       onClick={toggleMicrophone}
@@ -167,7 +174,7 @@ export function MicToggleButton({ disabled = false }: { disabled?: boolean }) {
       ) : (
         <MicOff className="h-3.5 w-3.5" />
       )}
-      {isMicrophoneEnabled ? 'Voice On' : 'Voice Off'}
+      {isMicrophoneEnabled ? t("livekit.voice_on") : t("livekit.voice_off")}
     </Button>
   );
 }

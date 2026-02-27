@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { PracticeFilters } from '@/components/profile/practice/practice-filters';
-import { PracticeHistoryTable } from '@/components/profile/practice/practice-history-table';
-import { PracticeStatsCard } from '@/components/profile/practice/practice-stats-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { UserService } from '@/services/user-service';
-import { ProblemDifficulty, ProblemStatus } from '@/types/problems';
+import { PracticeFilters } from "@/components/profile/practice/practice-filters";
+import { PracticeHistoryTable } from "@/components/profile/practice/practice-history-table";
+import { PracticeStatsCard } from "@/components/profile/practice/practice-stats-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { UserService } from "@/services/user-service";
+import type { ProblemDifficulty, ProblemStatus } from "@/types/problems";
 import {
   PracticeHistorySortBy,
   PracticeHistorySortOrder,
   type UserPracticeHistoryItem,
   type UserProblemStats,
-} from '@/types/user';
-import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+} from "@/types/user";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function PracticeHistoryPage({
   params,
@@ -23,31 +23,31 @@ export default function PracticeHistoryPage({
 }) {
   const { userId: userIdString } = use(params);
   const userId = Number(userIdString);
-  const { t } = useTranslation('profile');
+  const { t } = useTranslation("profile");
 
   const [loading, setLoading] = useState(true);
   const [historyItems, setHistoryItems] = useState<UserPracticeHistoryItem[]>(
-    []
+    [],
   );
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   const [problemStats, setProblemStats] = useState<UserProblemStats | null>(
-    null
+    null,
   );
 
-  const [statusFilter, setStatusFilter] = useState<ProblemStatus | 'ALL'>(
-    'ALL'
+  const [statusFilter, setStatusFilter] = useState<ProblemStatus | "ALL">(
+    "ALL",
   );
   const [difficultyFilter, setDifficultyFilter] = useState<
-    ProblemDifficulty | 'ALL'
-  >('ALL');
+    ProblemDifficulty | "ALL"
+  >("ALL");
 
   const [sortBy, setSortBy] = useState<PracticeHistorySortBy>(
-    PracticeHistorySortBy.LAST_SUBMITTED_AT
+    PracticeHistorySortBy.LAST_SUBMITTED_AT,
   );
   const [sortOrder, setSortOrder] = useState<PracticeHistorySortOrder>(
-    PracticeHistorySortOrder.DESC
+    PracticeHistorySortOrder.DESC,
   );
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,9 +65,9 @@ export default function PracticeHistoryPage({
           UserService.getUserPracticeHistory(userId, {
             page: currentPage,
             limit: itemsPerPage,
-            status: statusFilter === 'ALL' ? undefined : statusFilter,
+            status: statusFilter === "ALL" ? undefined : statusFilter,
             difficulty:
-              difficultyFilter === 'ALL' ? undefined : difficultyFilter,
+              difficultyFilter === "ALL" ? undefined : difficultyFilter,
             sortBy: sortBy,
             sortOrder: sortOrder,
           }),
@@ -82,7 +82,7 @@ export default function PracticeHistoryPage({
         setTotalPages(historyData.meta.totalPages);
         setProblemStats(statsData.problemStats);
       } catch (error) {
-        console.error('Error fetching practice history:', error);
+        console.error("Error fetching practice history:", error);
       } finally {
         setLoading(false);
       }
@@ -106,8 +106,8 @@ export default function PracticeHistoryPage({
   };
 
   const handleResetFilters = () => {
-    setStatusFilter('ALL');
-    setDifficultyFilter('ALL');
+    setStatusFilter("ALL");
+    setDifficultyFilter("ALL");
   };
 
   if (loading && historyItems.length === 0) {
@@ -136,7 +136,7 @@ export default function PracticeHistoryPage({
         <div className="col-span-1 space-y-4 lg:col-span-8">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">
-              {t('practice_history')}
+              {t("practice_history")}
             </h1>
             <PracticeFilters
               statusFilter={statusFilter}

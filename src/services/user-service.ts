@@ -23,6 +23,7 @@ import {
   type UserSubmissionStats,
   type ContestRatingLeaderboardEntry,
   type ContestHistoryEntry,
+  type ContestRatingChartData,
 } from "@/types/user";
 import type { AxiosResponse } from "axios";
 
@@ -135,8 +136,29 @@ async function getContestRatingLeaderboard(
 
 async function getContestHistory(
   userId: number,
-): Promise<AxiosResponse<ApiResponse<ContestHistoryEntry[]>>> {
-  return await clientApi.get(`/users/${userId}/contest-history`);
+  params?: { page?: number; limit?: number },
+): Promise<
+  AxiosResponse<
+    ApiResponse<{
+      data: ContestHistoryEntry[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
+    }>
+  >
+> {
+  return await clientApi.get(`/users/${userId}/contest-history`, {
+    params,
+  });
+}
+
+async function getContestRatingChart(
+  userId: number,
+): Promise<AxiosResponse<ApiResponse<ContestRatingChartData>>> {
+  return await clientApi.get(`/users/${userId}/contest-rating-chart`);
 }
 
 export const UserService = {
@@ -153,4 +175,5 @@ export const UserService = {
   getUserSolutions,
   getContestRatingLeaderboard,
   getContestHistory,
+  getContestRatingChart,
 };

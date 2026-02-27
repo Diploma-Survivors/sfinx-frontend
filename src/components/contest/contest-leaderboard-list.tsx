@@ -1,7 +1,7 @@
-import type { LeaderboardEntry } from '@/types/contests';
-import type { JSX } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ContestLeaderboardEntry } from './contest-leaderboard-entry';
+import type { LeaderboardEntry } from "@/types/contests";
+import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
+import { ContestLeaderboardEntry } from "./contest-leaderboard-entry";
 
 interface ContestLeaderboardListProps {
   leaderboard: LeaderboardEntry[];
@@ -12,7 +12,7 @@ export function ContestLeaderboardList({
   leaderboard,
   userRank,
 }: ContestLeaderboardListProps): JSX.Element {
-  const { t } = useTranslation('contests');
+  const { t } = useTranslation("contests");
 
   return (
     <div className="p-4">
@@ -21,13 +21,16 @@ export function ContestLeaderboardList({
         {userRank && (
           <div className="mb-4 border-b border-border pb-4">
             <div className="text-xs font-medium text-muted-foreground mb-2">
-              {t('yourRank')}
+              {t("yourRank")}
             </div>
             <ContestLeaderboardEntry entry={userRank} isCurrentUser={true} />
           </div>
         )}
 
         {/* Leaderboard List */}
+        <div className="text-xs font-medium text-muted-foreground mb-2">
+          {t("leaderboard")}
+        </div>
         {leaderboard.map((entry) => (
           <ContestLeaderboardEntry
             key={entry.user.id}

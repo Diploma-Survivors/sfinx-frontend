@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import type { InterviewMessage } from '@/types/interview';
-import { Bot, Loader2, Send, User } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import type { InterviewMessage } from "@/types/interview";
+import { Bot, Loader2, Send, User } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface InterviewChatProps {
   messages: InterviewMessage[];
@@ -24,7 +24,7 @@ export function InterviewChat({
   isLoading = false,
   disabled = false,
 }: InterviewChatProps) {
-  const { t } = useTranslation('interview');
+  const { t } = useTranslation("interview");
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function InterviewChat({
   }, [messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       onSendMessage();
     }
@@ -42,16 +42,16 @@ export function InterviewChat({
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
     <Card className="flex flex-col h-full border shadow-sm overflow-hidden">
       <div className="h-10 px-4 flex items-center border-b bg-muted/30 flex-shrink-0">
         <Bot className="w-4 h-4 text-primary mr-2" />
-        <span className="text-sm font-medium">{t('chat.title')}</span>
+        <span className="text-sm font-medium">{t("chat.title")}</span>
         <span className="ml-auto text-xs text-muted-foreground">
-          {messages.length} {messages.length === 1 ? 'message' : 'messages'}
+          {t("chat.message_count", { count: messages.length })}
         </span>
       </div>
 
@@ -62,25 +62,25 @@ export function InterviewChat({
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
             <Bot className="w-10 h-10 mb-2 opacity-30" />
-            <p className="text-sm">{t('chat.empty')}</p>
+            <p className="text-sm">{t("chat.empty")}</p>
           </div>
         )}
 
         {messages.map((msg, index) => {
-          const isUser = msg.role === 'user';
+          const isUser = msg.role === "user";
           const showAvatar =
             index === 0 || messages[index - 1]?.role !== msg.role;
 
           return (
             <div
               key={msg.id}
-              className={cn('flex gap-2', isUser ? 'flex-row-reverse' : '')}
+              className={cn("flex gap-2", isUser ? "flex-row-reverse" : "")}
             >
               {showAvatar ? (
                 <div
                   className={cn(
-                    'w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0',
-                    isUser ? 'bg-primary' : 'bg-secondary'
+                    "w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0",
+                    isUser ? "bg-primary" : "bg-secondary",
                   )}
                 >
                   {isUser ? (
@@ -95,16 +95,16 @@ export function InterviewChat({
 
               <div
                 className={cn(
-                  'flex flex-col max-w-[75%]',
-                  isUser ? 'items-end' : 'items-start'
+                  "flex flex-col max-w-[75%]",
+                  isUser ? "items-end" : "items-start",
                 )}
               >
                 <div
                   className={cn(
-                    'px-3 py-2 rounded-2xl text-sm leading-relaxed',
+                    "px-3 py-2 rounded-2xl text-sm leading-relaxed",
                     isUser
-                      ? 'bg-primary text-primary-foreground rounded-br-sm'
-                      : 'bg-muted text-foreground rounded-bl-sm border'
+                      ? "bg-primary text-primary-foreground rounded-br-sm"
+                      : "bg-muted text-foreground rounded-bl-sm border",
                   )}
                 >
                   <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -136,7 +136,7 @@ export function InterviewChat({
             value={inputText}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={disabled ? t('chat.ended') : t('chat.placeholder')}
+            placeholder={disabled ? t("chat.ended") : t("chat.placeholder")}
             disabled={disabled || isLoading}
             className="flex-1 h-9 px-3 text-sm bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
           />

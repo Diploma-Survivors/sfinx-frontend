@@ -20,12 +20,14 @@ import {
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 interface PostCardProps {
   post: Post;
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const { t } = useTranslation("discuss");
   const router = useRouter();
   const { data: session } = useSession();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -42,7 +44,7 @@ export function PostCard({ post }: PostCardProps) {
   }, [post.content]);
 
   const getDisplayName = () => {
-    return post.author.fullName || post.author.username || "Anonymous";
+    return post.author.fullName || post.author.username || t("anonymous");
   };
 
   const getAvatarUrl = () => {
@@ -74,16 +76,38 @@ export function PostCard({ post }: PostCardProps) {
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     let interval = seconds / 31536000;
-    if (interval > 1) return Math.floor(interval) + " years ago";
+    if (interval > 1) {
+      const count = Math.floor(interval);
+      return count === 1 ? t("years_ago_one") : t("years_ago_other", { count });
+    }
     interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + " months ago";
+    if (interval > 1) {
+      const count = Math.floor(interval);
+      return count === 1
+        ? t("months_ago_one")
+        : t("months_ago_other", { count });
+    }
     interval = seconds / 86400;
-    if (interval > 1) return Math.floor(interval) + " days ago";
+    if (interval > 1) {
+      const count = Math.floor(interval);
+      return count === 1 ? t("days_ago_one") : t("days_ago_other", { count });
+    }
     interval = seconds / 3600;
-    if (interval > 1) return Math.floor(interval) + " hours ago";
+    if (interval > 1) {
+      const count = Math.floor(interval);
+      return count === 1 ? t("hours_ago_one") : t("hours_ago_other", { count });
+    }
     interval = seconds / 60;
-    if (interval > 1) return Math.floor(interval) + " minutes ago";
-    return Math.floor(seconds) + " seconds ago";
+    if (interval > 1) {
+      const count = Math.floor(interval);
+      return count === 1
+        ? t("minutes_ago_one")
+        : t("minutes_ago_other", { count });
+    }
+    const count = Math.floor(seconds);
+    return count === 1
+      ? t("seconds_ago_one")
+      : t("seconds_ago_other", { count });
   };
 
   return (
@@ -134,7 +158,7 @@ export function PostCard({ post }: PostCardProps) {
                   onClick={() => router.push(`/discuss/${post.id}/edit`)}
                 >
                   <Edit className="mr-2 h-4 w-4" />
-                  Edit
+                  {t("edit")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

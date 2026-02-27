@@ -1,13 +1,17 @@
 {
   "title": "Phỏng vấn trực tiếp",
-  "subtitle": "Luyện tập phỏng vấn coding với phản hồi AI theo thờigian thực.",
+  "subtitle": "Luyện tập phỏng vấn coding với phản hồi AI theo thời gian thực.",
   "duration": "Khoảng 15-20 phút",
   "noPressure": "Không áp lực, luyện tập theo tốc độ của bạn",
   "steps": {
     "solve": "Giải bài toán lập trình theo thờigian thực",
+    "solve_desc": "Thể hiện khả năng qua việc giải quyết bài toán tương tác.",
     "explain": "Giải thích cách tiếp cận và suy nghĩ của bạn",
+    "explain_desc": "Trình bày chi tiết quá trình suy nghĩ và phương pháp của bạn.",
     "feedback": "Nhận phản hồi và hướng dẫn từ AI ngay lập tức",
-    "scores": "Nhận điểm số chi tiết về hiệu suất"
+    "feedback_desc": "Nhận thông tin phản hồi có giá trị tự động.",
+    "scores": "Nhận điểm số chi tiết về hiệu suất",
+    "scores_desc": "Xem chi tiết điểm số trên nhiều tiêu chí."
   },
   "voice": {
     "title": "Tương tác bằng giọng nói",
@@ -29,7 +33,9 @@
     "title": "AI Phỏng vấn",
     "placeholder": "Nhập tin nhắn...",
     "empty": "Bắt đầu cuộc trò chuyện bằng cách gửi tin nhắn",
-    "ended": "Phỏng vấn đã kết thúc"
+    "ended": "Phỏng vấn đã kết thúc",
+    "message_count_one": "{{count}} tin nhắn",
+    "message_count_other": "{{count}} tin nhắn"
   },
   "editor": {
     "title": "Lờii giải"
@@ -56,7 +62,8 @@
     "improvements": "Cần cải thiện",
     "viewReport": "Xem báo cáo đầy đủ",
     "viewHistory": "Xem lịch sử",
-    "newInterview": "Phỏng vấn mới"
+    "newInterview": "Phỏng vấn mới",
+    "detailed_feedback": "Phản hồi chi tiết"
   },
   "endDialog": {
     "title": "Kết thúc phỏng vấn?",
@@ -74,5 +81,70 @@
     "1": "Nên kiểm tra code với các trường hợp biên trước khi nộp",
     "2": "Có thể thảo luận chi tiết hơn về trade-off không gian thờigian",
     "3": "Luyện tập diễn đạt quá trình suy nghĩ trong khi code"
+  },
+  "live": {
+    "connecting_voice_room": "Đang kết nối vào phòng thoại...",
+    "allow_microphone_access": "Vui lòng cho phép truy cập micro khi được yêu cầu",
+    "ending_interview": "Đang kết thúc phỏng vấn...",
+    "generating_evaluation_report": "Đang tạo báo cáo đánh giá của bạn",
+    "voice_unavailable_fallback": "Chế độ giọng nói không khả dụng. Tiếp tục với trò chuyện văn bản.",
+    "retry_connection": "Thử kết nối lại",
+    "voice_connection_error_fallback": "Lỗi kết nối giọng nói. Chuyển về chế độ văn bản.",
+    "microphone_label": "Micro:",
+    "speak_now_transcribing": "Hãy nói bây giờ - giọng nói của bạn đang được ghi lại",
+    "failed_to_start_interview": "Bắt đầu phỏng vấn thất bại",
+    "mic_permission_denied": "Quyền truy cập micro bị từ chối. Vui lòng cấp quyền và thử lại.",
+    "network_error": "Lỗi mạng. Vui lòng kiểm tra kết nối của bạn.",
+    "session_expired": "Phiên đã hết hạn. Vui lòng tải lại trang.",
+    "voice_connection_failed": "Kết nối giọng nói thất bại. Chuyển sang chế độ văn bản."
+  },
+  "history": {
+    "in_progress": "Đang diễn ra",
+    "status_completed": "Hoàn thành",
+    "status_in_progress": "Đang diễn ra",
+    "status_abandoned": "Đã hủy",
+    "failed_to_load_history": "Không thể tải lịch sử phỏng vấn",
+    "back": "Quay lại",
+    "interview_history_title": "Lịch sử phỏng vấn",
+    "try_again": "Thử lại",
+    "no_interviews_yet": "Chưa có phỏng vấn nào",
+    "start_first_mock_interview": "Bắt đầu cuộc phỏng vấn thử đầu tiên để luyện tập kỹ năng lập trình của bạn",
+    "start_interview": "Bắt đầu phỏng vấn",
+    "unknown_problem": "Bài toán không xác định",
+    "score": "Điểm số",
+    "resume": "Tiếp tục",
+    "view_details": "Xem chi tiết",
+    "score_problem_solving": "Giải quyết vấn đề",
+    "score_communication": "Giao tiếp",
+    "score_code_quality": "Chất lượng code",
+    "score_technical": "Kỹ thuật",
+    "duration_format": "{{mins}}p {{secs}}g"
+  },
+  "greeting": {
+    "experience_natural_ai": "Trải nghiệm bài đánh giá qua AI, tự nhiên và sát với kỹ năng của bạn.",
+    "ready_to_begin": "Sẵn sàng bắt đầu?",
+    "configure_env": "Cấu hình môi trường trước khi bắt đầu.",
+    "random_problem_selection": "Chọn bài toán tự động",
+    "random_problem_desc": "Một bài toán ngẫu nhiên sẽ được chọn cho bạn. Giao diện chọn bài toán sắp ra mắt!",
+    "challenge_curated_desc": "Thử thách này sẽ được tinh chỉnh đặc biệt để kiểm tra tư duy thuật toán cốt lõi của bạn.",
+    "starting": "Đang bắt đầu..."
+  },
+  "header_ext": {
+    "mic_blocked": "Mic bị chặn",
+    "mic_blocked_desc": "Quyền truy cập micro bị chặn. Vui lòng cho phép truy cập micro trong cài đặt trình duyệt của bạn để sử dụng chế độ thoại."
+  },
+  "livekit": {
+    "voice_not_connected": "Chưa kết nối thoại",
+    "end_interview": "Kết thúc phỏng vấn",
+    "mute_microphone": "Tắt micro",
+    "unmute_microphone": "Bật micro",
+    "voice_off": "Tắt thoại",
+    "voice_on": "Bật thoại",
+    "connecting": "Đang kết nối...",
+    "voice_connected": "Đã kết nối thoại",
+    "reconnecting": "Đang kết nối lại...",
+    "voice_connection_error": "Lỗi kết nối thoại",
+    "connection_issue_message": "Chúng tôi gặp sự cố với kết nối thoại. Bạn có thể tiếp tục với trò chuyện văn bản hoặc thử kết nối lại.",
+    "try_again": "Thử lại"
   }
 }

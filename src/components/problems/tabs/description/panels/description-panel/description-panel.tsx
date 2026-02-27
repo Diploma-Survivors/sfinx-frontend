@@ -40,7 +40,7 @@ interface DescriptionPanelProps {
 }
 
 export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
-  const { t } = useTranslation("problems");
+  const { t } = useTranslation(["problems", "profile"]);
   const { similarProblems } = useProblemDetail();
   const sampleCases: SampleTestCase[] = problem.sampleTestcases || [];
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
@@ -86,12 +86,13 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
             {/* Row 2: Meta & Actions */}
             <div className="flex items-center gap-4 flex-wrap">
               <div
-                className={`px-3 py-1 rounded-full text-sm font-semibold border ${problem.difficulty === "easy"
+                className={`px-3 py-1 rounded-full text-sm font-semibold border ${
+                  problem.difficulty === "easy"
                     ? "bg-green-500/10 text-green-600 border-green-500/20"
                     : problem.difficulty === "medium"
                       ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
                       : "bg-red-500/10 text-red-600 border-red-500/20"
-                  }`}
+                }`}
               >
                 {t(`difficulty_${problem.difficulty}`)}
               </div>
@@ -99,7 +100,7 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
               {problem.isPremium && (
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-yellow-500/10 text-yellow-600 border border-yellow-500/20">
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Premium</span>
+                  <span>{t("premium", { ns: "profile" })}</span>
                 </div>
               )}
 
@@ -130,7 +131,7 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                 onClick={() => setIsReportOpen(true)}
               >
                 <TriangleAlert className="w-4 h-4" />
-                Report
+                {t("report")}
               </Button>
             </div>
           </div>
@@ -158,10 +159,11 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                   <button
                     key={`sample-tab-${sample.id ?? sample.input?.slice(0, 20) ?? index}`}
                     onClick={() => setActiveSampleIndex(index)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${activeSampleIndex === index
+                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                      activeSampleIndex === index
                         ? "bg-secondary text-secondary-foreground shadow-sm"
                         : "bg-muted text-muted-foreground hover:bg-muted/80"
-                      }`}
+                    }`}
                   >
                     {t("case")} {index + 1}
                   </button>
@@ -275,8 +277,9 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                     className="w-9 p-0 text-muted-foreground hover:text-foreground"
                   >
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${isSimilarOpen ? "" : "-rotate-90"
-                        }`}
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isSimilarOpen ? "" : "-rotate-90"
+                      }`}
                     />
                     <span className="sr-only">Toggle</span>
                   </Button>

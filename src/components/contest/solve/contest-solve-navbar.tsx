@@ -1,15 +1,15 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Clock, Menu } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
-import { useApp } from '@/contexts/app-context';
 import { UserMenu } from '@/components/layout/user-menu';
-import { signOut } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { useApp } from '@/contexts/app-context';
 import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight, Clock, Menu } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ContestNavbarProps {
     onMenuClick: () => void;
@@ -95,7 +95,7 @@ export default function ContestSolveNavbar({
                     variant="ghost"
                     size="icon"
                     onClick={onMenuClick}
-                    title={tCommon('open_sidebar')}
+                    title={t('open_sidebar')}
                 >
                     <Menu className="w-5 h-5" />
                 </Button>

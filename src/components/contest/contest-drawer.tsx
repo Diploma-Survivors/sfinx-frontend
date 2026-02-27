@@ -1,17 +1,17 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
 
 import {
   type ContestProblem,
   ContestProblemStatus,
   ContestProblemStatusTooltip,
   type LeaderboardEntry,
-} from '@/types/contests';
-import { getDifficultyColor } from '@/types/problems';
-import { CheckCircle, Minus, X } from 'lucide-react';
-import { type JSX, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Tooltip } from '../ui/tooltip';
-import { ContestLeaderboardList } from './contest-leaderboard-list';
+} from "@/types/contests";
+import { getDifficultyColor } from "@/types/problems";
+import { CheckCircle, Minus, X } from "lucide-react";
+import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Tooltip } from "../ui/tooltip";
+import { ContestLeaderboardList } from "./contest-leaderboard-list";
 
 interface ContestDrawerProps {
   isOpen: boolean;
@@ -44,9 +44,9 @@ export default function ContestDrawer({
   currentProblemId,
   onProblemClick,
 }: ContestDrawerProps) {
-  const { t } = useTranslation('contests');
-  const [activeTab, setActiveTab] = useState<'problems' | 'ranking'>(
-    'problems'
+  const { t } = useTranslation("contests");
+  const [activeTab, setActiveTab] = useState<"problems" | "ranking">(
+    "problems",
   );
 
   return (
@@ -65,7 +65,7 @@ export default function ContestDrawer({
           fixed left-0 top-0 bottom-0 w-96 bg-background border-r border-border
           z-[60] shadow-2xl flex flex-col
           transform transition-transform duration-500 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
         {/* Header */}
@@ -83,39 +83,39 @@ export default function ContestDrawer({
         {/* Tabs Control */}
         <div className="flex border-b border-border bg-muted/20">
           <button
-            onClick={() => setActiveTab('problems')}
+            onClick={() => setActiveTab("problems")}
             className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'problems'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
+              activeTab === "problems"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
             type="button"
           >
-            {t('problems')}
+            {t("problems")}
           </button>
           <button
-            onClick={() => setActiveTab('ranking')}
+            onClick={() => setActiveTab("ranking")}
             className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'ranking'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
+              activeTab === "ranking"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
             type="button"
           >
-            {t('ranking')}
+            {t("ranking")}
           </button>
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto bg-background/50">
-          {activeTab === 'problems' ? (
+          {activeTab === "problems" ? (
             <div className="p-4 space-y-2">
               {problems.map((problem, idx) => {
                 // Determine status from userRank if available, otherwise fallback to problem.status
                 let status = problem.status;
                 if (userRank) {
                   const problemStatus = userRank.problemStatus.find(
-                    (p) => p.problemId.toString() === problem.id
+                    (p) => p.problemId.toString() === problem.id,
                   );
                   if (problemStatus) {
                     status = problemStatus.status;
@@ -133,8 +133,8 @@ export default function ContestDrawer({
                     }}
                     className={`w-full text-left p-4 rounded-lg border transition-all cursor-pointer ${
                       currentProblemId === problem.id
-                        ? 'border-primary/50 bg-primary/5 shadow-sm'
-                        : 'border-border hover:bg-accent/50 hover:border-accent'
+                        ? "border-primary/50 bg-primary/5 shadow-sm"
+                        : "border-border hover:bg-accent/50 hover:border-accent"
                     }`}
                     type="button"
                   >
@@ -147,7 +147,7 @@ export default function ContestDrawer({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-sm font-mono text-muted-foreground">
-                            Q{idx + 1}.
+                            {t("question_n", { n: idx + 1 })}
                           </span>
                           <span className="text-sm font-medium text-foreground truncate">
                             {problem.title}
@@ -156,15 +156,18 @@ export default function ContestDrawer({
                         <div className="flex items-center gap-2">
                           <Badge
                             className={`${getDifficultyColor(
-                              problem.difficulty
+                              problem.difficulty,
                             )} text-xs`}
                           >
-                            {problem.difficulty}
+                            {t(
+                              `difficulty_${problem.difficulty?.toLowerCase()}`,
+                              { defaultValue: problem.difficulty },
+                            )}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {`${problem.userScore ?? 0}/${
                               problem.maxScore ?? 0
-                            } pts`}
+                            } ${t("pts")}`}
                           </span>
                         </div>
                       </div>
