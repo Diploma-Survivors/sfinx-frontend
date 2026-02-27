@@ -417,7 +417,7 @@ export default function InterviewSessionPage() {
 
   if (phase === 'completed' && evaluation) {
     return (
-      <div className="h-[calc(100vh-64px)] overflow-hidden">
+      <div className="min-h-[calc(100vh-64px)] overflow-auto">
         <InterviewFeedback
           interviewTime={interviewTime}
           evaluation={evaluation}
