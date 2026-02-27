@@ -22,6 +22,7 @@ interface MonacoEditorProps {
   onCurrentLanguageIdChange: (languageId: number) => void;
   currentCode: string;
   onCurrentCodeChange: (code: string) => void;
+  readOnly?: boolean;
 }
 
 export default function MonacoEditor({
@@ -29,6 +30,7 @@ export default function MonacoEditor({
   onCurrentLanguageIdChange: setCurrentLanguageId,
   currentCode,
   onCurrentCodeChange: setCurrentCode,
+  readOnly = false,
 }: MonacoEditorProps) {
   const [languageList, setLanguageList] = useState<Language[]>([]);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -171,6 +173,7 @@ export default function MonacoEditor({
             padding: { top: 16, bottom: 16 },
             overviewRulerBorder: false,
             renderLineHighlight: "none",
+            readOnly,
           }}
         />
       </div>

@@ -14,6 +14,7 @@ interface InterviewChatProps {
   onSendMessage: () => void;
   isLoading?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 export function InterviewChat({
@@ -23,6 +24,7 @@ export function InterviewChat({
   onSendMessage,
   isLoading = false,
   disabled = false,
+  readOnly = false,
 }: InterviewChatProps) {
   const { t } = useTranslation("interview");
   const chatRef = useRef<HTMLDivElement>(null);
@@ -129,30 +131,32 @@ export function InterviewChat({
         )}
       </div>
 
-      <div className="p-3 border-t flex-shrink-0">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => onInputChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={disabled ? t("chat.ended") : t("chat.placeholder")}
-            disabled={disabled || isLoading}
-            className="flex-1 h-9 px-3 text-sm bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
-          />
-          <button
-            onClick={onSendMessage}
-            disabled={!inputText.trim() || disabled || isLoading}
-            className="w-9 h-9 flex items-center justify-center rounded-md bg-primary text-primary-foreground disabled:opacity-40 hover:bg-primary/90 transition-colors"
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </button>
+      {!readOnly && (
+        <div className="p-3 border-t flex-shrink-0">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => onInputChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={disabled ? t("chat.ended") : t("chat.placeholder")}
+              disabled={disabled || isLoading}
+              className="flex-1 h-9 px-3 text-sm bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+            />
+            <button
+              onClick={onSendMessage}
+              disabled={!inputText.trim() || disabled || isLoading}
+              className="w-9 h-9 flex items-center justify-center rounded-md bg-primary text-primary-foreground disabled:opacity-40 hover:bg-primary/90 transition-colors"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 }

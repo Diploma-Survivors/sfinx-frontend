@@ -23,6 +23,7 @@ interface SampleTestCasesPanelProps {
     value: string,
   ) => void;
   onActiveTestCaseChange: (index: number) => void;
+  readOnly?: boolean;
 }
 
 export function SampleTestCasesPanel({
@@ -36,6 +37,7 @@ export function SampleTestCasesPanel({
   onTestCaseDelete,
   onTestCaseChange,
   onActiveTestCaseChange,
+  readOnly = false,
 }: SampleTestCasesPanelProps) {
   const { t } = useTranslation("problems");
   const [activeTab, setActiveTab] = useState<"testcase" | "result">("testcase");
@@ -105,6 +107,7 @@ export function SampleTestCasesPanel({
             onActiveTestCaseChange={onActiveTestCaseChange}
             onTestCaseDelete={onTestCaseDelete}
             onTestCaseAdd={onTestCaseAdd}
+            readOnly={readOnly}
           />
         )}
 
@@ -124,6 +127,7 @@ export function SampleTestCasesPanel({
                 testCases={testCases}
                 activeTestCase={activeTestCase}
                 onTestCaseChange={onTestCaseChange}
+                readOnly={readOnly}
               />
             )}
           </div>

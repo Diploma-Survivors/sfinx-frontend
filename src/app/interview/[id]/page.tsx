@@ -417,17 +417,23 @@ export default function InterviewSessionPage() {
 
   if (phase === 'completed' && evaluation) {
     return (
-      <div className="h-[calc(100vh-64px)] overflow-hidden">
+      <div className="min-h-[calc(100vh-64px)] overflow-auto">
         <InterviewFeedback
           interviewTime={interviewTime}
           evaluation={evaluation}
-          onStartNew={() => router.push('/interview')}
+          onViewHistory={() => {
+            // Stay on the same page but change phase to show read-only view
+            setPhase('active');
+          }}
         />
       </div>
     );
   }
 
   if (phase === 'active' && interview) {
+    // Determine if this is a read-only view (completed interview)
+    const isReadOnly = interview.status === 'completed';
+    
     return (
       <LiveKitErrorBoundary
         fallback={
@@ -440,6 +446,7 @@ export default function InterviewSessionPage() {
               onEndInterview={handleEndInterview}
               isEnding={isLoading}
               problem={interview.problemSnapshot}
+              readOnly={isReadOnly}
             />
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
@@ -455,7 +462,7 @@ export default function InterviewSessionPage() {
         }
       >
         <LiveKitProvider
-          token={voiceEnabled ? liveKitToken : null}
+          token={voiceEnabled && !isReadOnly ? liveKitToken : null}
           onConnected={() => {
             console.log('[LiveKit] Connected');
             setIsVoiceConnected(true);
@@ -473,7 +480,7 @@ export default function InterviewSessionPage() {
             setIsVoiceConnected(false);
           }}
         >
-          {isVoiceConnected && (
+          {isVoiceConnected && !isReadOnly && (
             <DataChannelHandler
               onTranscript={handleVoiceTranscript}
               onTranscriptDelta={handleTranscriptDelta}
@@ -485,15 +492,16 @@ export default function InterviewSessionPage() {
           <div className="flex flex-col h-[calc(100vh-64px)] bg-background overflow-hidden">
             <InterviewHeader
               interviewTime={interviewTime}
-              voiceEnabled={voiceEnabled}
-              voiceConnected={isVoiceConnected}
+              voiceEnabled={voiceEnabled && !isReadOnly}
+              voiceConnected={isVoiceConnected && !isReadOnly}
               onVoiceToggle={handleVoiceToggle}
               onEndInterview={handleEndInterview}
               isEnding={isLoading}
               problem={interview.problemSnapshot}
+              readOnly={isReadOnly}
             />
 
-            {voiceEnabled && isVoiceConnected && (
+            {voiceEnabled && isVoiceConnected && !isReadOnly && (
               <div className="px-4 py-2 border-b bg-muted/10 flex items-center gap-3">
                 <span className="text-xs text-muted-foreground">
                   Microphone:
@@ -501,6 +509,14 @@ export default function InterviewSessionPage() {
                 <AudioLevelIndicator />
                 <span className="text-xs text-muted-foreground ml-2">
                   Speak now - your voice is being transcribed
+                </span>
+              </div>
+            )}
+
+            {isReadOnly && (
+              <div className="px-4 py-2 border-b bg-amber-50 dark:bg-amber-900/20 flex items-center gap-3">
+                <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+                  📖 Read-only mode: This interview is completed. You can view the conversation and code but cannot make changes.
                 </span>
               </div>
             )}
@@ -522,7 +538,8 @@ export default function InterviewSessionPage() {
                     onInputChange={setInputText}
                     onSendMessage={handleSendMessage}
                     isLoading={isLoading || isTyping}
-                    disabled={phase !== 'active'}
+                    disabled={true}
+                    readOnly={isReadOnly}
                   />
                 </div>
               </div>
@@ -544,6 +561,7 @@ export default function InterviewSessionPage() {
                   isSubmitting={isSubmitting}
                   onRun={handleRun}
                   onSubmit={handleSubmit}
+                  readOnly={isReadOnly}
                 />
 
                 <ResizableDivider
@@ -564,6 +582,7 @@ export default function InterviewSessionPage() {
                     onTestCaseDelete={handleTestCaseDelete}
                     onTestCaseChange={handleTestCaseChange}
                     onActiveTestCaseChange={setActiveTestCase}
+                    readOnly={isReadOnly}
                   />
                 </div>
               </div>
