@@ -202,7 +202,7 @@ export default function ProfilePage({
     );
   }
 
-  if (!user) return <div>User not found</div>;
+  if (!user) return <div>{t("user_not_found")}</div>;
 
   return (
     <div className="container mx-auto space-y-6 p-6">
@@ -243,7 +243,7 @@ export default function ProfilePage({
               <TabsTrigger value="contest-history">
                 {t("contest_history", "Contest History")}
               </TabsTrigger>
-              <TabsTrigger value="discuss">Discuss</TabsTrigger>
+              <TabsTrigger value="discuss">{t("discuss")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="recent-ac" className="mt-6">
@@ -302,7 +302,7 @@ export default function ProfilePage({
             <TabsContent value="discuss" className="mt-6">
               <Card className="border border-border bg-card shadow-md">
                 <CardHeader>
-                  <CardTitle>Discuss</CardTitle>
+                  <CardTitle>{t("discuss")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <UserDiscussList

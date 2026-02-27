@@ -154,5 +154,8 @@
     "global_rank": "Hạng Toàn cầu",
     "top_percentage": "Top",
     "rating": "Đánh giá",
-    "no_recent_activity": "Chưa có bài tập nào được giải gần đây"
+    "no_recent_activity": "Chưa có bài tập nào được giải gần đây",
+    "discuss": "Thảo luận",
+    "no_discussions_yet": "Chưa có thảo luận nào",
+    "user_not_found": "Không tìm thấy người dùng"
 }

@@ -154,5 +154,8 @@
     "global_rank": "Global Rank",
     "top_percentage": "Top",
     "rating": "Rating",
-    "no_recent_activity": "No recent AC problems"
+    "no_recent_activity": "No recent AC problems",
+    "discuss": "Discuss",
+    "no_dicuss_yet": "No discuss yet",
+    "user_not_found": "User not found"
 }
