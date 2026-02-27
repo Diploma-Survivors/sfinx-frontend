@@ -127,7 +127,8 @@
     "random_problem_selection": "Random Problem Selection",
     "random_problem_desc": "A random problem will be selected for you. Problem selection UI coming soon!",
     "challenge_curated_desc": "A challenge will be curated specifically to test your core algorithmic thinking.",
-    "starting": "Starting..."
+    "starting": "Starting...",
+    "view_history": "View History"
   },
   "header_ext": {
     "mic_blocked": "Mic blocked",

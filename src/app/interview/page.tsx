@@ -433,6 +433,7 @@ export default function LiveInterviewPage() {
           voiceEnabled={voiceEnabled}
           onVoiceEnabledChange={setVoiceEnabled}
           onStartInterview={handleStartInterview}
+          onViewHistory={() => router.push('/interview/history')}
           isLoading={isStarting}
         />
       </div>
