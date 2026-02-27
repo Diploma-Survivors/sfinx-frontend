@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 import type { InterviewEvaluation } from "@/types/interview";
 import {
   ArrowRight,
@@ -140,9 +141,9 @@ export function InterviewFeedback({
                 <h3 className="text-sm font-semibold mb-2">
                   {t("feedback.detailed_feedback")}
                 </h3>
-                <p className="text-sm text-foreground/80 leading-relaxed">
-                  {evaluation.detailedFeedback}
-                </p>
+                <div className="text-sm text-foreground/80 leading-relaxed">
+                  <MarkdownRenderer content={evaluation.detailedFeedback} />
+                </div>
               </div>
             )}
 
