@@ -49,5 +49,9 @@
     "view_billing_history": "View Billing & History",
     "return_dashboard": "Return to Dashboard",
     "auto_redirect_hint": "Check your email for the receipt.",
-    "search_solutions": "Search solutions"
+    "search_solutions": "Search solutions",
+    "notifications": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "no_notifications": "You have no notifications right now.",
+    "view_details": "View details"
 }

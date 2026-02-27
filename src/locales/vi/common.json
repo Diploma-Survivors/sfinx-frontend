@@ -49,5 +49,9 @@
     "view_billing_history": "Xem Thanh toán & Lịch sử",
     "return_dashboard": "Quay lại Bảng điều khiển",
     "auto_redirect_hint": "Kiểm tra email của bạn để nhận hóa đơn.",
-    "search_solutions": "Tìm kiếm lời giải"
+    "search_solutions": "Tìm kiếm lời giải",
+    "notifications": "Thông báo",
+    "mark_all_read": "Đánh dấu tất cả đã đọc",
+    "no_notifications": "Bạn không có thông báo nào lúc này.",
+    "view_details": "Xem chi tiết"
 }

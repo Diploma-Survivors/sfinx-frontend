@@ -17,16 +17,21 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { useApp } from "@/contexts/app-context";
+import { useTranslation } from "react-i18next";
 
 export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const { socket } = useSocket("notifications");
+  const { user } = useApp();
+  const { t } = useTranslation("common");
+  const locale = user?.preferredLanguage || "en";
 
   const fetchNotifications = async () => {
     try {
-      const data = await notificationService.getNotifications(0, 20);
+      const data = await notificationService.getNotifications(0, 20, locale);
       setNotifications(data.data);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
@@ -110,7 +115,9 @@ export function NotificationBell() {
         align="end"
       >
         <div className="flex items-center justify-between border-b border-border/40 px-4 py-3">
-          <h4 className="font-semibold text-foreground">Notifications</h4>
+          <h4 className="font-semibold text-foreground">
+            {t("notifications")}
+          </h4>
           {unreadCount > 0 && (
             <Button
               variant="ghost"
@@ -118,7 +125,7 @@ export function NotificationBell() {
               className="text-xs text-primary hover:text-primary/80 h-auto p-0"
               onClick={handleMarkAllAsRead}
             >
-              Mark all as read
+              {t("mark_all_read")}
             </Button>
           )}
         </div>
@@ -126,7 +133,7 @@ export function NotificationBell() {
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground">
               <Bell className="h-10 w-10 mb-4 opacity-20" />
-              <p className="text-sm">You have no notifications right now.</p>
+              <p className="text-sm">{t("no_notifications")}</p>
             </div>
           ) : (
             <div className="flex flex-col">
@@ -161,7 +168,7 @@ export function NotificationBell() {
                       className="text-xs text-primary font-medium mt-2 hover:underline"
                       onClick={() => setIsOpen(false)}
                     >
-                      View details
+                      {t("view_details")}
                     </Link>
                   )}
                 </div>
