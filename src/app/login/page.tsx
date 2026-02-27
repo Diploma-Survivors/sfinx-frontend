@@ -118,17 +118,17 @@ export default function LoginPage() {
         <div className="hidden lg:flex flex-1 relative flex-col justify-end p-12 overflow-hidden text-left">
           {/* Narrative Content */}
           <div className="max-w-lg mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/5 dark:bg-white/10 backdrop-blur-md border border-border dark:border-white/20 text-foreground dark:text-white text-sm mb-6">
               <BrainCircuit className="w-4 h-4 text-primary" />
               <span>{t("hero.badge")}</span>
             </div>
-            <h1 className="text-4xl xl:text-5xl font-bold text-white tracking-tight mb-4 text-balance leading-[1.1]">
+            <h1 className="text-4xl xl:text-5xl font-bold text-foreground dark:text-white tracking-tight mb-4 text-balance leading-[1.1]">
               {t("hero.title_pt1")} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-[oklch(0.55_0.18_160)]">
                 {t("hero.title_pt2")}
               </span>
             </h1>
-            <p className="text-white/70 text-lg leading-relaxed text-balance">
+            <p className="text-muted-foreground dark:text-white/70 text-lg leading-relaxed text-balance">
               {t("hero.description")}
             </p>
 
@@ -137,7 +137,7 @@ export default function LoginPage() {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="relative w-10 h-10 rounded-full border-2 border-black overflow-hidden bg-muted/80 backdrop-blur-sm"
+                    className="relative w-10 h-10 rounded-full border-2 border-background dark:border-black overflow-hidden bg-muted dark:bg-muted/80 backdrop-blur-sm"
                   >
                     <Image
                       src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? "men" : "women"}/${i + 32}.jpg`}
@@ -148,8 +148,10 @@ export default function LoginPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-sm text-white/80">
-                <span className="font-bold text-white">4,000+</span>{" "}
+              <div className="text-sm text-foreground/80 dark:text-white/80">
+                <span className="font-bold text-foreground dark:text-white">
+                  4,000+
+                </span>{" "}
                 {t("hero.social_proof")}
               </div>
             </div>
