@@ -489,8 +489,7 @@ export default function InterviewSessionPage() {
             {isReadOnly && (
               <div className="px-4 py-2 border-b bg-amber-50 dark:bg-amber-900/20 flex items-center gap-3">
                 <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-                  Read-only mode: This interview is completed. You can view the
-                  conversation and code but cannot make changes.
+                  {t("live.read_only_mode")}
                 </span>
               </div>
             )}

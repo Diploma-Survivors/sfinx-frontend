@@ -102,7 +102,8 @@
     "no_active_interview": "Không có phỏng vấn nào đang hoạt động",
     "loading_interview": "Đang tải phỏng vấn...",
     "please_wait": "Vui lòng đợi",
-    "no_code_written_yet": "// Chưa có code nào được viết"
+    "no_code_written_yet": "// Chưa có code nào được viết",
+    "read_only_mode": "Chế độ chỉ xem: Buổi phỏng vấn này đã kết thúc. Bạn có thể xem lại cuộc trò chuyện và mã nguồn nhưng không thể chỉnh sửa."
   },
   "history": {
     "in_progress": "Đang diễn ra",
@@ -153,5 +154,11 @@
     "voice_connection_error": "Lỗi kết nối thoại",
     "connection_issue_message": "Chúng tôi gặp sự cố với kết nối thoại. Bạn có thể tiếp tục với trò chuyện văn bản hoặc thử kết nối lại.",
     "try_again": "Thử lại"
+  },
+  "voice_chat": {
+    "muted": "Đã tắt micro",
+    "ai_responding": "AI đang trả lời...",
+    "listening": "Đang nghe...",
+    "empty": "Bắt đầu nói hoặc nhập tin nhắn"
   }
 }
