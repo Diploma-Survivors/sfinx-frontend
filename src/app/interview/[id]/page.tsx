@@ -9,19 +9,20 @@ import '@/lib/i18n';
 import {
   InterviewChat,
   InterviewHeader,
+  VoiceModeChat,
 } from '@/components/interview';
 import { InterviewFeedback } from '@/components/interview/interview-feedback';
 import {
-  AudioLevelIndicator,
-  DataChannelHandler,
   LiveKitErrorBoundary,
   LiveKitProvider,
+  TranscriptionHandler,
+  VoiceChatIndicator,
 } from '@/components/interview/livekit';
 import { ResizableDivider } from '@/components/problems/tabs/description/dividers/resizable-divider';
 import { EditorPanel } from '@/components/problems/tabs/description/panels/editor-panel/editor-panel';
 import { SampleTestCasesPanel } from '@/components/problems/tabs/description/panels/sample-testcases-panel/sample-testcases-panel';
 import { Button } from '@/components/ui/button';
-import { type InterviewPhase, useInterview } from '@/hooks/use-interview';
+import { useInterview } from '@/hooks/use-interview';
 import { SubmissionsService } from '@/services/submissions-service';
 import { toastService } from '@/services/toasts-service';
 import { setProblem } from '@/store/slides/problem-slice';
@@ -51,7 +52,6 @@ export default function InterviewSessionPage() {
     sendMessage,
     endInterview,
     addLocalMessage,
-    updateMessage,
     setTyping,
     setPhase,
     clearLiveKitToken,
@@ -67,6 +67,14 @@ export default function InterviewSessionPage() {
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+
+  // Auto-enable voice from URL param (set by greeting page)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('voice') === '1') {
+      setVoiceEnabled(true);
+    }
+  }, []);
 
   const workspace = useSelector(selectWorkspace);
   const currentLanguageId =
@@ -99,8 +107,6 @@ export default function InterviewSessionPage() {
   const [isVD, setIsVD] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const streamingMsgIdRef = useRef<string | null>(null);
-  const streamingContentRef = useRef<string>('');
   const startTimeRef = useRef<number>(Date.now());
   const hasLoadedRef = useRef(false);
 
@@ -261,34 +267,9 @@ export default function InterviewSessionPage() {
     (role: 'user' | 'assistant', content: string, messageId?: string) => {
       const messageRole =
         role === 'user' ? MessageRole.USER : MessageRole.ASSISTANT;
-
-      if (role === 'user') {
-        addLocalMessage(messageRole, content, messageId);
-      } else {
-        if (streamingMsgIdRef.current && streamingContentRef.current) {
-          updateMessage(streamingMsgIdRef.current, content);
-          streamingMsgIdRef.current = null;
-          streamingContentRef.current = '';
-        } else {
-          addLocalMessage(messageRole, content, messageId);
-        }
-      }
+      addLocalMessage(messageRole, content, messageId);
     },
-    [addLocalMessage, updateMessage]
-  );
-
-  const handleTranscriptDelta = useCallback(
-    (role: 'assistant', delta: string, messageId: string) => {
-      if (streamingMsgIdRef.current !== messageId) {
-        streamingMsgIdRef.current = messageId;
-        streamingContentRef.current = delta;
-        addLocalMessage(MessageRole.ASSISTANT, delta, messageId);
-      } else {
-        streamingContentRef.current += delta;
-        updateMessage(messageId, streamingContentRef.current);
-      }
-    },
-    [addLocalMessage, updateMessage]
+    [addLocalMessage]
   );
 
   const handleEndInterview = useCallback(async () => {
@@ -481,9 +462,8 @@ export default function InterviewSessionPage() {
           }}
         >
           {isVoiceConnected && !isReadOnly && (
-            <DataChannelHandler
+            <TranscriptionHandler
               onTranscript={handleVoiceTranscript}
-              onTranscriptDelta={handleTranscriptDelta}
               onTypingStart={() => setTyping(true)}
               onTypingEnd={() => setTyping(false)}
             />
@@ -501,22 +481,10 @@ export default function InterviewSessionPage() {
               readOnly={isReadOnly}
             />
 
-            {voiceEnabled && isVoiceConnected && !isReadOnly && (
-              <div className="px-4 py-2 border-b bg-muted/10 flex items-center gap-3">
-                <span className="text-xs text-muted-foreground">
-                  Microphone:
-                </span>
-                <AudioLevelIndicator />
-                <span className="text-xs text-muted-foreground ml-2">
-                  Speak now - your voice is being transcribed
-                </span>
-              </div>
-            )}
-
             {isReadOnly && (
               <div className="px-4 py-2 border-b bg-amber-50 dark:bg-amber-900/20 flex items-center gap-3">
                 <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-                  📖 Read-only mode: This interview is completed. You can view the conversation and code but cannot make changes.
+                  Read-only mode: This interview is completed. You can view the conversation and code but cannot make changes.
                 </span>
               </div>
             )}
@@ -532,15 +500,37 @@ export default function InterviewSessionPage() {
                 style={{ width: `${leftWidth}%` }}
               >
                 <div className="flex-1 overflow-hidden">
-                  <InterviewChat
-                    messages={messages}
-                    inputText={inputText}
-                    onInputChange={setInputText}
-                    onSendMessage={handleSendMessage}
-                    isLoading={isLoading || isTyping}
-                    disabled={true}
-                    readOnly={isReadOnly}
-                  />
+                  {voiceEnabled && !isReadOnly ? (
+                    <VoiceModeChat
+                      messages={messages}
+                      inputText={inputText}
+                      onInputChange={setInputText}
+                      onSendMessage={handleSendMessage}
+                      onEndInterview={handleEndInterview}
+                      isLoading={isLoading || isTyping}
+                      isAgentSpeaking={isTyping}
+                      voiceConnected={isVoiceConnected}
+                      interviewStartedAt={interview.startedAt}
+                      isEnding={isLoading}
+                      voiceIndicator={
+                        isVoiceConnected ? (
+                          <VoiceChatIndicator
+                            isAgentSpeaking={isTyping}
+                          />
+                        ) : undefined
+                      }
+                    />
+                  ) : (
+                    <InterviewChat
+                      messages={messages}
+                      inputText={inputText}
+                      onInputChange={setInputText}
+                      onSendMessage={handleSendMessage}
+                      isLoading={isLoading || isTyping}
+                      disabled={false}
+                      readOnly={isReadOnly}
+                    />
+                  )}
                 </div>
               </div>
 

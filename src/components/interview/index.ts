@@ -4,5 +4,6 @@ export {
 } from './interview-greeting';
 export { InterviewHeader } from './interview-header';
 export { InterviewChat } from './interview-chat';
+export { VoiceModeChat, VoiceOrb } from './voice-mode-chat';
 export { InterviewFeedback } from './interview-feedback';
 export * from './livekit';
