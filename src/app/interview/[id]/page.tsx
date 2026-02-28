@@ -145,7 +145,7 @@ export default function InterviewSessionPage() {
     loadSession();
     // Only depend on interviewId - router and loadInterview are stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interviewId]);
+  }, [interviewId, t]);
 
   // Load problem data and test cases when interview is loaded
   useEffect(() => {
@@ -264,7 +264,7 @@ export default function InterviewSessionPage() {
     } catch (err) {
       console.error("[handleSendMessage] Error:", err);
     }
-  }, [inputText, sendMessage, code, language]);
+  }, [inputText, sendMessage, code, language, t]);
 
   const handleVoiceTranscript = useCallback(
     (role: "user" | "assistant", content: string, messageId?: string) => {
@@ -303,7 +303,7 @@ export default function InterviewSessionPage() {
         testCasesForSubmission,
       );
     },
-    [interview?.problemId, testCases, executeRun],
+    [interview?.problemId, testCases, executeRun, t],
   );
 
   const handleSubmit = useCallback(() => {
