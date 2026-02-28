@@ -182,12 +182,24 @@ export function VoiceModeChat({
   const { t } = useTranslation("interview");
   const chatRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const userWasAtBottomRef = useRef(true);
 
+  const handleScroll = () => {
+    const el = chatRef.current;
+    if (!el) return;
+    userWasAtBottomRef.current =
+      el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  };
+
+  // Only auto-scroll when user is near bottom (hasn't manually scrolled up)
   useEffect(() => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    const el = chatRef.current;
+    if (!el) return;
+
+    if (userWasAtBottomRef.current || messages.length <= 1) {
+      el.scrollTop = el.scrollHeight;
     }
-  }, [messages, voiceIndicator]);
+  }, [messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -223,6 +235,7 @@ export function VoiceModeChat({
       {/* Messages Area */}
       <div
         ref={chatRef}
+        onScroll={handleScroll}
         className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar min-h-0"
       >
         {messages.length === 0 && !voiceConnected && (
