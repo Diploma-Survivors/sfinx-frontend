@@ -10,12 +10,14 @@ interface TestcaseTabProps {
     field: "input" | "expectedOutput",
     value: string,
   ) => void;
+  readOnly?: boolean;
 }
 
 export function TestcaseTab({
   testCases,
   activeTestCase,
   onTestCaseChange,
+  readOnly = false,
 }: TestcaseTabProps) {
   const { t } = useTranslation("problems");
   const currentCase = testCases[activeTestCase];
@@ -78,9 +80,10 @@ export function TestcaseTab({
               onTestCaseChange(currentCase.id ?? 0, "input", e.target.value)
             }
             placeholder={t("enter_input")}
+            readOnly={readOnly}
             className={getTextAreaClasses(isInputEmpty)}
           />
-          {isInputEmpty && (
+          {isInputEmpty && !readOnly && (
             <span className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium animate-in fade-in slide-in-from-top-1">
               {t("input_empty_error")}
             </span>
@@ -107,9 +110,10 @@ export function TestcaseTab({
               )
             }
             placeholder={t("enter_output")}
+            readOnly={readOnly}
             className={getTextAreaClasses(isOutputEmpty)}
           />
-          {isOutputEmpty && (
+          {isOutputEmpty && !readOnly && (
             <span className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium animate-in fade-in slide-in-from-top-1">
               {t("output_empty_error")}
             </span>

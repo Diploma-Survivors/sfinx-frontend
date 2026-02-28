@@ -133,7 +133,8 @@
     "random_problem_selection": "Chọn bài toán tự động",
     "random_problem_desc": "Một bài toán ngẫu nhiên sẽ được chọn cho bạn. Giao diện chọn bài toán sắp ra mắt!",
     "challenge_curated_desc": "Thử thách này sẽ được tinh chỉnh đặc biệt để kiểm tra tư duy thuật toán cốt lõi của bạn.",
-    "starting": "Đang bắt đầu..."
+    "starting": "Đang bắt đầu...",
+    "view_history": "Xem lịch sử"
   },
   "header_ext": {
     "mic_blocked": "Mic bị chặn",

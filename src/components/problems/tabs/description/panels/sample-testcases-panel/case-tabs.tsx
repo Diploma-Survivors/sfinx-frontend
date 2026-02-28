@@ -16,6 +16,7 @@ interface CaseTabsProps {
   onActiveTestCaseChange: (index: number) => void;
   onTestCaseDelete: (id: number) => void;
   onTestCaseAdd: () => void;
+  readOnly?: boolean;
 }
 
 export function CaseTabs({
@@ -27,6 +28,7 @@ export function CaseTabs({
   onActiveTestCaseChange,
   onTestCaseDelete,
   onTestCaseAdd,
+  readOnly = false,
 }: CaseTabsProps) {
   const { t } = useTranslation("problems");
   const getStatusColor = (status: string) => {
@@ -95,7 +97,7 @@ export function CaseTabs({
               {t("case")} {index + 1}
             </button>
 
-            {activeTab === "testcase" && testCases.length > 1 && (
+            {activeTab === "testcase" && !readOnly && testCases.length > 1 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -111,7 +113,7 @@ export function CaseTabs({
         );
       })}
 
-      {activeTab === "testcase" && (
+      {activeTab === "testcase" && !readOnly && (
         <button
           onClick={onTestCaseAdd}
           className="h-8 px-3 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all duration-200 flex items-center gap-1 border border-transparent hover:border-border shrink-0 cursor-pointer"

@@ -37,6 +37,7 @@ interface InterviewHeaderProps {
   onEndInterview: () => void;
   isEnding?: boolean;
   problem?: ProblemSnapshot | null;
+  readOnly?: boolean;
 }
 
 export function InterviewHeader({
@@ -47,6 +48,7 @@ export function InterviewHeader({
   onEndInterview,
   isEnding = false,
   problem,
+  readOnly = false,
 }: InterviewHeaderProps) {
   const { t } = useTranslation("interview");
   const [micPermission, setMicPermission] =
@@ -87,74 +89,78 @@ export function InterviewHeader({
 
         <div className="flex items-center gap-3">
           {/* Connection Status - Only show when voice is enabled */}
-          {voiceEnabled && voiceConnected && (
+          {voiceEnabled && voiceConnected && !readOnly && (
             <ConnectionStatus className="hidden sm:flex" />
           )}
 
           {/* Mic Permission Warning */}
-          {showMicWarning && (
+          {showMicWarning && !readOnly && (
             <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium bg-destructive/10 text-destructive">
               <AlertCircle className="h-3.5 w-3.5" />
               <span>{t("header_ext.mic_blocked")}</span>
             </div>
           )}
 
-          {/* Voice Toggle */}
-          <Button
-            onClick={onVoiceToggle}
-            variant={voiceEnabled ? "default" : "outline"}
-            size="sm"
-            className="h-8 text-xs gap-1.5"
-            disabled={isEnding}
-          >
-            {voiceEnabled ? (
-              <Mic className="w-3.5 h-3.5" />
-            ) : (
-              <MicOff className="w-3.5 h-3.5" />
-            )}
-            <span className="hidden sm:inline">
-              {voiceEnabled ? t("voice.on") : t("voice.off")}
-            </span>
-          </Button>
+          {/* Voice Toggle - Hidden in read-only mode */}
+          {!readOnly && (
+            <Button
+              onClick={onVoiceToggle}
+              variant={voiceEnabled ? "default" : "outline"}
+              size="sm"
+              className="h-8 text-xs gap-1.5"
+              disabled={isEnding}
+            >
+              {voiceEnabled ? (
+                <Mic className="w-3.5 h-3.5" />
+              ) : (
+                <MicOff className="w-3.5 h-3.5" />
+              )}
+              <span className="hidden sm:inline">
+                {voiceEnabled ? t("voice.on") : t("voice.off")}
+              </span>
+            </Button>
+          )}
 
-          {/* End Interview */}
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="destructive"
-                size="sm"
-                className="h-8 text-xs gap-1.5"
-                disabled={isEnding}
-              >
-                {isEnding ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <PhoneOff className="w-3.5 h-3.5" />
-                )}
-                <span className="hidden sm:inline">{t("header.end")}</span>
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-destructive" />
-                  {t("endDialog.title")}
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  {t("endDialog.description")}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>{t("endDialog.cancel")}</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={onEndInterview}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          {/* End Interview - Hidden in read-only mode */}
+          {!readOnly && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5"
+                  disabled={isEnding}
                 >
-                  {t("endDialog.confirm")}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                  {isEnding ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <PhoneOff className="w-3.5 h-3.5" />
+                  )}
+                  <span className="hidden sm:inline">{t("header.end")}</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-destructive" />
+                    {t("endDialog.title")}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("endDialog.description")}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("endDialog.cancel")}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={onEndInterview}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {t("endDialog.confirm")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </div>
 

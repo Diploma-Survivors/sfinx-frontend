@@ -30,6 +30,7 @@ interface EditorPanelProps {
     languageId: number,
     contestId?: number,
   ) => void;
+  readOnly?: boolean;
 }
 
 export function EditorPanel({
@@ -39,6 +40,7 @@ export function EditorPanel({
   contestMode = false,
   onRun,
   onSubmit,
+  readOnly = false,
 }: EditorPanelProps) {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -103,63 +105,66 @@ export function EditorPanel({
             onCurrentLanguageIdChange={onLanguageIdChange}
             currentCode={currentCode}
             onCurrentCodeChange={onCurrentCodeChange}
+            readOnly={readOnly}
           />
         </div>
 
-        <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            {(!isLoggedin || !isEmailVerified) && (
-              <div className="flex items-center gap-2 text-xs text-yellow-600 dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded border border-yellow-200 dark:border-yellow-800">
-                <AlertCircle className="w-3.5 h-3.5" />
-                <span>
-                  {!isLoggedin
-                    ? tCommon("login_required_action")
-                    : tCommon("email_verification_required_action")}
-                </span>
-              </div>
-            )}
-          </div>
+        {!readOnly && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              {(!isLoggedin || !isEmailVerified) && (
+                <div className="flex items-center gap-2 text-xs text-yellow-600 dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded border border-yellow-200 dark:border-yellow-800">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>
+                    {!isLoggedin
+                      ? tCommon("login_required_action")
+                      : tCommon("email_verification_required_action")}
+                  </span>
+                </div>
+              )}
+            </div>
 
-          <div className="flex ml-auto items-center gap-3">
-            <Button
-              onClick={handleRunClick}
-              disabled={isRunning}
-              variant="secondary"
-              size="sm"
-              className="h-9 px-4 text-sm font-medium"
-            >
-              {isRunning ? (
-                <>
-                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                  {t("running")}
-                </>
-              ) : (
-                <>
-                  <Play className="w-3.5 h-3.5 mr-2" />
-                  {t("run")}
-                </>
-              )}
-            </Button>
-            <Button
-              onClick={handleSubmitClick}
-              disabled={isSubmitting || !isInProgress}
-              className="h-9 px-6 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
-              size="sm"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2" />
-                  {t("submitting")}
-                </>
-              ) : (
-                <>
-                  <Send className="w-3.5 h-3.5 mr-2" />
-                  {t("submit")}
-                </>
-              )}
-            </Button>
+            <div className="flex ml-auto items-center gap-3">
+              <Button
+                onClick={handleRunClick}
+                disabled={isRunning}
+                variant="secondary"
+                size="sm"
+                className="h-9 px-4 text-sm font-medium"
+              >
+                {isRunning ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                    {t("running")}
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 mr-2" />
+                    {t("run")}
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={handleSubmitClick}
+                disabled={isSubmitting || !isInProgress}
+                className="h-9 px-6 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
+                size="sm"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2" />
+                    {t("submitting")}
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-3.5 h-3.5 mr-2" />
+                    {t("submit")}
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

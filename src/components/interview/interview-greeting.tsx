@@ -18,6 +18,7 @@ interface InterviewGreetingProps {
   voiceEnabled: boolean;
   onVoiceEnabledChange: (enabled: boolean) => void;
   onStartInterview: () => void;
+  onViewHistory?: () => void;
   isLoading?: boolean;
 }
 
@@ -25,6 +26,7 @@ export function InterviewGreeting({
   voiceEnabled,
   onVoiceEnabledChange,
   onStartInterview,
+  onViewHistory,
   isLoading = false,
 }: InterviewGreetingProps) {
   const { t } = useTranslation("interview");
@@ -176,6 +178,17 @@ export function InterviewGreeting({
                 )}
               </span>
             </Button>
+
+            {onViewHistory && (
+              <Button
+                onClick={onViewHistory}
+                variant="outline"
+                className="w-full h-12 text-base font-medium rounded-xl border-border/50 hover:bg-muted/50 transition-all duration-300 mt-3"
+                disabled={isLoading}
+              >
+                {t("greeting.view_history")}
+              </Button>
+            )}
           </Card>
 
           <div className="flex items-center justify-center gap-2 mt-8 text-xs font-medium text-muted-foreground">

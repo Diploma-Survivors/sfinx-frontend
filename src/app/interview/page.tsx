@@ -5,13 +5,14 @@ import {
   InterviewGreeting,
   InterviewGreetingSkeleton,
   InterviewHeader,
+  VoiceModeChat,
 } from "@/components/interview";
 import { InterviewFeedback } from "@/components/interview/interview-feedback";
 import {
-  AudioLevelIndicator,
-  DataChannelHandler,
   LiveKitErrorBoundary,
   LiveKitProvider,
+  TranscriptionHandler,
+  VoiceChatIndicator,
 } from "@/components/interview/livekit";
 import { ResizableDivider } from "@/components/problems/tabs/description/dividers/resizable-divider";
 import { EditorPanel } from "@/components/problems/tabs/description/panels/editor-panel/editor-panel";
@@ -71,7 +72,6 @@ export default function LiveInterviewPage() {
     sendMessage,
     endInterview,
     addLocalMessage,
-    updateMessage,
     setTyping,
     setPhase,
     clearLiveKitToken,
@@ -118,9 +118,6 @@ export default function LiveInterviewPage() {
   const [isVD, setIsVD] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Track streaming message state
-  const streamingMsgIdRef = useRef<string | null>(null);
-  const streamingContentRef = useRef<string>("");
 
   // Timer for interview duration
   const startTimeRef = useRef<number>(Date.now());
@@ -175,9 +172,10 @@ export default function LiveInterviewPage() {
       !hasRedirectedRef.current
     ) {
       hasRedirectedRef.current = true;
-      router.push(`/interview/${interview.id}`);
+      const voiceParam = voiceEnabled ? '?voice=1' : '';
+      router.push(`/interview/${interview.id}${voiceParam}`);
     }
-  }, [interview?.id, phase, isStarting, router]);
+  }, [interview?.id, phase, isStarting, router, voiceEnabled]);
 
   const handleVoiceToggle = useCallback(async () => {
     const newVoiceEnabled = !voiceEnabled;
@@ -260,65 +258,13 @@ export default function LiveInterviewPage() {
     }
   }, [inputText, sendMessage, code, language]);
 
-  /**
-   * Handle final transcript from voice
-   * For USER messages: always add (they don't stream)
-   * For ASSISTANT messages: only add if we weren't streaming (streaming creates its own message)
-   */
   const handleVoiceTranscript = useCallback(
     (role: "user" | "assistant", content: string, messageId?: string) => {
-      console.log("[Transcript] Received:", {
-        role,
-        content: content.substring(0, 50),
-        messageId,
-      });
-
       const messageRole =
         role === "user" ? MessageRole.USER : MessageRole.ASSISTANT;
-
-      if (role === "user") {
-        // User messages from voice - always add them
-        console.log("[Transcript] Adding user voice message");
-        addLocalMessage(messageRole, content, messageId);
-      } else {
-        // Assistant final transcript
-        // If we were streaming, the streaming message already exists
-        // Just finalize it by updating with full content
-        if (streamingMsgIdRef.current && streamingContentRef.current) {
-          console.log("[Transcript] Finalizing streaming message");
-          updateMessage(streamingMsgIdRef.current, content);
-          // Reset streaming state
-          streamingMsgIdRef.current = null;
-          streamingContentRef.current = "";
-        } else {
-          // No streaming was happening, add as new message
-          console.log("[Transcript] Adding non-streaming assistant message");
-          addLocalMessage(messageRole, content, messageId);
-        }
-      }
+      addLocalMessage(messageRole, content, messageId);
     },
-    [addLocalMessage, updateMessage],
-  );
-
-  /**
-   * Handle streaming transcript delta (word-by-word from AI)
-   */
-  const handleTranscriptDelta = useCallback(
-    (role: "assistant", delta: string, messageId: string) => {
-      // Always accumulate to our streaming ref
-      if (streamingMsgIdRef.current !== messageId) {
-        // New streaming session
-        console.log("[TranscriptDelta] Starting new stream:", messageId);
-        streamingMsgIdRef.current = messageId;
-        streamingContentRef.current = delta;
-        addLocalMessage(MessageRole.ASSISTANT, delta, messageId);
-      } else {
-        // Continue existing stream
-        streamingContentRef.current += delta;
-        updateMessage(messageId, streamingContentRef.current);
-      }
-    },
-    [addLocalMessage, updateMessage],
+    [addLocalMessage],
   );
 
   const handleEndInterview = useCallback(async () => {
@@ -433,6 +379,7 @@ export default function LiveInterviewPage() {
           voiceEnabled={voiceEnabled}
           onVoiceEnabledChange={setVoiceEnabled}
           onStartInterview={handleStartInterview}
+          onViewHistory={() => router.push('/interview/history')}
           isLoading={isStarting}
         />
       </div>
@@ -516,9 +463,8 @@ export default function LiveInterviewPage() {
           }}
         >
           {isVoiceConnected && (
-            <DataChannelHandler
+            <TranscriptionHandler
               onTranscript={handleVoiceTranscript}
-              onTranscriptDelta={handleTranscriptDelta}
               onTypingStart={() => setTyping(true)}
               onTypingEnd={() => setTyping(false)}
             />
@@ -535,18 +481,6 @@ export default function LiveInterviewPage() {
               problem={interview.problemSnapshot}
             />
 
-            {voiceEnabled && isVoiceConnected && (
-              <div className="px-4 py-2 border-b bg-muted/10 flex items-center gap-3">
-                <span className="text-xs text-muted-foreground">
-                  {t("live.microphone_label")}
-                </span>
-                <AudioLevelIndicator />
-                <span className="text-xs text-muted-foreground ml-2">
-                  {t("live.speak_now_transcribing")}
-                </span>
-              </div>
-            )}
-
             <div
               ref={containerRef}
               onMouseMove={handleMouseMove}
@@ -558,14 +492,36 @@ export default function LiveInterviewPage() {
                 style={{ width: `${leftWidth}%` }}
               >
                 <div className="flex-1 overflow-hidden">
-                  <InterviewChat
-                    messages={messages}
-                    inputText={inputText}
-                    onInputChange={setInputText}
-                    onSendMessage={handleSendMessage}
-                    isLoading={isLoading || isTyping}
-                    disabled={phase !== "active"}
-                  />
+                  {voiceEnabled ? (
+                    <VoiceModeChat
+                      messages={messages}
+                      inputText={inputText}
+                      onInputChange={setInputText}
+                      onSendMessage={handleSendMessage}
+                      onEndInterview={handleEndInterview}
+                      isLoading={isLoading || isTyping}
+                      isAgentSpeaking={isTyping}
+                      voiceConnected={isVoiceConnected}
+                      interviewStartedAt={interview.startedAt}
+                      isEnding={isLoading}
+                      voiceIndicator={
+                        isVoiceConnected ? (
+                          <VoiceChatIndicator
+                            isAgentSpeaking={isTyping}
+                          />
+                        ) : undefined
+                      }
+                    />
+                  ) : (
+                    <InterviewChat
+                      messages={messages}
+                      inputText={inputText}
+                      onInputChange={setInputText}
+                      onSendMessage={handleSendMessage}
+                      isLoading={isLoading || isTyping}
+                      disabled={phase !== "active"}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -618,7 +574,7 @@ export default function LiveInterviewPage() {
 
   if (phase === "completed" && evaluation) {
     return (
-      <div className="h-[calc(100vh-64px)] overflow-hidden">
+      <div className="min-h-[calc(100vh-64px)] overflow-auto">
         <InterviewFeedback
           interviewTime={interviewTime}
           evaluation={evaluation}
