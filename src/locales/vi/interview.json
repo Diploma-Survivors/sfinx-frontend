@@ -96,7 +96,13 @@
     "mic_permission_denied": "Quyền truy cập micro bị từ chối. Vui lòng cấp quyền và thử lại.",
     "network_error": "Lỗi mạng. Vui lòng kiểm tra kết nối của bạn.",
     "session_expired": "Phiên đã hết hạn. Vui lòng tải lại trang.",
-    "voice_connection_failed": "Kết nối giọng nói thất bại. Chuyển sang chế độ văn bản."
+    "voice_connection_failed": "Kết nối giọng nói thất bại. Chuyển sang chế độ văn bản.",
+    "no_interview_id": "Không có ID phỏng vấn nào được cung cấp",
+    "failed_to_load_interview": "Tải phỏng vấn thất bại",
+    "no_active_interview": "Không có phỏng vấn nào đang hoạt động",
+    "loading_interview": "Đang tải phỏng vấn...",
+    "please_wait": "Vui lòng đợi",
+    "no_code_written_yet": "// Chưa có code nào được viết"
   },
   "history": {
     "in_progress": "Đang diễn ra",

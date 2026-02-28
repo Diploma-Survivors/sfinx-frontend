@@ -177,7 +177,7 @@ export default function InterviewHistoryPage() {
                         <span className="flex items-center gap-1">
                           <TrendingUp className="w-3.5 h-3.5" />
                           {t("history.score")}:{" "}
-                          {interview.evaluation.overallScore}/100
+                          {interview.evaluation.overallScore}/10
                         </span>
                       )}
                     </div>

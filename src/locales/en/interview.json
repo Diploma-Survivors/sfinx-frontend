@@ -96,7 +96,13 @@
     "mic_permission_denied": "Microphone permission denied. Please allow access and try again.",
     "network_error": "Network error. Please check your connection.",
     "session_expired": "Session expired. Please refresh the page.",
-    "voice_connection_failed": "Voice connection failed. Falling back to text mode."
+    "voice_connection_failed": "Voice connection failed. Falling back to text mode.",
+    "no_interview_id": "No interview ID provided",
+    "failed_to_load_interview": "Failed to load interview",
+    "no_active_interview": "No active interview",
+    "loading_interview": "Loading interview...",
+    "please_wait": "Please wait",
+    "no_code_written_yet": "// No code written yet"
   },
   "history": {
     "in_progress": "In progress",

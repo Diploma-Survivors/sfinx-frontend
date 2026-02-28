@@ -1,38 +1,35 @@
-'use client';
+"use client";
 
-import { useRouter, useParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { useCodeExecution } from '@/hooks/use-code-execution';
-import '@/lib/i18n';
-import {
-  InterviewChat,
-  InterviewHeader,
-} from '@/components/interview';
-import { InterviewFeedback } from '@/components/interview/interview-feedback';
+import { useRouter, useParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useCodeExecution } from "@/hooks/use-code-execution";
+import "@/lib/i18n";
+import { InterviewChat, InterviewHeader } from "@/components/interview";
+import { InterviewFeedback } from "@/components/interview/interview-feedback";
 import {
   AudioLevelIndicator,
   DataChannelHandler,
   LiveKitErrorBoundary,
   LiveKitProvider,
-} from '@/components/interview/livekit';
-import { ResizableDivider } from '@/components/problems/tabs/description/dividers/resizable-divider';
-import { EditorPanel } from '@/components/problems/tabs/description/panels/editor-panel/editor-panel';
-import { SampleTestCasesPanel } from '@/components/problems/tabs/description/panels/sample-testcases-panel/sample-testcases-panel';
-import { Button } from '@/components/ui/button';
-import { type InterviewPhase, useInterview } from '@/hooks/use-interview';
-import { SubmissionsService } from '@/services/submissions-service';
-import { toastService } from '@/services/toasts-service';
-import { setProblem } from '@/store/slides/problem-slice';
-import { selectWorkspace } from '@/store/slides/workspace-slice';
-import { MessageRole } from '@/types/interview';
-import { initialProblemData, ProblemStatus } from '@/types/problems';
-import type { SampleTestCase } from '@/types/testcases';
-import { Loader2 } from 'lucide-react';
+} from "@/components/interview/livekit";
+import { ResizableDivider } from "@/components/problems/tabs/description/dividers/resizable-divider";
+import { EditorPanel } from "@/components/problems/tabs/description/panels/editor-panel/editor-panel";
+import { SampleTestCasesPanel } from "@/components/problems/tabs/description/panels/sample-testcases-panel/sample-testcases-panel";
+import { Button } from "@/components/ui/button";
+import { type InterviewPhase, useInterview } from "@/hooks/use-interview";
+import { SubmissionsService } from "@/services/submissions-service";
+import { toastService } from "@/services/toasts-service";
+import { setProblem } from "@/store/slides/problem-slice";
+import { selectWorkspace } from "@/store/slides/workspace-slice";
+import { MessageRole } from "@/types/interview";
+import { initialProblemData, ProblemStatus } from "@/types/problems";
+import type { SampleTestCase } from "@/types/testcases";
+import { Loader2 } from "lucide-react";
 
 export default function InterviewSessionPage() {
-  const { t } = useTranslation('interview');
+  const { t } = useTranslation("interview");
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
@@ -62,25 +59,24 @@ export default function InterviewSessionPage() {
   });
 
   const [voiceEnabled, setVoiceEnabled] = useState(false);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [interviewTime, setInterviewTime] = useState(0);
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
 
   const workspace = useSelector(selectWorkspace);
-  const currentLanguageId =
-    interview?.problemId
-      ? workspace.currentLanguage?.[String(interview.problemId)] ?? 46
-      : 46;
+  const currentLanguageId = interview?.problemId
+    ? (workspace.currentLanguage?.[String(interview.problemId)] ?? 46)
+    : 46;
   const currentCodeMap = interview?.problemId
     ? workspace.currentCode[String(interview.problemId)]
     : undefined;
-  const code = currentCodeMap?.[currentLanguageId] || '';
+  const code = currentCodeMap?.[currentLanguageId] || "";
   const languageObj = workspace.languages?.find(
-    (l) => l.id === currentLanguageId
+    (l) => l.id === currentLanguageId,
   );
-  const language = String(languageObj?.name || 'javascript');
+  const language = String(languageObj?.name || "javascript");
 
   const {
     isRunning,
@@ -100,15 +96,15 @@ export default function InterviewSessionPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const streamingMsgIdRef = useRef<string | null>(null);
-  const streamingContentRef = useRef<string>('');
+  const streamingContentRef = useRef<string>("");
   const startTimeRef = useRef<number>(Date.now());
   const hasLoadedRef = useRef(false);
 
   // Load interview on mount (only once)
   useEffect(() => {
     if (!interviewId) {
-      toastService.error('No interview ID provided');
-      router.push('/interview');
+      toastService.error(t("live.no_interview_id"));
+      router.push("/interview");
       return;
     }
 
@@ -126,7 +122,9 @@ export default function InterviewSessionPage() {
         await SubmissionsService.getLanguageList();
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : 'Failed to load interview';
+          error instanceof Error
+            ? error.message
+            : t("live.failed_to_load_interview");
         toastService.error(message);
         // Don't redirect on error to prevent loops - just show error state
         hasLoadedRef.current = false;
@@ -153,16 +151,18 @@ export default function InterviewSessionPage() {
         difficulty: interview.problemSnapshot.difficulty as any,
       };
       dispatch(setProblem(problemWithDefaults));
-      
+
       if (interview.problemSnapshot.sampleTestcases?.length) {
         setTestCases(
-          interview.problemSnapshot.sampleTestcases.map((tc: SampleTestCase, idx: number) => ({
-            ...tc,
-            id: tc.id || idx + 1,
-          }))
+          interview.problemSnapshot.sampleTestcases.map(
+            (tc: SampleTestCase, idx: number) => ({
+              ...tc,
+              id: tc.id || idx + 1,
+            }),
+          ),
         );
       } else {
-        setTestCases([{ id: 1, input: '', expectedOutput: '' }]);
+        setTestCases([{ id: 1, input: "", expectedOutput: "" }]);
       }
     }
   }, [interview?.problemSnapshot, interview?.problemId, dispatch]);
@@ -177,7 +177,7 @@ export default function InterviewSessionPage() {
       const elapsed = Math.floor((endTime - startTime) / 1000);
       setInterviewTime(elapsed);
 
-      if (!interview.endedAt && phase === 'active') {
+      if (!interview.endedAt && phase === "active") {
         startTimeRef.current = startTime;
         const intervalId = setInterval(() => {
           const now = Date.now();
@@ -193,13 +193,13 @@ export default function InterviewSessionPage() {
   useEffect(() => {
     if (isVoiceConnecting) return;
 
-    if (voiceEnabled && interview && phase === 'active' && !liveKitToken) {
-      console.log('[VoiceAutoConnect] Connecting...');
+    if (voiceEnabled && interview && phase === "active" && !liveKitToken) {
+      console.log("[VoiceAutoConnect] Connecting...");
       setIsVoiceConnecting(true);
       connectVoice()
-        .then(() => console.log('[VoiceAutoConnect] Success'))
+        .then(() => console.log("[VoiceAutoConnect] Success"))
         .catch((err) => {
-          console.error('[VoiceAutoConnect] Failed:', err);
+          console.error("[VoiceAutoConnect] Failed:", err);
           setVoiceEnabled(false);
         })
         .finally(() => setIsVoiceConnecting(false));
@@ -215,7 +215,7 @@ export default function InterviewSessionPage() {
 
   const handleVoiceToggle = useCallback(async () => {
     const newVoiceEnabled = !voiceEnabled;
-    console.log('[VoiceToggle]', {
+    console.log("[VoiceToggle]", {
       from: voiceEnabled,
       to: newVoiceEnabled,
       hasToken: !!liveKitToken,
@@ -246,39 +246,39 @@ export default function InterviewSessionPage() {
   const handleSendMessage = useCallback(async () => {
     if (!inputText.trim()) return;
     const text = inputText;
-    setInputText('');
+    setInputText("");
     try {
       await sendMessage(text, {
-        code: code || '// No code written yet',
+        code: code || t("live.no_code_written_yet"),
         language: language,
       });
     } catch (err) {
-      console.error('[handleSendMessage] Error:', err);
+      console.error("[handleSendMessage] Error:", err);
     }
   }, [inputText, sendMessage, code, language]);
 
   const handleVoiceTranscript = useCallback(
-    (role: 'user' | 'assistant', content: string, messageId?: string) => {
+    (role: "user" | "assistant", content: string, messageId?: string) => {
       const messageRole =
-        role === 'user' ? MessageRole.USER : MessageRole.ASSISTANT;
+        role === "user" ? MessageRole.USER : MessageRole.ASSISTANT;
 
-      if (role === 'user') {
+      if (role === "user") {
         addLocalMessage(messageRole, content, messageId);
       } else {
         if (streamingMsgIdRef.current && streamingContentRef.current) {
           updateMessage(streamingMsgIdRef.current, content);
           streamingMsgIdRef.current = null;
-          streamingContentRef.current = '';
+          streamingContentRef.current = "";
         } else {
           addLocalMessage(messageRole, content, messageId);
         }
       }
     },
-    [addLocalMessage, updateMessage]
+    [addLocalMessage, updateMessage],
   );
 
   const handleTranscriptDelta = useCallback(
-    (role: 'assistant', delta: string, messageId: string) => {
+    (role: "assistant", delta: string, messageId: string) => {
       if (streamingMsgIdRef.current !== messageId) {
         streamingMsgIdRef.current = messageId;
         streamingContentRef.current = delta;
@@ -288,13 +288,13 @@ export default function InterviewSessionPage() {
         updateMessage(messageId, streamingContentRef.current);
       }
     },
-    [addLocalMessage, updateMessage]
+    [addLocalMessage, updateMessage],
   );
 
   const handleEndInterview = useCallback(async () => {
     try {
       await endInterview();
-      router.push('/interview/history');
+      router.push("/interview/history");
     } catch (error) {
       // Error handled by hook
     }
@@ -303,7 +303,7 @@ export default function InterviewSessionPage() {
   const handleRun = useCallback(
     async (sourceCode: string, languageId: number) => {
       if (!interview?.problemId) {
-        toastService.error('No active interview');
+        toastService.error(t("live.no_active_interview"));
         return;
       }
 
@@ -316,10 +316,10 @@ export default function InterviewSessionPage() {
         sourceCode,
         languageId,
         interview.problemId,
-        testCasesForSubmission
+        testCasesForSubmission,
       );
     },
-    [interview?.problemId, testCases, executeRun]
+    [interview?.problemId, testCases, executeRun],
   );
 
   const handleSubmit = useCallback(() => {
@@ -333,10 +333,10 @@ export default function InterviewSessionPage() {
   const handleTestCaseAdd = useCallback(() => {
     const maxId = testCases.reduce(
       (max, t) => ((t.id ?? 0) > max ? (t.id ?? 0) : max),
-      0
+      0,
     );
     const newId = maxId + 1;
-    setTestCases([...testCases, { id: newId, input: '', expectedOutput: '' }]);
+    setTestCases([...testCases, { id: newId, input: "", expectedOutput: "" }]);
     setActiveTestCase(testCases.length);
   }, [testCases]);
 
@@ -348,16 +348,16 @@ export default function InterviewSessionPage() {
       const newIndex = Math.min(activeTestCase, filtered.length - 1);
       setActiveTestCase(newIndex < 0 ? 0 : newIndex);
     },
-    [testCases, activeTestCase]
+    [testCases, activeTestCase],
   );
 
   const handleTestCaseChange = useCallback(
-    (id: number, field: 'input' | 'expectedOutput', value: string) => {
+    (id: number, field: "input" | "expectedOutput", value: string) => {
       setTestCases(
-        testCases.map((t) => (t.id === id ? { ...t, [field]: value } : t))
+        testCases.map((t) => (t.id === id ? { ...t, [field]: value } : t)),
       );
     },
-    [testCases]
+    [testCases],
   );
 
   const handleHMouseDown = () => setIsHD(true);
@@ -385,8 +385,8 @@ export default function InterviewSessionPage() {
   };
 
   useEffect(() => {
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => document.removeEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => document.removeEventListener("mouseup", handleMouseUp);
   }, []);
 
   if (isInitializing || !interview) {
@@ -394,40 +394,44 @@ export default function InterviewSessionPage() {
       <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-muted/30">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Loading interview...</h2>
-          <p className="text-muted-foreground">Please wait</p>
+          <h2 className="text-xl font-semibold mb-2">
+            {t("live.loading_interview")}
+          </h2>
+          <p className="text-muted-foreground">{t("live.please_wait")}</p>
         </div>
       </div>
     );
   }
 
-  if (phase === 'ending') {
+  if (phase === "ending") {
     return (
       <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-muted/30">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Ending interview...</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            {t("live.ending_interview")}
+          </h2>
           <p className="text-muted-foreground">
-            Generating your evaluation report
+            {t("live.generating_evaluation_report")}
           </p>
         </div>
       </div>
     );
   }
 
-  if (phase === 'completed' && evaluation) {
+  if (phase === "completed" && evaluation) {
     return (
       <div className="h-[calc(100vh-64px)] overflow-hidden">
         <InterviewFeedback
           interviewTime={interviewTime}
           evaluation={evaluation}
-          onStartNew={() => router.push('/interview')}
+          onStartNew={() => router.push("/interview")}
         />
       </div>
     );
   }
 
-  if (phase === 'active' && interview) {
+  if (phase === "active" && interview) {
     return (
       <LiveKitErrorBoundary
         fallback={
@@ -444,10 +448,10 @@ export default function InterviewSessionPage() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <p className="text-muted-foreground mb-4">
-                  Voice mode unavailable. Continuing with text chat.
+                  {t("live.voice_unavailable_fallback")}
                 </p>
                 <Button onClick={() => window.location.reload()}>
-                  Retry Connection
+                  {t("live.retry_connection")}
                 </Button>
               </div>
             </div>
@@ -457,18 +461,16 @@ export default function InterviewSessionPage() {
         <LiveKitProvider
           token={voiceEnabled ? liveKitToken : null}
           onConnected={() => {
-            console.log('[LiveKit] Connected');
+            console.log("[LiveKit] Connected");
             setIsVoiceConnected(true);
           }}
           onDisconnected={() => {
-            console.log('[LiveKit] Disconnected');
+            console.log("[LiveKit] Disconnected");
             setIsVoiceConnected(false);
           }}
           onError={(error) => {
-            console.error('[LiveKit] Error:', error);
-            toastService.error(
-              'Voice connection error. Falling back to text mode.'
-            );
+            console.error("[LiveKit] Error:", error);
+            toastService.error(t("live.voice_connection_error_fallback"));
             setVoiceEnabled(false);
             setIsVoiceConnected(false);
           }}
@@ -496,11 +498,11 @@ export default function InterviewSessionPage() {
             {voiceEnabled && isVoiceConnected && (
               <div className="px-4 py-2 border-b bg-muted/10 flex items-center gap-3">
                 <span className="text-xs text-muted-foreground">
-                  Microphone:
+                  {t("live.microphone_label")}
                 </span>
                 <AudioLevelIndicator />
                 <span className="text-xs text-muted-foreground ml-2">
-                  Speak now - your voice is being transcribed
+                  {t("live.speak_now_transcribing")}
                 </span>
               </div>
             )}
@@ -522,7 +524,7 @@ export default function InterviewSessionPage() {
                     onInputChange={setInputText}
                     onSendMessage={handleSendMessage}
                     isLoading={isLoading || isTyping}
-                    disabled={phase !== 'active'}
+                    disabled={phase !== "active"}
                   />
                 </div>
               </div>
