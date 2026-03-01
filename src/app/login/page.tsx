@@ -250,7 +250,7 @@ export default function LoginPage() {
                       onClick={() => setIsForgotPasswordModalOpen(true)}
                       className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
                     >
-                      {t("forgot_password")}?
+                      {t("forgot_password")}
                     </button>
                   </div>
                 )}
