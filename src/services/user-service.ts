@@ -161,6 +161,28 @@ async function getContestRatingChart(
   return await clientApi.get(`/users/${userId}/contest-rating-chart`);
 }
 
+async function searchPublicUsers(
+  query: string,
+  page = 1,
+  limit = 20,
+): Promise<
+  AxiosResponse<
+    ApiResponse<{
+      data: UserProfile[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
+    }>
+  >
+> {
+  return await clientApi.get(`/users/public/search`, {
+    params: { q: query, page, limit },
+  });
+}
+
 export const UserService = {
   getUserProfile,
   getMe,
@@ -176,4 +198,5 @@ export const UserService = {
   getContestRatingLeaderboard,
   getContestHistory,
   getContestRatingChart,
+  searchPublicUsers,
 };

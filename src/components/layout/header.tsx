@@ -7,10 +7,54 @@ import { cn } from '@/lib/utils';
 import { Bell, Search } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { UserMenu } from './user-menu';
 import { NotificationBell } from '@/components/notifications/notification-bell';
+import { Suspense, useEffect, useState } from 'react';
+
+function HeaderSearch({ t }: { t: any }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // Use local state hooked to searchParams so that typing doesn't feel laggy
+  const [qValue, setQValue] = useState(searchParams?.get('q') || '');
+
+  // Synchronize input if URL changes externally
+  useEffect(() => {
+    setQValue(searchParams?.get('q') || '');
+  }, [searchParams]);
+
+  return (
+    <form
+      className="relative"
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const q = formData.get('q') as string;
+        if (q?.trim()) {
+          const targetUrl = `/search?q=${encodeURIComponent(q.trim())}`;
+          if (pathname === '/search') {
+            router.push(targetUrl);
+          } else {
+            window.open(targetUrl, '_blank');
+          }
+        }
+      }}
+    >
+      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Input
+        name="q"
+        value={qValue}
+        onChange={(e) => setQValue(e.target.value)}
+        type="search"
+        placeholder={t('search', 'Search...')}
+        className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-primary/30 transition-all duration-200"
+      />
+    </form>
+  );
+}
 
 export default function Header() {
   const { user, clearUserData } = useApp();
@@ -68,14 +112,14 @@ export default function Header() {
 
           {/* Search & Notifications */}
           <div className="hidden md:flex items-center gap-3 ml-2">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder={t('search', 'Search...')}
-                className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-primary/30 transition-all duration-200"
-              />
-            </div>
+            <Suspense fallback={
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input type="search" disabled className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent" />
+              </div>
+            }>
+              <HeaderSearch t={t} />
+            </Suspense>
             {user && <NotificationBell />}
           </div>
 

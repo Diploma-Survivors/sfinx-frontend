@@ -13,6 +13,7 @@ import DifficultyFilter from './difficulty-filter';
 import MyListsFilter from '../favorite-list/my-lists';
 import TagFilter from './tags-filter';
 import TopicFilter from './topics-filter';
+import { useApp } from '@/contexts/app-context';
 
 interface ProblemFilterProps {
   keyWord: string;
@@ -37,6 +38,7 @@ export default function ProblemFilter({
   className,
 }: ProblemFilterProps & { className?: string }) {
   const { t } = useTranslation('problems');
+  const { user } = useApp();
 
   // Helper function to toggle items in array filters (topicIds, tagIds)
   const toggleArrayFilter = useCallback(
@@ -176,15 +178,17 @@ export default function ProblemFilter({
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-border" />
+      {user && <div className="h-px bg-border" />}
 
       {/* My Lists */}
-      <MyListsFilter
-        selectedListId={filters.listId}
-        onListSelect={(listId) =>
-          onFiltersChange({ ...filters, listId })
-        }
-      />
+      {user && (
+        <MyListsFilter
+          selectedListId={filters.listId}
+          onListSelect={(listId) =>
+            onFiltersChange({ ...filters, listId })
+          }
+        />
+      )}
     </div>
   );
 }
