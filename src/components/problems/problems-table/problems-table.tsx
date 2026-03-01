@@ -23,6 +23,7 @@ interface ProblemTableProps {
   isLoading?: boolean;
   totalCount?: number;
   scrollableTarget?: string;
+  openInNewTab?: boolean;
 }
 
 export default function ProblemTable({
@@ -32,6 +33,7 @@ export default function ProblemTable({
   isLoading = false,
   totalCount = 0,
   scrollableTarget,
+  openInNewTab,
 }: ProblemTableProps) {
   const { t } = useTranslation('problems');
 
@@ -90,7 +92,7 @@ export default function ProblemTable({
             </TableHeader>
             <TableBody>
               {problems.map((problem) => (
-                <ProblemTableRow key={problem.id} problem={problem} />
+                <ProblemTableRow key={problem.id} problem={problem} openInNewTab={openInNewTab} />
               ))}
             </TableBody>
           </Table>

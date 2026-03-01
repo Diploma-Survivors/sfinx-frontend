@@ -29,9 +29,10 @@ import { useTranslation } from "react-i18next";
 
 interface ProblemTableRowProps {
   problem: Problem;
+  openInNewTab?: boolean;
 }
 
-export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
+export default function ProblemTableRow({ problem, openInNewTab }: ProblemTableRowProps) {
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
@@ -79,7 +80,12 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
       setIsPremiumModalOpen(true);
       return;
     }
-    router.push(`/problems/${problem.id}/description`);
+    const url = `/problems/${problem.id}/description`;
+    if (openInNewTab) {
+      window.open(url, '_blank');
+    } else {
+      router.push(url);
+    }
   };
 
   return (
