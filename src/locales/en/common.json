@@ -83,5 +83,10 @@
     "feature_unlimited_practice": "Unlimited practice problems",
     "feature_basic_eval": "Basic code evaluation",
     "feature_community": "Community support",
-    "feature_limited_metrics": "Limited performance insights"
+    "feature_limited_metrics": "Limited performance insights",
+    "select_payment_method": "Select Payment Method",
+    "choose_payment_method_desc": "Choose your preferred payment method to proceed with the subscription.",
+    "no_payment_methods": "No payment methods available.",
+    "proceed_to_payment": "Proceed to Payment",
+    "payment_init_failed": "Failed to initiate payment. Please try again."
 }

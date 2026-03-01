@@ -57,3 +57,12 @@ export interface CurrentPlan {
     daysRemaining: number;
     status: string; // 'ACTIVE', 'EXPIRED', etc.
 }
+
+export interface PaymentMethodInfo {
+    id: number;
+    method: number;
+    name: string;
+    description: string | null;
+    iconUrl: string | null;
+    isActive: boolean;
+}

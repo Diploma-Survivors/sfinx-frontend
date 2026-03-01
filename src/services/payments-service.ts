@@ -1,5 +1,5 @@
 import clientApi from '@/lib/apis/axios-client';
-import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, Currency, PaymentStatus, CurrentPlan } from '@/types/payment';
+import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, Currency, PaymentStatus, CurrentPlan, PaymentMethodInfo } from '@/types/payment';
 import { ApiResponse } from '@/types/api';
 
 export const PaymentService = {
@@ -17,8 +17,15 @@ export const PaymentService = {
         return response.data.data;
     },
 
-    createPayment: async (planId: number, bankCode: string = 'NCB'): Promise<string> => {
-        const response = await clientApi.post<ApiResponse<{ url: string }>>('/payments/create', { planId, bankCode });
+    getPaymentMethods: async (lang?: string): Promise<PaymentMethodInfo[]> => {
+        const response = await clientApi.get<ApiResponse<PaymentMethodInfo[]>>('/payments/methods', {
+            params: { lang }
+        });
+        return response.data.data;
+    },
+
+    createPayment: async (planId: number, paymentMethod?: number): Promise<string> => {
+        const response = await clientApi.post<ApiResponse<{ url: string }>>('/payments/create', { planId, paymentMethod });
         return response.data.data.url;
     },
 
