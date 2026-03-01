@@ -144,7 +144,7 @@ function SearchPageContent() {
                             >
                                 <div className="flex items-center gap-2">
                                     <Code className="w-4 h-4" />
-                                    <span>Problems</span>
+                                    <span>{t('problems')}</span>
                                 </div>
                             </TabsTrigger>
                             <TabsTrigger
@@ -153,7 +153,7 @@ function SearchPageContent() {
                             >
                                 <div className="flex items-center gap-2">
                                     <Trophy className="w-4 h-4" />
-                                    <span>Contests</span>
+                                    <span>{t('contests')}</span>
                                 </div>
                             </TabsTrigger>
                             <TabsTrigger
@@ -162,7 +162,7 @@ function SearchPageContent() {
                             >
                                 <div className="flex items-center gap-2">
                                     <MessageSquare className="w-4 h-4" />
-                                    <span>Discuss</span>
+                                    <span>{t('discuss')}</span>
                                 </div>
                             </TabsTrigger>
                             <TabsTrigger
@@ -171,7 +171,7 @@ function SearchPageContent() {
                             >
                                 <div className="flex items-center gap-2">
                                     <Users className="w-4 h-4" />
-                                    <span>Users</span>
+                                    <span>{t('users')}</span>
                                 </div>
                             </TabsTrigger>
                         </TabsList>
@@ -188,7 +188,7 @@ function SearchPageContent() {
                                         openInNewTab={true}
                                     />
                                 ) : !isLoading && (
-                                    <EmptyState query={currentQuery} category="problems" />
+                                    <EmptyState query={currentQuery} category={t('problems').toLowerCase()} t={t} />
                                 )}
                                 {isLoading && problems.length === 0 && <LoadingState />}
                             </TabsContent>
@@ -206,7 +206,7 @@ function SearchPageContent() {
                                         />
                                     </div>
                                 ) : !isLoading && (
-                                    <EmptyState query={currentQuery} category="contests" />
+                                    <EmptyState query={currentQuery} category={t('contests').toLowerCase()} t={t} />
                                 )}
                                 {isLoading && contests.length === 0 && <LoadingState />}
                             </TabsContent>
@@ -220,13 +220,13 @@ function SearchPageContent() {
                                         {hasMore && (
                                             <div className="flex justify-center pt-4">
                                                 <Button variant="outline" onClick={handleLoadMore} disabled={isLoading}>
-                                                    {isLoading ? 'Loading...' : 'Load More'}
+                                                    {isLoading ? t('loading') : t('load_more')}
                                                 </Button>
                                             </div>
                                         )}
                                     </div>
                                 ) : !isLoading && (
-                                    <EmptyState query={currentQuery} category="discussions" />
+                                    <EmptyState query={currentQuery} category={t('discuss').toLowerCase()} t={t} />
                                 )}
                                 {isLoading && posts.length === 0 && <LoadingState />}
                             </TabsContent>
@@ -255,13 +255,13 @@ function SearchPageContent() {
                                         {hasMore && (
                                             <div className="col-span-full flex justify-center pt-4">
                                                 <Button variant="outline" onClick={handleLoadMore} disabled={isLoading}>
-                                                    {isLoading ? 'Loading...' : 'Load More'}
+                                                    {isLoading ? t('loading') : t('load_more')}
                                                 </Button>
                                             </div>
                                         )}
                                     </div>
                                 ) : !isLoading && (
-                                    <EmptyState query={currentQuery} category="users" />
+                                    <EmptyState query={currentQuery} category={t('users').toLowerCase()} t={t} />
                                 )}
                                 {isLoading && users.length === 0 && <LoadingState />}
                             </TabsContent>
@@ -272,9 +272,9 @@ function SearchPageContent() {
                         <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6">
                             <SearchIcon className="w-8 h-8 text-accent" />
                         </div>
-                        <h2 className="text-2xl font-semibold mb-2">Search Code Sfinx</h2>
+                        <h2 className="text-2xl font-semibold mb-2">{t('search_hero_title')}</h2>
                         <p className="text-muted-foreground max-w-md">
-                            Enter a search query above to find problems, contests, discussions, or connect with other users.
+                            {t('search_hero_desc')}
                         </p>
                     </div>
                 )}
@@ -284,15 +284,15 @@ function SearchPageContent() {
     );
 }
 
-function EmptyState({ query, category }: { query: string, category: string }) {
+function EmptyState({ query, category, t }: { query: string, category: string, t: any }) {
     return (
         <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl border-dashed bg-card/50">
             <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
                 <SearchIcon className="w-6 h-6 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium mb-1">No {category} found</h3>
+            <h3 className="text-lg font-medium mb-1">{t('no_results_found', { category })}</h3>
             <p className="text-muted-foreground text-sm">
-                We couldn't find anything matching "{query}"
+                {t('no_results_desc', { query })}
             </p>
         </div>
     );
