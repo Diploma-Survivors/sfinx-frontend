@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { favoriteListService } from '@/services/favorite-list-service';
 import useSWR, { mutate } from 'swr';
 import { FavoriteList } from '@/types/favorite-list';
+import { useApp } from '@/contexts/app-context';
 import { Check, Plus, Star } from 'lucide-react';
 import { useState } from 'react';
 
@@ -39,9 +40,10 @@ export default function AddToCollectionSubMenu({ problemId }: AddToCollectionSub
     );
     const [newListIsPublic, setNewListIsPublic] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
+    const { user } = useApp();
 
     const { data: lists = [] } = useSWR<FavoriteList[]>(
-        '/favorite-lists',
+        user ? '/favorite-lists' : null,
         favoriteListService.getAll
     );
 

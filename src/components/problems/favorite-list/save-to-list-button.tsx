@@ -23,6 +23,7 @@ import { FavoriteList } from "@/types/favorite-list";
 import { Check, Plus, Star } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useApp } from "@/contexts/app-context";
 
 interface SaveToListButtonProps {
   problemId: number;
@@ -38,9 +39,10 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
   );
   const [newListIsPublic, setNewListIsPublic] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const { user } = useApp();
 
   const { data: lists = [] } = useSWR<FavoriteList[]>(
-    "/favorite-lists",
+    user ? "/favorite-lists" : null,
     favoriteListService.getAll,
   );
   const { t } = useTranslation("problems");
