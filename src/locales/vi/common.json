@@ -83,5 +83,10 @@
     "feature_unlimited_practice": "Luyện tập bài tập không giới hạn",
     "feature_basic_eval": "Đánh giá mã nguồn cơ bản",
     "feature_community": "Hỗ trợ từ cộng đồng",
-    "feature_limited_metrics": "Thông tin hiệu suất giới hạn"
+    "feature_limited_metrics": "Thông tin hiệu suất giới hạn",
+    "select_payment_method": "Chọn phương thức thanh toán",
+    "choose_payment_method_desc": "Chọn phương thức thanh toán ưa thích của bạn để tiếp tục đăng ký.",
+    "no_payment_methods": "Không có phương thức thanh toán nào khả dụng.",
+    "proceed_to_payment": "Tiến hành thanh toán",
+    "payment_init_failed": "Không thể khởi tạo thanh toán. Vui lòng thử lại."
 }
