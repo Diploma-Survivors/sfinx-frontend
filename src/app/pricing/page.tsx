@@ -428,7 +428,7 @@ export default function PricingPage() {
           >
             <p className="text-sm text-muted-foreground">
               {t("secure_payment_notice", {
-                defaultValue: "Payments are reduced securely via VNPAY.",
+                defaultValue: "Payments are processed securely via VNPAY.",
               })}
               <br />
               {isPrenium && (
