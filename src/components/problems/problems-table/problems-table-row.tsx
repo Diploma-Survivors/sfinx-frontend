@@ -165,27 +165,29 @@ export default function ProblemTableRow({ problem }: ProblemTableRowProps) {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-center items-center">
-            {collectionId ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => handleRemoveFromList(collectionId)}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>{t("remove_from_list")}</span>
-                  </DropdownMenuItem>
-                  <AddToCollectionSubMenu problemId={problem.id} />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <SaveToListButton problemId={problem.id} />
-            )}
+            {user ? (
+              collectionId ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => handleRemoveFromList(collectionId)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      <span>{t("remove_from_list")}</span>
+                    </DropdownMenuItem>
+                    <AddToCollectionSubMenu problemId={problem.id} />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <SaveToListButton problemId={problem.id} />
+              )
+            ) : null}
           </div>
         </TableCell>
       </TableRow>
