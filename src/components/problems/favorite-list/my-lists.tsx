@@ -25,6 +25,7 @@ import useSWR, { mutate } from "swr";
 import { ChevronDown, Globe, Lock, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useApp } from "@/contexts/app-context";
 
 interface MyListsFilterProps {
   selectedListId?: string;
@@ -37,6 +38,7 @@ export default function MyListsFilter({
 }: MyListsFilterProps) {
   const { t } = useTranslation("problems");
   const router = useRouter();
+  const { isLoggedin } = useApp();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newListName, setNewListName] = useState("");
   const [newListDescription, setNewListDescription] = useState("");
@@ -47,12 +49,12 @@ export default function MyListsFilter({
   const [isCreating, setIsCreating] = useState(false);
 
   const { data: lists = [] } = useSWR<FavoriteList[]>(
-    "/favorite-lists",
+    isLoggedin ? "/favorite-lists" : null,
     favoriteListService.getAll,
   );
 
   const { data: savedLists = [] } = useSWR<FavoriteList[]>(
-    "/favorite-lists/saved/me",
+    isLoggedin ? "/favorite-lists/saved/me" : null,
     favoriteListService.getSavedLists,
   );
 
@@ -94,20 +96,22 @@ export default function MyListsFilter({
         <label className="text-sm font-semibold text-foreground">
           {t("my_lists")}
         </label>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-7 gap-1 px-2">
-              <Plus className="h-4 w-4" />
-              <ChevronDown className="h-3.5 w-3.5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setIsCreateDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              {t("new_list")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isLoggedin && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-7 gap-1 px-2">
+                <Plus className="h-4 w-4" />
+                <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setIsCreateDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                {t("new_list")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       <div className="space-y-1">
