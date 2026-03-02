@@ -160,5 +160,7 @@
     "ai_responding": "AI is responding...",
     "listening": "Listening...",
     "empty": "Start speaking or type a message"
-  }
+  },
+  "login_required_action": "You need to be logged in to start an interview.",
+  "email_verification_required_action": "Please verify your email to start an interview."
 }

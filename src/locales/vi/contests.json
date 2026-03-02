@@ -77,5 +77,7 @@
   "not_joined": "Chưa tham gia",
   "continue_contest": "Tiếp tục cuộc thi",
   "yourRank": "Hạng của bạn",
-  "leaderboard": "Bảng xếp hạng"
+  "leaderboard": "Bảng xếp hạng",
+  "login_required_action": "Vui lòng đăng nhập.",
+  "email_verification_required_action": "Vui lòng xác minh email của bạn."
 }

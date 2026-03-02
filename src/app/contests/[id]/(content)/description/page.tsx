@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
+import { useApp } from "@/contexts/app-context";
 import { cn } from "@/lib/utils";
 import { ContestsService } from "@/services/contests-service";
 import { toastService } from "@/services/toasts-service";
@@ -39,6 +40,7 @@ export default function ContestInfoPage() {
   const [contest, setContest] = useState<Contest>(INITIAL_CONTEST);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isLoggedin, isEmailVerified } = useApp();
 
   useEffect(() => {
     const fetchContestDetail = async () => {
@@ -64,7 +66,15 @@ export default function ContestInfoPage() {
   }, [id]);
 
   const handleStart = async () => {
-    try {
+    if(!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if(!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
+    try { 
       const response = await ContestsService.participateContest(id);
       router.push(`/contests/${contest.id}/solve`);
     } catch (err) {
@@ -74,6 +84,14 @@ export default function ContestInfoPage() {
   };
 
   const handleViewResult = () => {
+    if(!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if(!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
     router.push(`/contests/${contest.id}/solve`);
   };
 
