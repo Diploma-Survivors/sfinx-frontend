@@ -77,5 +77,7 @@
   "not_joined": "Not Joined",
   "continue_contest": "Continue Contest",
   "yourRank": "Your Rank",
-  "leaderboard": "Leaderboard"
+  "leaderboard": "Leaderboard",
+  "login_required_action": "Please login.",
+  "email_verification_required_action": "Please verify your email."
 }
