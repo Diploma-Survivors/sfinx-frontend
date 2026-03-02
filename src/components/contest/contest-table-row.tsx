@@ -24,9 +24,10 @@ import { useTranslation } from "react-i18next";
 
 interface ContestTableRowProps {
   contest: Contest;
+  openInNewTab?: boolean;
 }
 
-export default function ContestTableRow({ contest }: ContestTableRowProps) {
+export default function ContestTableRow({ contest, openInNewTab }: ContestTableRowProps) {
   const router = useRouter();
   const { t, i18n } = useTranslation("contests");
 
@@ -95,7 +96,14 @@ export default function ContestTableRow({ contest }: ContestTableRowProps) {
   return (
     <TableRow
       className="cursor-pointer hover:bg-muted/50 transition-colors group border-border/50 h-16"
-      onClick={() => router.push(`/contests/${contest.id}/description`)}
+      onClick={() => {
+        const url = `/contests/${contest.id}/description`;
+        if (openInNewTab) {
+          window.open(url, '_blank');
+        } else {
+          router.push(url);
+        }
+      }}
     >
       {/* Status */}
       <TableCell className="text-center w-12 p-0">

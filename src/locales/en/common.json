@@ -88,5 +88,11 @@
     "choose_payment_method_desc": "Choose your preferred payment method to proceed with the subscription.",
     "no_payment_methods": "No payment methods available.",
     "proceed_to_payment": "Proceed to Payment",
-    "payment_init_failed": "Failed to initiate payment. Please try again."
+    "payment_init_failed": "Failed to initiate payment. Please try again.",
+    "users": "Users",
+    "load_more": "Load More",
+    "search_hero_title": "Search SfinX",
+    "search_hero_desc": "Enter a search query above to find problems, contests, discussions, or connect with other users.",
+    "no_results_found": "No {{category}} found",
+    "no_results_desc": "We couldn't find anything matching \"{{query}}\""
 }

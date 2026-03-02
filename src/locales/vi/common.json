@@ -88,5 +88,11 @@
     "choose_payment_method_desc": "Chọn phương thức thanh toán ưa thích của bạn để tiếp tục đăng ký.",
     "no_payment_methods": "Không có phương thức thanh toán nào khả dụng.",
     "proceed_to_payment": "Tiến hành thanh toán",
-    "payment_init_failed": "Không thể khởi tạo thanh toán. Vui lòng thử lại."
+    "payment_init_failed": "Không thể khởi tạo thanh toán. Vui lòng thử lại.",
+    "users": "Người dùng",
+    "load_more": "Tải thêm",
+    "search_hero_title": "Tìm kiếm trên SfinX",
+    "search_hero_desc": "Nhập từ khóa tìm kiếm ở trên để tìm bài tập, kỳ thi, bài thảo luận hoặc kết nối với những người dùng khác.",
+    "no_results_found": "Không tìm thấy {{category}} nào",
+    "no_results_desc": "Chúng tôi không thể tìm thấy kết quả nào phù hợp với \"{{query}}\""
 }

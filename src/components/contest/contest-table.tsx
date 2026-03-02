@@ -19,6 +19,7 @@ interface ContestTableProps {
   error: string | null;
   pageInfo: any;
   onLoadMore: () => void;
+  openInNewTab?: boolean;
 }
 
 export default function ContestTable({
@@ -27,6 +28,7 @@ export default function ContestTable({
   error,
   pageInfo,
   onLoadMore,
+  openInNewTab,
 }: ContestTableProps) {
   const { t } = useTranslation('contests');
 
@@ -91,7 +93,7 @@ export default function ContestTable({
               </TableHeader>
               <TableBody>
                 {contests.map((contest) => (
-                  <ContestTableRow key={contest.id} contest={contest} />
+                  <ContestTableRow key={contest.id} contest={contest} openInNewTab={openInNewTab} />
                 ))}
               </TableBody>
             </Table>

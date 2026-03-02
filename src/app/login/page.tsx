@@ -79,12 +79,12 @@ export default function LoginPage() {
       const result = await signIn("credentials", {
         username: finalUsername,
         password: finalPassword,
-        redirect: true,
-        callbackUrl,
+        redirect: false,
+        // callbackUrl,
       });
 
       if (result?.error) {
-        toastService.error(result.error);
+        toastService.error(t('login_failed'));
         setIsLoading(false);
       } else {
         window.location.href = callbackUrl;

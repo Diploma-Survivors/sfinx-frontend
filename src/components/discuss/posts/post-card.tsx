@@ -24,9 +24,10 @@ import { useTranslation } from "react-i18next";
 
 interface PostCardProps {
   post: Post;
+  openInNewTab?: boolean;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, openInNewTab }: PostCardProps) {
   const { t } = useTranslation("discuss");
   const router = useRouter();
   const { data: session } = useSession();
@@ -112,7 +113,7 @@ export function PostCard({ post }: PostCardProps) {
 
   return (
     <div className="group border-b border-border py-6 px-4 hover:bg-muted/30 transition-colors first:pt-4">
-      <Link href={`/discuss/${post.id}`} className="block space-y-4">
+      <Link href={`/discuss/${post.id}`} className="block space-y-4" target={openInNewTab ? "_blank" : undefined}>
         {/* Header: Avatar, Name, Time */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
