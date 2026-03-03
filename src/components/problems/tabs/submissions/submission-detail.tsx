@@ -9,7 +9,7 @@ import { toggleVisibility } from "@/store/slides/ai-review-slice";
 import { selectProblem } from "@/store/slides/problem-slice";
 import type { Submission } from "@/types/submissions";
 import { SubmissionStatus, languageMap } from "@/types/submissions";
-import { Copy, Loader2, PenSquare, Sparkles } from "lucide-react";
+import { Copy, Loader2, PenSquare, Sparkles, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -23,12 +23,14 @@ interface SubmissionDetailProps {
   submission: Submission;
 }
 
-const formatRuntime = (runtime: number) => {
-  if (runtime === 0) return "0ms";
+const formatRuntime = (runtime?: number | null) => {
+  if (runtime === undefined || runtime === null || isNaN(runtime)) return "N/A";
+  if (runtime === 0) return "0 ms";
   return `${(runtime * 1000).toFixed(0)} ms`;
 };
 
-const formatMemory = (memory: number) => {
+const formatMemory = (memory?: number | null) => {
+  if (memory === undefined || memory === null || isNaN(memory)) return "N/A";
   if (memory === 0) return "0 KB";
   return `${(memory / 1024).toFixed(0)} KB`;
 };
@@ -40,7 +42,7 @@ export default function SubmissionDetail({
   const params = useParams();
   const problemId = params.id as string;
   const { t } = useTranslation("problems");
-  const [isCodeExpanded, setIsCodeExpanded] = useState(true);
+  const [isCodeExpanded, setIsCodeExpanded] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -67,8 +69,13 @@ export default function SubmissionDetail({
     const lineHeight = 22; // Match SyntaxHighlighter line-height
     const padding = 40; // Matches customStyle padding top+bottom (20px * 2)
 
-    // Always expanded height
     const totalHeight = Math.max(lines * lineHeight + padding, 200);
+
+    // Collapse if height exceeds 300px and not expanded
+    if (!isCodeExpanded && totalHeight > 300) {
+      return { height: "300px" };
+    }
+
     return { height: `${totalHeight}px` };
   };
 
@@ -77,7 +84,8 @@ export default function SubmissionDetail({
     toastService.success(t("source_code_copied"));
   };
 
-  const getSyntaxLanguage = (languageName: string) => {
+  const getSyntaxLanguage = (languageName?: string) => {
+    if (!languageName) return "plaintext";
     // Find matching language key
     for (const [key, value] of Object.entries(languageMap)) {
       if (languageName.includes(key)) {
@@ -117,20 +125,20 @@ export default function SubmissionDetail({
                 </h2>
                 {submission.status.toLowerCase() ===
                   SubmissionStatus.ACCEPTED.toLowerCase() && (
-                  <Link
-                    href={`/problems/${problemId}/solutions/create/${submission.id}`}
-                    target="_blank"
-                  >
-                    <Tooltip content={t("share_solution_tooltip")}>
-                      <Button
-                        className="bg-green-600 hover:bg-green-700 text-white gap-2"
-                        size="sm"
-                      >
-                        <PenSquare className="w-4 h-4" />
-                      </Button>
-                    </Tooltip>
-                  </Link>
-                )}
+                    <Link
+                      href={`/problems/${problemId}/solutions/create/${submission.id}`}
+                      target="_blank"
+                    >
+                      <Tooltip content={t("share_solution_tooltip")}>
+                        <Button
+                          className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                          size="sm"
+                        >
+                          <PenSquare className="w-4 h-4" />
+                        </Button>
+                      </Tooltip>
+                    </Link>
+                  )}
               </div>
               <Button
                 variant="outline"
@@ -143,7 +151,7 @@ export default function SubmissionDetail({
               </Button>
             </div>
 
-            {/* Status */}
+            {/* Verdict */}
             {(() => {
               const statusInfo = getStatusMeta(submission.status);
               return (
@@ -160,38 +168,6 @@ export default function SubmissionDetail({
                       total: submission.totalTestcases,
                     })}
                   </div>
-
-                  {submission.status === SubmissionStatus.WRONG_ANSWER &&
-                    submission.failedResult && (
-                      <div className="mt-4 space-y-3 border-t border-border/50 pt-4">
-                        <div className="grid grid-cols-1 gap-2">
-                          <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                            {t("input_title")}
-                          </div>
-                          <div className="bg-slate-100 dark:bg-slate-900 p-3 rounded-md font-mono text-sm overflow-x-auto">
-                            {submission.failedResult.input}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                              {t("expected_output")}
-                            </div>
-                            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 p-3 rounded-md font-mono text-sm overflow-x-auto text-green-800 dark:text-green-300">
-                              {submission.failedResult.expectedOutput}
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                              {t("your_output")}
-                            </div>
-                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 p-3 rounded-md font-mono text-sm overflow-x-auto text-red-800 dark:text-red-300">
-                              {submission.failedResult.actualOutput}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                 </div>
               );
             })()}
@@ -199,22 +175,101 @@ export default function SubmissionDetail({
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
-                <div className="text-xs text-slate-500 uppercase">
-                  {t("runtime")}
+                <div className="text-xs text-slate-500">
+                  {t("test_cases", "TEST CASES").toUpperCase()}
+                </div>
+                <div className="text-xl font-semibold">
+                  {submission.testcasesPassed ?? 0} / {submission.totalTestcases ?? 0}
+                </div>
+              </div>
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
+                <div className="text-xs text-slate-500">
+                  {t("runtime").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
                   {formatRuntime(submission.executionTime)}
                 </div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
-                <div className="text-xs text-slate-500 uppercase">
-                  {t("memory")}
+                <div className="text-xs text-slate-500">
+                  {t("memory").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
                   {formatMemory(submission.memoryUsed)}
                 </div>
               </div>
             </div>
+
+            {/* Failed Test Case Details - Only show for failed cases */}
+            {(submission.failedResult || submission.resultDescription) && submission.status !== SubmissionStatus.ACCEPTED && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                  <XCircle className="w-5 h-5 text-red-500" />
+                  <span>{t("failed_description", "Failed Description")}</span>
+                </div>
+
+                <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
+                  {(() => {
+                    const resultDetails = submission.failedResult || submission.resultDescription;
+                    return (
+                      <>
+                        {resultDetails?.message && (
+                          <div>
+                            <div className="text-red-600 dark:text-red-400 font-medium">
+                              {resultDetails.message}
+                            </div>
+                          </div>
+                        )}
+
+                        {resultDetails?.compileOutput && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("compile_output", "Compile Output")}
+                            </div>
+                            <pre className="bg-red-50 dark:bg-red-900/30 font-mono text-red-600 dark:text-red-400 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto border border-red-200 dark:border-red-800">
+                              {resultDetails.compileOutput}
+                            </pre>
+                          </div>
+                        )}
+
+                        {(resultDetails?.input || resultDetails?.stdin) && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("input", "Input")}
+                            </div>
+                            <pre className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto">
+                              {resultDetails.input || resultDetails.stdin}
+                            </pre>
+                          </div>
+                        )}
+
+                        {resultDetails?.expectedOutput && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("expected_output")}
+                            </div>
+                            <pre className="bg-green-50 dark:bg-green-900 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto text-green-800 dark:text-green-300">
+                              {resultDetails.expectedOutput}
+                            </pre>
+                          </div>
+                        )}
+
+                        {(resultDetails?.stdout || resultDetails?.actualOutput) && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("your_output")}
+                            </div>
+                            <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto text-red-800 dark:text-red-300">
+                              {resultDetails.stdout || resultDetails.actualOutput}
+                            </pre>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+            )}
 
             {/* Source Code */}
             <div className="space-y-2">
@@ -238,7 +293,7 @@ export default function SubmissionDetail({
                     style={getCodeHeight()}
                   >
                     <SyntaxHighlighter
-                      language={getSyntaxLanguage("plaintext")} // Language name not directly available in new Submission type, defaulting or need to fetch
+                      language={getSyntaxLanguage(submission.language?.name)}
                       style={tomorrow}
                       customStyle={{
                         margin: 0,
@@ -266,7 +321,22 @@ export default function SubmissionDetail({
                       {submission.sourceCode || ""}
                     </SyntaxHighlighter>
                   </div>
+                  {!isCodeExpanded && submission.sourceCode && (submission.sourceCode.split("\n").length * 22 + 40 > 300) && (
+                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-50 dark:from-slate-900 to-transparent pointer-events-none" />
+                  )}
                 </div>
+                {submission.sourceCode && (submission.sourceCode.split("\n").length * 22 + 40 > 300) && (
+                  <div className="flex justify-center p-2 border-t border-slate-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsCodeExpanded(!isCodeExpanded)}
+                      className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                    >
+                      {isCodeExpanded ? t("show_less", "Show Less") : t("show_more", "Show More")}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

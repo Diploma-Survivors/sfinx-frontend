@@ -83,8 +83,10 @@ export interface TestCaseResult {
 export interface FailedResult {
   message: string;
   input: string;
+  stdin?: string;
   expectedOutput: string;
   actualOutput: string;
+  stdout?: string;
   stderr: string;
   compileOutput: string;
 }
@@ -92,12 +94,13 @@ export interface FailedResult {
 export interface Submission {
   id: number;
   status: SubmissionStatus;
-  executionTime: number;
-  memoryUsed: number;
+  executionTime?: number;
+  memoryUsed?: number;
   testcasesPassed: number;
   totalTestcases: number;
   testcaseResults: TestCaseResult[];
   failedResult: FailedResult;
+  resultDescription?: FailedResult;
   user: Partial<UserProfile>;
   problem: Partial<Problem>;
   compileError: string;
