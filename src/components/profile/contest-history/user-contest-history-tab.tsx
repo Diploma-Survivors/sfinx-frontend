@@ -126,7 +126,7 @@ export function UserContestHistoryTab({ userId }: UserContestHistoryTabProps) {
                   {entry.ratingAfter}
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground whitespace-nowrap">
-                  {format(new Date(entry.contestEndTime), "MMM d, yyyy")}
+                  {format(new Date(entry.contestEndTime), "dd/MM/yyyy")}
                 </TableCell>
               </TableRow>
             ))}
