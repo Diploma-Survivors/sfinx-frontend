@@ -23,18 +23,6 @@ export function EmailVerificationBanner() {
             {t('email_not_verified_warning')}
           </span>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-7 text-xs border-yellow-200 hover:bg-yellow-100 text-yellow-800 dark:border-yellow-800 dark:hover:bg-yellow-900/40 dark:text-yellow-200"
-          onClick={() => {
-            // TODO: Implement resend verification email logic or redirect to profile
-            // For now, maybe just redirect to profile settings
-            window.location.href = '/settings';
-          }}
-        >
-          {t('verify_email')}
-        </Button>
       </div>
     </div>
   );
