@@ -386,13 +386,13 @@ export default function LiveInterviewPage() {
   if (phase === "greeting" && !interview) {
     if (isStarting) {
       return (
-        <div className="h-[calc(100vh-64px)] overflow-hidden">
+        <div className="h-screen overflow-hidden">
           <InterviewGreetingSkeleton />
         </div>
       );
     }
     return (
-      <div className="h-[calc(100vh-64px)] overflow-hidden">
+      <div className="h-screen overflow-hidden">
         <InterviewGreeting
           voiceEnabled={voiceEnabled}
           onVoiceEnabledChange={setVoiceEnabled}
