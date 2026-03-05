@@ -1,11 +1,11 @@
 "use client";
 
+import AIReviewModal from "@/components/problems/tabs/submissions/ai-review-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { getStatusMeta } from "@/lib/utils/testcase-status";
 import { toastService } from "@/services/toasts-service";
-import { toggleVisibility } from "@/store/slides/ai-review-slice";
 import { selectProblem } from "@/store/slides/problem-slice";
 import type { Submission } from "@/types/submissions";
 import { SubmissionStatus, languageMap } from "@/types/submissions";
@@ -15,7 +15,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
@@ -36,11 +35,11 @@ const formatMemory = (memory?: number) => {
 export default function SubmissionDetail({
   submission,
 }: SubmissionDetailProps) {
-  const dispatch = useDispatch();
   const params = useParams();
   const problemId = params.id as string;
   const { t } = useTranslation("problems");
   const [isCodeExpanded, setIsCodeExpanded] = useState(true);
+  const [isAIReviewModalOpen, setIsAIReviewModalOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -135,7 +134,7 @@ export default function SubmissionDetail({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => dispatch(toggleVisibility())}
+                onClick={() => setIsAIReviewModalOpen(true)}
                 className="gap-2 text-yellow-600 border-yellow-200 hover:bg-yellow-50 dark:text-yellow-400 dark:border-yellow-900 dark:hover:bg-yellow-900/20"
               >
                 <Sparkles className="w-4 h-4" />
@@ -318,6 +317,13 @@ export default function SubmissionDetail({
           </div>
         </div>
       </div>
+
+      <AIReviewModal
+        submissionId={submission.id.toString()}
+        isOpen={isAIReviewModalOpen}
+        onClose={() => setIsAIReviewModalOpen(false)}
+        persistedReview={submission.aiReview}
+      />
     </div>
   );
 }

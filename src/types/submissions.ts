@@ -107,6 +107,7 @@ export interface Submission {
   language?: Partial<Language>;
   sourceCode?: string;
   contest?: Partial<Contest>;
+  aiReview?: string | null;
 }
 
 // Map language names to Highlight.js language keys

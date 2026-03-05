@@ -69,7 +69,7 @@ export default function SubmissionDetailPage() {
           Submission #{submission.id}
         </span>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-hidden">
         <SubmissionDetail submission={submission} />
       </div>
     </div>
