@@ -17,11 +17,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SfinX',
+  title: 'SfinX - The AI-first Online Judge',
   description:
-    'Improve your coding skills with SfinX. Practice problems, compete in contests, and climb the leaderboard.',
+    'The AI-First Online Judge for Elite Developers',
   icons: {
-    icon: '/icons/logo.svg',
+    icon: '/logo.svg',
   },
 };
 
