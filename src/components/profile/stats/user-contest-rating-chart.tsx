@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserService } from "@/services/user-service";
 import type { ContestRatingChartData } from "@/types/user";
+import { format } from "date-fns";
 import { TrendingUp, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -78,7 +79,7 @@ export function UserContestRatingChart({
     rating: entry.rating,
     rank: entry.contestRank,
     delta: entry.ratingDelta,
-    date: new Date(entry.contestEndTime).toLocaleDateString(),
+    date: format(new Date(entry.contestEndTime), "dd/MM/yyyy"),
   }));
 
   return (

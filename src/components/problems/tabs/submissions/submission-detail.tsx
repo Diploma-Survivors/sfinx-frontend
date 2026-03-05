@@ -23,13 +23,13 @@ interface SubmissionDetailProps {
   submission: Submission;
 }
 
-const formatRuntime = (runtime: number) => {
-  if (runtime === 0) return "0ms";
+const formatRuntime = (runtime?: number) => {
+  if (runtime === undefined || runtime === 0) return "0ms";
   return `${(runtime * 1000).toFixed(0)} ms`;
 };
 
-const formatMemory = (memory: number) => {
-  if (memory === 0) return "0 KB";
+const formatMemory = (memory?: number) => {
+  if (memory === undefined || memory === 0) return "0 KB";
   return `${(memory / 1024).toFixed(0)} KB`;
 };
 
@@ -161,35 +161,79 @@ export default function SubmissionDetail({
                     })}
                   </div>
 
-                  {submission.status === SubmissionStatus.WRONG_ANSWER &&
-                    submission.failedResult && (
+                  {submission.status !== SubmissionStatus.ACCEPTED &&
+                    submission.resultDescription && (
                       <div className="mt-4 space-y-3 border-t border-border/50 pt-4">
-                        <div className="grid grid-cols-1 gap-2">
-                          <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                            {t("input_title")}
-                          </div>
-                          <div className="bg-slate-100 dark:bg-slate-900 p-3 rounded-md font-mono text-sm overflow-x-auto">
-                            {submission.failedResult.input}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                              {t("expected_output")}
-                            </div>
-                            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 p-3 rounded-md font-mono text-sm overflow-x-auto text-green-800 dark:text-green-300">
-                              {submission.failedResult.expectedOutput}
+                        {submission.resultDescription.message && (
+                          <div>
+                            <div className="text-red-600 dark:text-red-400 font-medium whitespace-pre-wrap">
+                              {submission.resultDescription.message}
                             </div>
                           </div>
-                          <div className="space-y-2">
-                            <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                              {t("your_output")}
+                        )}
+
+                        {submission.resultDescription.compileOutput && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("compile_output")}
                             </div>
-                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 p-3 rounded-md font-mono text-sm overflow-x-auto text-red-800 dark:text-red-300">
-                              {submission.failedResult.actualOutput}
-                            </div>
+                            <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                              {submission.resultDescription.compileOutput}
+                            </pre>
                           </div>
-                        </div>
+                        )}
+
+                        {submission.status ===
+                          SubmissionStatus.WRONG_ANSWER && (
+                          <>
+                            {submission.resultDescription.stdin && (
+                              <div className="grid grid-cols-1 gap-2">
+                                <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
+                                  {t("input_title")}
+                                </div>
+                                <div className="bg-slate-100 dark:bg-slate-900 p-3 rounded-md font-mono text-sm overflow-x-auto">
+                                  {submission.resultDescription.stdin}
+                                </div>
+                              </div>
+                            )}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {submission.resultDescription.expectedOutput && (
+                                <div className="space-y-2">
+                                  <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
+                                    {t("expected_output")}
+                                  </div>
+                                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 p-3 rounded-md font-mono text-sm overflow-x-auto text-green-800 dark:text-green-300">
+                                    {
+                                      submission.resultDescription
+                                        .expectedOutput
+                                    }
+                                  </div>
+                                </div>
+                              )}
+                              {submission.resultDescription.stdout && (
+                                <div className="space-y-2">
+                                  <div className="font-medium text-sm text-slate-700 dark:text-slate-300">
+                                    {t("your_output")}
+                                  </div>
+                                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 p-3 rounded-md font-mono text-sm overflow-x-auto text-red-800 dark:text-red-300">
+                                    {submission.resultDescription.stdout}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+
+                        {submission.resultDescription.stderr && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("stderr")}
+                            </div>
+                            <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                              {submission.resultDescription.stderr}
+                            </pre>
+                          </div>
+                        )}
                       </div>
                     )}
                 </div>
@@ -238,7 +282,9 @@ export default function SubmissionDetail({
                     style={getCodeHeight()}
                   >
                     <SyntaxHighlighter
-                      language={getSyntaxLanguage("plaintext")} // Language name not directly available in new Submission type, defaulting or need to fetch
+                      language={getSyntaxLanguage(
+                        submission.language?.name || "plaintext",
+                      )}
                       style={tomorrow}
                       customStyle={{
                         margin: 0,

@@ -1,16 +1,17 @@
-import type { Problem } from './problems';
-import type { UserProfile } from './user';
+import { Contest } from "./contests";
+import type { Problem } from "./problems";
+import type { UserProfile } from "./user";
 
 export enum SubmissionStatus {
-  PENDING = 'PENDING',
-  RUNNING = 'RUNNING',
-  ACCEPTED = 'ACCEPTED',
-  WRONG_ANSWER = 'WRONG_ANSWER',
-  TIME_LIMIT_EXCEEDED = 'TIME_LIMIT_EXCEEDED',
-  MEMORY_LIMIT_EXCEEDED = 'MEMORY_LIMIT_EXCEEDED',
-  RUNTIME_ERROR = 'RUNTIME_ERROR',
-  COMPILATION_ERROR = 'COMPILATION_ERROR',
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  ACCEPTED = "ACCEPTED",
+  WRONG_ANSWER = "WRONG_ANSWER",
+  TIME_LIMIT_EXCEEDED = "TIME_LIMIT_EXCEEDED",
+  MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED",
+  RUNTIME_ERROR = "RUNTIME_ERROR",
+  COMPILATION_ERROR = "COMPILATION_ERROR",
+  UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
 export interface Language {
@@ -71,8 +72,8 @@ export interface SubmissionListResponse {
 export interface TestCaseResult {
   testcaseId: number;
   status: string;
-  input: string;
-  actualOutput: string;
+  stdin: string;
+  stdout: string;
   expectedOutput: string;
   executionTime: number;
   memoryUsed: number;
@@ -82,9 +83,9 @@ export interface TestCaseResult {
 
 export interface FailedResult {
   message: string;
-  input: string;
+  stdin: string;
   expectedOutput: string;
-  actualOutput: string;
+  stdout: string;
   stderr: string;
   compileOutput: string;
 }
@@ -92,34 +93,32 @@ export interface FailedResult {
 export interface Submission {
   id: number;
   status: SubmissionStatus;
-  executionTime: number;
-  memoryUsed: number;
+  executionTime?: number;
+  memoryUsed?: number;
   testcasesPassed: number;
   totalTestcases: number;
-  testcaseResults: TestCaseResult[];
-  failedResult: FailedResult;
-  user: Partial<UserProfile>;
-  problem: Partial<Problem>;
-  compileError: string;
-  runtimeError: string;
+  resultDescription?: FailedResult;
+  user?: Partial<UserProfile>;
+  problem?: Partial<Problem>;
   submittedAt: string;
+  judgedAt?: string;
   problemId: number;
   languageId: number;
-  language?: Language;
+  language?: Partial<Language>;
   sourceCode?: string;
-  contestId?: number;
+  contest?: Partial<Contest>;
 }
 
 // Map language names to Highlight.js language keys
 export const languageMap: Record<string, string> = {
-  'C++': 'cpp',
-  Python: 'python',
-  Java: 'java',
-  JavaScript: 'javascript',
-  TypeScript: 'typescript',
-  'C#': 'csharp',
-  Go: 'go',
-  Rust: 'rust',
+  "C++": "cpp",
+  Python: "python",
+  Java: "java",
+  JavaScript: "javascript",
+  TypeScript: "typescript",
+  "C#": "csharp",
+  Go: "go",
+  Rust: "rust",
 };
 
 type LanguageConfig = {
@@ -131,127 +130,127 @@ type LanguageConfig = {
 export const LANGUAGE_DEFINITIONS: LanguageConfig[] = [
   // --- Popular Web & Scripting ---
   {
-    monacoId: 'python',
-    keywords: ['python', 'py', 'pypy'],
+    monacoId: "python",
+    keywords: ["python", "py", "pypy"],
   },
   {
-    monacoId: 'javascript',
-    keywords: ['javascript', 'js', 'node'],
+    monacoId: "javascript",
+    keywords: ["javascript", "js", "node"],
   },
   {
-    monacoId: 'typescript',
-    keywords: ['typescript', 'ts'],
+    monacoId: "typescript",
+    keywords: ["typescript", "ts"],
   },
   {
-    monacoId: 'php',
-    keywords: ['php'],
+    monacoId: "php",
+    keywords: ["php"],
   },
   {
-    monacoId: 'ruby',
-    keywords: ['ruby'],
+    monacoId: "ruby",
+    keywords: ["ruby"],
   },
   {
-    monacoId: 'perl',
-    keywords: ['perl'],
+    monacoId: "perl",
+    keywords: ["perl"],
   },
   {
-    monacoId: 'lua',
-    keywords: ['lua'],
+    monacoId: "lua",
+    keywords: ["lua"],
   },
   {
-    monacoId: 'shell',
-    keywords: ['bash', 'sh', 'shell'],
+    monacoId: "shell",
+    keywords: ["bash", "sh", "shell"],
   },
   {
-    monacoId: 'r',
-    keywords: ['r ('], // Matches "R (4.0.0)"
-    exclude: ['ruby', 'rust', 'perl'],
+    monacoId: "r",
+    keywords: ["r ("], // Matches "R (4.0.0)"
+    exclude: ["ruby", "rust", "perl"],
   },
 
   // --- C-Family & Systems ---
   {
-    monacoId: 'cpp',
-    keywords: ['c++', 'cpp', 'g++', 'clang'], // Matches "C++ (GCC...)"
+    monacoId: "cpp",
+    keywords: ["c++", "cpp", "g++", "clang"], // Matches "C++ (GCC...)"
   },
   {
-    monacoId: 'c',
-    keywords: ['c (', 'gcc', 'clang'], // Matches "C (GCC...)"
+    monacoId: "c",
+    keywords: ["c (", "gcc", "clang"], // Matches "C (GCC...)"
     // Critical: Exclude variants to prevent matching C++, C#, or Objective-C
-    exclude: ['c++', 'cpp', 'c#', 'objective', 'g++'],
+    exclude: ["c++", "cpp", "c#", "objective", "g++"],
   },
   {
-    monacoId: 'csharp',
-    keywords: ['c#', 'mono', 'dotnet', '.net'],
+    monacoId: "csharp",
+    keywords: ["c#", "mono", "dotnet", ".net"],
   },
   {
-    monacoId: 'objective-c',
-    keywords: ['objective-c', 'objc'],
+    monacoId: "objective-c",
+    keywords: ["objective-c", "objc"],
   },
   {
-    monacoId: 'java',
-    keywords: ['java', 'openjdk'],
-    exclude: ['javascript'],
+    monacoId: "java",
+    keywords: ["java", "openjdk"],
+    exclude: ["javascript"],
   },
   {
-    monacoId: 'kotlin',
-    keywords: ['kotlin'],
+    monacoId: "kotlin",
+    keywords: ["kotlin"],
   },
   {
-    monacoId: 'swift',
-    keywords: ['swift'],
+    monacoId: "swift",
+    keywords: ["swift"],
   },
   {
-    monacoId: 'go',
-    keywords: ['go', 'golang'],
+    monacoId: "go",
+    keywords: ["go", "golang"],
   },
   {
-    monacoId: 'rust',
-    keywords: ['rust'],
+    monacoId: "rust",
+    keywords: ["rust"],
   },
 
   // --- Functional & Enterprise ---
   {
-    monacoId: 'scala',
-    keywords: ['scala'],
+    monacoId: "scala",
+    keywords: ["scala"],
   },
   {
-    monacoId: 'clojure',
-    keywords: ['clojure'],
+    monacoId: "clojure",
+    keywords: ["clojure"],
   },
   {
-    monacoId: 'fsharp',
-    keywords: ['f#'],
+    monacoId: "fsharp",
+    keywords: ["f#"],
   },
   {
-    monacoId: 'sql',
-    keywords: ['sql', 'sqlite'],
+    monacoId: "sql",
+    keywords: ["sql", "sqlite"],
   },
   {
-    monacoId: 'vb',
-    keywords: ['visual basic', 'vb.net', 'basic (fbc'], // Covers "Basic (FBC...)" and "Visual Basic.Net"
+    monacoId: "vb",
+    keywords: ["visual basic", "vb.net", "basic (fbc"], // Covers "Basic (FBC...)" and "Visual Basic.Net"
   },
   {
-    monacoId: 'pascal',
-    keywords: ['pascal'],
+    monacoId: "pascal",
+    keywords: ["pascal"],
   },
 
   // --- Mappings for languages not standard in Monaco (Fallbacks) ---
   // Using 'plaintext' for safety, or similar syntaxes where applicable
   {
-    monacoId: 'plaintext',
+    monacoId: "plaintext",
     keywords: [
-      'assembly',
-      'executable',
-      'plain text',
-      'multi-file',
-      'cobol',
-      'fortran',
-      'haskell',
-      'ocaml',
-      'prolog',
-      'octave',
-      'd (dmd',
-      'erlang',
+      "assembly",
+      "executable",
+      "plain text",
+      "multi-file",
+      "cobol",
+      "fortran",
+      "haskell",
+      "ocaml",
+      "prolog",
+      "octave",
+      "d (dmd",
+      "erlang",
     ],
   },
 
@@ -259,7 +258,7 @@ export const LANGUAGE_DEFINITIONS: LanguageConfig[] = [
   // { monacoId: 'java', keywords: ['groovy'] }, // Groovy looks like Java
   // { monacoId: 'elixir', keywords: ['elixir'] }, // Supported in newer Monaco versions
   {
-    monacoId: 'plaintext',
-    keywords: ['groovy', 'elixir', 'common lisp'],
+    monacoId: "plaintext",
+    keywords: ["groovy", "elixir", "common lisp"],
   },
 ];
