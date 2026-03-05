@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import FormattedMarkdown from '@/components/ui/formatted-markdown';
 import { SubmissionsService } from '@/services/submissions-service';
 import type { AppDispatch, RootState } from '@/store';
 import {
@@ -15,7 +16,6 @@ import {
 } from '@/store/slides/ai-review-slice';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 
 interface AIReviewModalProps {
@@ -138,9 +138,7 @@ export default function AIReviewModal({
               </button>
             </div>
           ) : displayReview ? (
-            <div className="prose dark:prose-invert max-w-none text-sm">
-              <ReactMarkdown>{displayReview}</ReactMarkdown>
-            </div>
+            <FormattedMarkdown content={displayReview} />
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-2 py-12">
               <Sparkles className="w-12 h-12 opacity-20" />
