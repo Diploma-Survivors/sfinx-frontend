@@ -120,7 +120,7 @@ export default function ContestProblemWrapper({
         >
           {/* Left Panel Container */}
           <div
-            className="flex flex-col h-full"
+            className="flex flex-col h-full rounded-xl border border-border bg-card shadow-sm overflow-hidden"
             style={{ width: `${leftWidth}%` }}
           >
             {/* Tabs Header */}
@@ -161,8 +161,8 @@ export default function ContestProblemWrapper({
                     </div>
                   )}
                   {activeTab === ContestNavTabs.SUBMISSIONS && (
-                    <div className="h-full pb-4">
-                      <div className="h-full bg-card rounded-xl border border-border overflow-hidden">
+                    <div className="h-full">
+                      <div className="h-full bg-card overflow-hidden">
                         {selectedSubmissionId ? (
                           <ContestSubmissionDetail
                             submissionId={selectedSubmissionId}
@@ -195,7 +195,7 @@ export default function ContestProblemWrapper({
           {/* Right Panel - Editor and Test Cases */}
           <div
             ref={rightPanelRef}
-            className="flex flex-col overflow-hidden pb-4"
+            className="flex flex-col overflow-hidden"
             style={{ width: `${100 - leftWidth}%` }}
           >
             <div className="flex flex-col h-full gap-0">
