@@ -31,9 +31,6 @@ interface AppContextType {
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
-const dedicatedPagesPattern =
-  process.env.NEXT_PUBLIC_DEDICATED_PAGES_PATTERN ||
-  '^(?:/problems/(?:create|[^/]+(?:/(create|edit))?)|/contests/(?:create|[^/]+(?:/(?:edit|stats|standing|submissions)))|/options)$';
 
 export function AppProvider({
   children,

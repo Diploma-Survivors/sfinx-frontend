@@ -7,7 +7,9 @@ import "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useApp } from "@/contexts/app-context";
 import { InterviewService } from "@/services/interview-service";
+import { toastService } from "@/services/toasts-service";
 import type { Interview, InterviewStatus } from "@/types/interview";
 import {
   ArrowLeft,
@@ -73,6 +75,7 @@ function getStatusBadge(status: InterviewStatus, t: any) {
 export default function InterviewHistoryPage() {
   const { t } = useTranslation("interview");
   const router = useRouter();
+  const { isLoggedin, isEmailVerified } = useApp();
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,11 +98,39 @@ export default function InterviewHistoryPage() {
   };
 
   const handleResume = (interviewId: string) => {
+    if (!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if (!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
     router.push(`/interview/${interviewId}`);
   };
 
   const handleViewDetails = (interviewId: string) => {
+    if (!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if (!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
     router.push(`/interview/${interviewId}`);
+  };
+
+  const handleStartNewInterview = () => {
+    if (!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if (!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
+    router.push("/interview");
   };
 
   return (
@@ -139,7 +170,7 @@ export default function InterviewHistoryPage() {
             <p className="text-muted-foreground mb-4">
               {t("history.start_first_mock_interview")}
             </p>
-            <Button onClick={() => router.push("/interview")}>
+            <Button onClick={handleStartNewInterview}>
               <Play className="w-4 h-4 mr-1" />
               {t("history.start_interview")}
             </Button>

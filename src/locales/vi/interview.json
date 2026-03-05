@@ -160,5 +160,7 @@
     "ai_responding": "AI đang trả lời...",
     "listening": "Đang nghe...",
     "empty": "Bắt đầu nói hoặc nhập tin nhắn"
-  }
+  },
+  "login_required_action": "Bạn cần đăng nhập để bắt đầu phỏng vấn.",
+  "email_verification_required_action": "Vui lòng xác minh email của bạn để bắt đầu phỏng vấn."
 }

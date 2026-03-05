@@ -52,9 +52,15 @@ export default function ContestSolveNavbar({
                 return null;
             }
 
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            const hours = Math.floor(difference / (1000 * 60 * 60));
+
+            const minutes = Math.floor(
+            (difference % (1000 * 60 * 60)) / (1000 * 60)
+            );
+
+            const seconds = Math.floor(
+            (difference % (1000 * 60)) / 1000
+            );
 
             return `${hours.toString().padStart(2, '0')}:${minutes
                 .toString()

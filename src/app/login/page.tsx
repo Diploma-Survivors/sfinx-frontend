@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FcGoogle } from "react-icons/fc";
+import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
   const { t } = useTranslation("auth");
@@ -29,12 +30,80 @@ export default function LoginPage() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [errors, setErrors] = useState<{
+    email?: string;
+    fullName?: string;
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
+
+  const validateSignUp = () => {
+    let isValid = true;
+    const newErrors: typeof errors = {};
+
+    // Email validation
+    if (!email) {
+      newErrors.email = t("email_required");
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = t("email_invalid");
+      isValid = false;
+    }
+
+    // Username validation
+    if (!username) {
+      newErrors.username = t("username_required");
+      isValid = false;
+    } else if (username.length < 3 || username.length > 50) {
+      newErrors.username = t("username_length");
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      newErrors.username = t("username_format");
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      newErrors.password = t("password_required");
+      isValid = false;
+    } else {
+      const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!strongPasswordRegex.test(password)) {
+        newErrors.password = t("password_weak");
+        isValid = false;
+      }
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = t("passwords_do_not_match");
+      isValid = false;
+    }
+
+    // Full name validation
+    if (fullName && fullName.length > 100) {
+      newErrors.fullName = t("fullname_max_length");
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
+    setErrors({}); // Clear errors on toggle
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isSignUp) {
+      if (!validateSignUp()) {
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -42,12 +111,6 @@ export default function LoginPage() {
     const finalPassword = (formData.get("password") as string) || password;
 
     if (isSignUp) {
-      if (password !== confirmPassword) {
-        toastService.error(t("passwords_do_not_match"));
-        setIsLoading(false);
-        return;
-      }
-
       try {
         await clientApi.post("/auth/register", {
           email,
@@ -194,8 +257,14 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary focus-visible:border-primary transition-colors"
+                        className={cn(
+                          "h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors",
+                          errors.email && "border-red-500 focus-visible:ring-red-500"
+                        )}
                       />
+                      {errors.email && (
+                        <p className="text-xs text-red-500 font-medium px-1">{errors.email}</p>
+                      )}
                     </div>
                     <div className="space-y-2 col-span-2">
                       <Input
@@ -206,9 +275,14 @@ export default function LoginPage() {
                         autoComplete="name"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        required
-                        className="h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors"
+                        className={cn(
+                          "h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors",
+                          errors.fullName && "border-red-500 focus-visible:ring-red-500"
+                        )}
                       />
+                      {errors.fullName && (
+                        <p className="text-xs text-red-500 font-medium px-1">{errors.fullName}</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -224,8 +298,14 @@ export default function LoginPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors"
+                    className={cn(
+                      "h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors",
+                      errors.username && "border-red-500 focus-visible:ring-red-500"
+                    )}
                   />
+                  {errors.username && (
+                    <p className="text-xs text-red-500 font-medium px-1">{errors.username}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -239,8 +319,14 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors [&>button]:right-4"
+                    className={cn(
+                      "h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors [&>button]:right-4",
+                      errors.password && "border-red-500 focus-visible:ring-red-500"
+                    )}
                   />
+                  {errors.password && (
+                    <p className="text-xs text-red-500 font-medium px-1">{errors.password}</p>
+                  )}
                 </div>
 
                 {!isSignUp && (
@@ -265,8 +351,14 @@ export default function LoginPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors [&>button]:right-4"
+                      className={cn(
+                        "h-12 rounded-xl bg-white/50 dark:bg-black/40 border-border/40 focus-visible:ring-primary transition-colors [&>button]:right-4",
+                        errors.confirmPassword && "border-red-500 focus-visible:ring-red-500"
+                      )}
                     />
+                    {errors.confirmPassword && (
+                      <p className="text-xs text-red-500 font-medium px-1">{errors.confirmPassword}</p>
+                    )}
                   </div>
                 )}
 

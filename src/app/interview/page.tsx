@@ -14,10 +14,12 @@ import {
   TranscriptionHandler,
   VoiceChatIndicator,
 } from "@/components/interview/livekit";
+import { PremiumModal } from "@/components/problems/premium-modal";
 import { ResizableDivider } from "@/components/problems/tabs/description/dividers/resizable-divider";
 import { EditorPanel } from "@/components/problems/tabs/description/panels/editor-panel/editor-panel";
 import { SampleTestCasesPanel } from "@/components/problems/tabs/description/panels/sample-testcases-panel/sample-testcases-panel";
 import { Button } from "@/components/ui/button";
+import { useApp } from "@/contexts/app-context";
 import { useCodeExecution } from "@/hooks/use-code-execution";
 import { useInterview } from "@/hooks/use-interview";
 import "@/lib/i18n";
@@ -58,6 +60,8 @@ export default function LiveInterviewPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [isStarting, setIsStarting] = useState(false);
+  const { isLoggedin, isEmailVerified, user } = useApp();
+
 
   const {
     phase,
@@ -86,6 +90,8 @@ export default function LiveInterviewPage() {
   const [interviewTime, setInterviewTime] = useState(0);
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  
 
   const workspace = useSelector(selectWorkspace);
   const currentLanguageId = interview?.problemId
@@ -208,6 +214,18 @@ export default function LiveInterviewPage() {
   }, [voiceEnabled, liveKitToken, connectVoice, clearLiveKitToken]);
 
   const handleStartInterview = useCallback(async () => {
+    if (!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if (!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
+    if(user && !user.isPremium) {
+      setIsPremiumModalOpen(true);
+      return;
+    }
     setIsStarting(true);
     try {
       const problem = await fetchRandomProblem();
@@ -368,21 +386,41 @@ export default function LiveInterviewPage() {
   if (phase === "greeting" && !interview) {
     if (isStarting) {
       return (
-        <div className="h-[calc(100vh-64px)] overflow-hidden">
+        <div className="h-screen overflow-hidden">
           <InterviewGreetingSkeleton />
         </div>
       );
     }
     return (
-      <div className="h-[calc(100vh-64px)] overflow-hidden">
+      <div className="h-screen overflow-hidden">
         <InterviewGreeting
           voiceEnabled={voiceEnabled}
           onVoiceEnabledChange={setVoiceEnabled}
           onStartInterview={handleStartInterview}
-          onViewHistory={() => router.push('/interview/history')}
+          onViewHistory={() => {
+            if(!isLoggedin) {
+              toastService.error(t("login_required_action"));
+              return;
+            }
+            if(!isEmailVerified) {
+              toastService.error(t("email_verification_required_action"));
+              return;
+            }
+            if(user && !user.isPremium) {
+              setIsPremiumModalOpen(true);
+              return;
+            }
+
+            router.push('/interview/history');
+          }}
           isLoading={isStarting}
         />
+        <PremiumModal
+          isOpen={isPremiumModalOpen}
+          onClose={() => setIsPremiumModalOpen(false)}
+        />
       </div>
+      
     );
   }
 
@@ -592,4 +630,6 @@ export default function LiveInterviewPage() {
       <Loader2 className="w-8 h-8 animate-spin text-primary" />
     </div>
   );
+
+  
 }

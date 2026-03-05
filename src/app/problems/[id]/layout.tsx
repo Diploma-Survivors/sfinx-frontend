@@ -76,7 +76,7 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
 
   if (isLoading && !problem) {
     return (
-      <div className="h-screen flex flex-col bg-background overflow-hidden">
+      <div className="h-screen flex flex-col bg-background overflow-hidden ">
         <div className="flex-1 flex gap-0">
           <div className="w-1/2 p-4 space-y-6 border-r border-border">
             <div className="flex items-center gap-4">
@@ -99,7 +99,7 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-background">
+    <div className="flex flex-col h-[calc(100vh-65px)] overflow-hidden bg-background">
       <div
         ref={containerRef}
         className="flex-1 flex gap-0 relative overflow-hidden"
@@ -107,8 +107,8 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
         {/* Left Panel */}
         <div
           className={cn(
-            'flex flex-col h-full bg-card',
-            !isFullPage && 'border-r border-border'
+            'flex flex-col h-full bg-card rounded-xl border border-border shadow-sm overflow-hidden',
+            !isFullPage && 'mr-1'
           )}
           style={{ width: isFullPage ? '100%' : `${leftWidth}%` }}
         >
@@ -184,7 +184,7 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
         {!isFullPage && (
           <div
             ref={rightPanelRef}
-            className="flex flex-col overflow-hidden pb-4 bg-card"
+            className="flex flex-col overflow-hidden bg-card"
             style={{ width: `${100 - leftWidth}%` }}
           >
             <div className="flex flex-col h-full gap-0">
