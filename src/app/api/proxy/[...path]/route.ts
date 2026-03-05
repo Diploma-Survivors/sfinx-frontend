@@ -156,132 +156,185 @@ function generateAuthForm(
 
   return `
     <!DOCTYPE html>
-    <html lang="vi">
+    <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Đang chuyển hướng...</title>
+        <title>Redirecting...</title>
         <style>
+            /* SfinX Color System Extracted from globals.css */
+            :root {
+                --background: oklch(1 0 0);
+                --foreground: oklch(0.145 0 0);
+                --primary: oklch(0.54 0.17 142);
+                --primary-foreground: oklch(1 0 0);
+                --muted-foreground: oklch(0.556 0 0);
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --background: oklch(0.145 0 0);
+                    --foreground: oklch(0.985 0 0);
+                    --primary: oklch(0.623 0.188 145.42);
+                    --primary-foreground: oklch(0.145 0 0);
+                    --muted-foreground: oklch(0.708 0 0);
+                }
+            }
+
             body {
                 font-family: 'Geist Sans', Arial, sans-serif;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
                 margin: 0;
-                background: linear-gradient(
-                    to bottom right,
-                    rgb(248 250 252),
-                    rgb(241 245 249),
-                    rgb(248 250 252)
-                );
-                background-attachment: fixed;
+                background-color: var(--background);
+                color: var(--foreground);
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
             }
-            .loading {
+
+            /* Overlay mimicking bg-background/50 and backdrop-blur-sm */
+            .loader-container {
+                position: fixed;
+                inset: 0;
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: color-mix(in srgb, var(--background) 50%, transparent);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+            }
+
+            .loader-wrapper {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
                 text-align: center;
+                gap: 2.5rem;
                 padding: 24px;
-                background: white;
-                border-radius: 0.625rem;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-                border: 1px solid rgba(226, 232, 240, 1);
                 max-width: 90%;
-                width: 400px;
+                width: 450px;
             }
-            .spinner {
-                border: 4px solid rgba(241, 245, 249, 1);
-                border-top: 4px solid rgb(22, 163, 74);
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                animation: spin 1s linear infinite;
-                margin: 0 auto 20px;
+
+            /* Wrapper that mimics animate-pulse */
+            .brand-animation {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+
+            /* SfinX typography mimicking text-6xl font-bold tracking-tight text-primary */
+            .brand-text {
+                font-size: 3.75rem; 
+                line-height: 1;
+                font-weight: 700; 
+                letter-spacing: -0.025em; 
+                color: var(--primary); 
             }
+
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: .5;
+                }
+            }
+
+            /* Information Text Styles */
+            .text-info {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
             h2 {
-                color: rgb(15, 23, 42);
+                font-size: 1.25rem;
                 font-weight: 600;
-                margin-bottom: 12px;
+                margin: 0;
+                color: var(--foreground);
+                letter-spacing: -0.025em;
             }
+
             p {
-                color: rgb(71, 85, 105);
-                margin-bottom: 12px;
+                font-size: 0.95rem;
+                margin: 0;
+                color: var(--muted-foreground);
             }
+
             small {
-                color: rgb(100, 116, 139);
+                font-size: 0.85rem;
+                color: var(--muted-foreground);
+                opacity: 0.8;
+                margin-top: 0.25rem;
             }
-            button {
-                padding: 10px 20px;
-                background: rgb(22, 163, 74);
-                color: white;
+
+            /* Submit Button using actual SfinX Primary Colors */
+            .btn {
+                margin-top: 1.5rem;
+                padding: 0.625rem 1.25rem;
+                background-color: var(--primary);
+                color: var(--primary-foreground);
                 border: none;
                 border-radius: 0.5rem;
-                cursor: pointer;
+                font-size: 0.875rem;
                 font-weight: 500;
-                transition: all 0.2s ease;
+                cursor: pointer;
+                transition: opacity 0.2s ease;
             }
-            button:hover {
-                background: rgb(21, 128, 61);
-                box-shadow: 0 2px 10px rgba(22, 163, 74, 0.2);
+
+            .btn:hover {
+                opacity: 0.9;
             }
-            @media (prefers-color-scheme: dark) {
-                body {
-                    background: linear-gradient(
-                        to bottom right,
-                        rgb(15, 23, 42),
-                        rgb(30, 41, 59),
-                        rgb(15, 23, 42)
-                    );
-                }
-                .loading {
-                    background: rgb(30, 41, 59);
-                    border-color: rgb(51, 65, 85);
-                }
-                h2 {
-                    color: rgb(241, 245, 249);
-                }
-                p {
-                    color: rgb(148, 163, 184);
-                }
-                small {
-                    color: rgb(100, 116, 139);
-                }
-                .spinner {
-                    border-color: rgb(51, 65, 85);
-                    border-top-color: rgb(34, 197, 94);
-                }
+
+            #postRedirectForm {
+                margin: 0;
+                display: flex;
+                justify-content: center;
             }
         </style>
     </head>
     <body>
-        <div class="loading">
-            <div class="spinner"></div>
-            <h2>Đang chuyển hướng...</h2>
-            <p>Vui lòng đợi trong khi chúng tôi xử lý xác thực của bạn...</p>
-            <p><small>Nếu trang này không tự động chuyển hướng, vui lòng nhấn nút bên dưới.</small></p>
-            
-            <form id="postRedirectForm" action="${targetUrl}" method="POST" style="margin-top: 20px;">
-                <input type="hidden" name="accessToken" value="${accessToken}" />
-                <input type="hidden" name="refreshToken" value="${refreshToken}" />
-                <input type="hidden" name="deviceId" value="${deviceId}" />
-                <input type="hidden" name="csrfToken" value="${csrfToken}" />
-                <input type="hidden" name="callbackUrl" value="${redirectPath}" />
-                <button type="submit">
-                    Tiếp tục
-                </button>
-            </form>
+        <div class="loader-container">
+            <div class="loader-wrapper">
+                <!-- Pulsing Global Loader mimicking your frontend -->
+                <div class="brand-animation">
+                    <span class="brand-text">SfinX</span>
+                </div>
+                
+                <!-- Information text and manual form sumbit -->
+                <div class="text-info">
+                    <h2>Redirecting...</h2>
+                    <p>Please wait while we process your authentication...</p>
+                    <p><small>If you are not redirected automatically, please click the button below.</small></p>
+
+                    <form id="postRedirectForm" action="${targetUrl}" method="POST">
+                        <input type="hidden" name="accessToken" value="${accessToken}" />
+                        <input type="hidden" name="refreshToken" value="${refreshToken}" />
+                        <input type="hidden" name="deviceId" value="${deviceId}" />
+                        <input type="hidden" name="csrfToken" value="${csrfToken}" />
+                        <input type="hidden" name="callbackUrl" value="${redirectPath}" />
+                        <button type="submit" class="btn">
+                            Continue
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
         
         <script type="text/javascript">
-            
-            // Tự động gửi form sau một khoảng thời gian ngắn
+            // Automatically submit the form after a short delay
             setTimeout(() => {
                 document.getElementById('postRedirectForm').submit();
             }, 1000);
             
-            // Dự phòng: gửi khi trang đã tải xong
+            // Fallback: submit when the page has fully loaded
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     if (!document.hidden) {
