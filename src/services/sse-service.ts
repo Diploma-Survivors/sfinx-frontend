@@ -2,7 +2,7 @@ export interface SSEResult {
   status: string;
   totalTests: number;
   passedTests: number;
-  // score: number;
+  score: number;
   runtime: string;
   memory: number;
   testResults?: Array<{
@@ -14,9 +14,8 @@ export interface SSEResult {
     token: string;
     status: string;
     expectedOutput?: string;
+    compileOutput?: string;
   }>;
-  compileError?: string;
-  runtimeError?: string;
   resultDescription?: {
     message: string;
     expectedOutput: string;
@@ -24,7 +23,6 @@ export interface SSEResult {
     stdout: string;
     stderr: string;
     compileOutput?: string;
-    compile_output?: string;
   };
 }
 

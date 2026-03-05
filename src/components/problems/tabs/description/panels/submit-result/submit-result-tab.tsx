@@ -172,9 +172,7 @@ export function SubmitResultTab({
             {/* Error Details - Only show for failed cases */}
             {result &&
               result.status !== "ACCEPTED" &&
-              (result.resultDescription ||
-                result.compileError ||
-                result.runtimeError) && (
+              result.resultDescription && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
                     <XCircle className="w-5 h-5 text-red-500" />
@@ -182,30 +180,6 @@ export function SubmitResultTab({
                   </div>
 
                   <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
-                    {/* Compilation Error (Root) */}
-                    {result.compileError && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("compile_output")}
-                        </div>
-                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
-                          {result.compileError}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Runtime Error (Root) */}
-                    {result.runtimeError && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("runtime_error")}
-                        </div>
-                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
-                          {result.runtimeError}
-                        </pre>
-                      </div>
-                    )}
-
                     {/* Message */}
                     {result.resultDescription?.message && (
                       <div>
@@ -216,15 +190,13 @@ export function SubmitResultTab({
                     )}
 
                     {/* Compile Output */}
-                    {(result.resultDescription?.compileOutput ||
-                      result.resultDescription?.compile_output) && (
+                    {result.resultDescription?.compileOutput && (
                       <div>
                         <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                           {t("compile_output")}
                         </div>
                         <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
-                          {result.resultDescription.compileOutput ||
-                            result.resultDescription.compile_output}
+                          {result.resultDescription.compileOutput}
                         </pre>
                       </div>
                     )}
