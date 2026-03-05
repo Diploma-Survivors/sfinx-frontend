@@ -113,6 +113,28 @@ export interface Submission {
   contestId?: number;
 }
 
+export interface DistributionBin {
+  bin: string;
+  count: number;
+  min: number;
+  max: number;
+}
+
+export interface SubmissionPerformanceStats {
+  averageRuntime: number | null;
+  averageMemory: number | null;
+  fastestRuntime: number | null;
+  lowestMemory: number | null;
+  percentile: {
+    runtime: number | null;
+    memory: number | null;
+  };
+  distribution?: {
+    runtime: DistributionBin[];
+    memory: DistributionBin[];
+  };
+}
+
 // Map language names to Highlight.js language keys
 export const languageMap: Record<string, string> = {
   'C++': 'cpp',

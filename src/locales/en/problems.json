@@ -263,5 +263,10 @@
   "list_updated": "List updated successfully",
   "update_failed": "Failed to update list",
   "edit_list": "Edit List",
-  "save_changes": "Save Changes"
+  "save_changes": "Save Changes",
+  "runtime_performance": "Runtime Distribution",
+  "memory_performance": "Memory Distribution",
+  "beats_users": "Beats <strong>{{percent}}%</strong> of users",
+  "submissions": "submissions",
+  "test_cases": "Test Cases"
 }

@@ -261,5 +261,10 @@
   "list_updated": "Cập nhật danh sách thành công",
   "update_failed": "Cập nhật danh sách thất bại",
   "edit_list": "Chỉnh sửa danh sách",
-  "save_changes": "Lưu thay đổi"
+  "save_changes": "Lưu thay đổi",
+  "runtime_performance": "Phân bố thời gian chạy",
+  "memory_performance": "Phân bố bộ nhớ",
+  "beats_users": "Nhanh hơn <strong>{{percent}}%</strong> người dùng",
+  "submissions": "bài nộp",
+  "test_cases": "Test Cases"
 }

@@ -2,8 +2,10 @@ import { getStatusMeta } from '@/lib/utils/testcase-status';
 import type { SSEResult } from '@/services/sse-service';
 import { MemoryStick, Timer, X, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { PerformanceChart } from './performance-chart';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useApp } from '@/contexts/app-context';
 
 interface SubmitResultTabProps {
   width: number;
@@ -19,7 +21,10 @@ export function SubmitResultTab({
   onClose,
 }: SubmitResultTabProps) {
   const { t } = useTranslation('problems');
+  const { user } = useApp();
   const statusInfo = result ? getStatusMeta(result.status) : null;
+
+  console.log(result);
 
   if (isSubmitting) {
     return (
@@ -170,6 +175,16 @@ export function SubmitResultTab({
                 </div>
               </div>
             </div>
+
+            {/* Performance Chart - Only show for Accepted cases with an ID */}
+            {result?.status === 'ACCEPTED' && result?.id && (
+              <PerformanceChart
+                submissionId={result.id}
+                userAvatarUrl={user?.avatarUrl}
+                userRuntimeMs={result.runtime ? Number(result.runtime) : undefined}
+                userMemoryKb={result.memory}
+              />
+            )}
 
             {/* Failed Test Case Details - Only show for failed cases */}
             {result?.resultDescription && result.status !== 'ACCEPTED' && (

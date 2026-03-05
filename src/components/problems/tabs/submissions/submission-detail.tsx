@@ -9,6 +9,7 @@ import { toggleVisibility } from "@/store/slides/ai-review-slice";
 import { selectProblem } from "@/store/slides/problem-slice";
 import type { Submission } from "@/types/submissions";
 import { SubmissionStatus, languageMap } from "@/types/submissions";
+import { PerformanceChart } from "@/components/problems/tabs/description/panels/submit-result/performance-chart";
 import { Copy, Loader2, PenSquare, Sparkles, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -18,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { useApp } from "@/contexts/app-context";
 
 interface SubmissionDetailProps {
   submission: Submission;
@@ -26,13 +28,13 @@ interface SubmissionDetailProps {
 const formatRuntime = (runtime?: number | null) => {
   if (runtime === undefined || runtime === null || isNaN(runtime)) return "N/A";
   if (runtime === 0) return "0 ms";
-  return `${(runtime * 1000).toFixed(0)} ms`;
+  return `${Number(runtime).toFixed(2)} ms`;
 };
 
 const formatMemory = (memory?: number | null) => {
   if (memory === undefined || memory === null || isNaN(memory)) return "N/A";
   if (memory === 0) return "0 KB";
-  return `${(memory / 1024).toFixed(0)} KB`;
+  return `${memory} KB`;
 };
 
 export default function SubmissionDetail({
@@ -45,6 +47,8 @@ export default function SubmissionDetail({
   const [isCodeExpanded, setIsCodeExpanded] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
+
+  const { user } = useApp();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -199,6 +203,16 @@ export default function SubmissionDetail({
                 </div>
               </div>
             </div>
+
+            {/* Performance Distribution Chart - Only for accepted submissions */}
+            {submission.status === SubmissionStatus.ACCEPTED && (
+              <PerformanceChart
+                submissionId={submission.id}
+                userAvatarUrl={user?.avatarUrl}
+                userRuntimeMs={submission.executionTime}
+                userMemoryKb={submission.memoryUsed}
+              />
+            )}
 
             {/* Failed Test Case Details - Only show for failed cases */}
             {(submission.failedResult || submission.resultDescription) && submission.status !== SubmissionStatus.ACCEPTED && (

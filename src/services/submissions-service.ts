@@ -7,6 +7,7 @@ import {
   type Language,
   type Submission,
   type SubmissionListResponse,
+  type SubmissionPerformanceStats,
   type SubmissionRequest,
   SubmissionStatus,
 } from '@/types/submissions';
@@ -181,6 +182,12 @@ async function getAllContestSubmissions(
   return getAllSubmissions(userId);
 }
 
+async function getPerformanceStats(submissionId: number) {
+  return await clientApi.get<ApiResponse<SubmissionPerformanceStats>>(
+    `/submissions/${submissionId}/performance-stats`
+  );
+}
+
 export const SubmissionsService = {
   run,
   submit,
@@ -189,4 +196,5 @@ export const SubmissionsService = {
   getSubmissionById,
   getAllSubmissions,
   getAllContestSubmissions,
+  getPerformanceStats,
 };

@@ -18,16 +18,16 @@ const locales: Record<string, any> = {
   vi: vi,
 };
 
-const formatRuntime = (runtime: number) => {
-  if (runtime === 0) return "CE";
-  const runtimeInMs = runtime * 1000;
-  return `${runtimeInMs.toFixed(0)} ms`;
+const formatRuntime = (runtime?: number | null) => {
+  if (runtime === undefined || runtime === null || isNaN(runtime)) return "N/A";
+  if (runtime === 0) return "0 ms";
+  return `${Number(runtime).toFixed(2)} ms`;
 };
 
-const formatMemory = (memory: number) => {
-  if (memory === 0) return "CE";
-  const memoryInMB = memory / 1024;
-  return `${memoryInMB.toFixed(0)} MB`;
+const formatMemory = (memory?: number | null) => {
+  if (memory === undefined || memory === null || isNaN(memory)) return "N/A";
+  if (memory === 0) return "0 KB";
+  return `${memory} KB`;
 };
 
 export default function SubmissionRow({
@@ -41,9 +41,8 @@ export default function SubmissionRow({
 
   return (
     <tr
-      className={`cursor-pointer transition-all duration-200 group ${
-        isSelected ? "bg-gray-200" : "hover:bg-gray-100"
-      }`}
+      className={`cursor-pointer transition-all duration-200 group ${isSelected ? "bg-gray-200" : "hover:bg-gray-100"
+        }`}
       onClick={() => onSelect(submission)}
       style={{
         animationDelay: `${index * 50}ms`,

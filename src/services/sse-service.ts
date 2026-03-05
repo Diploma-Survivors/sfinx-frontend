@@ -1,4 +1,5 @@
 export interface SSEResult {
+  id?: number;
   status: string;
   totalTests: number;
   passedTests: number;
