@@ -93,7 +93,7 @@ export default function SubmissionRow({
         <div className="flex items-center gap-1">
           <Clock className="h-4 w-4 text-gray-400" />
           <span className="text-xs font-medium text-gray-900">
-            {formatRuntime(submission.executionTime)}
+            {formatRuntime(submission?.executionTime || 0)}
           </span>
         </div>
       </td>
@@ -103,7 +103,7 @@ export default function SubmissionRow({
         <div className="flex items-center gap-1">
           <Cpu className="h-4 w-4 text-gray-400" />
           <span className="text-xs font-medium text-gray-900">
-            {formatMemory(submission.memoryUsed)}
+            {formatMemory(submission?.memoryUsed || 0)}
           </span>
         </div>
       </td>
