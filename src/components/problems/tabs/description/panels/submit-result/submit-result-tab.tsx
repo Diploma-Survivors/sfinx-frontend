@@ -1,9 +1,9 @@
-import { getStatusMeta } from '@/lib/utils/testcase-status';
-import type { SSEResult } from '@/services/sse-service';
-import { MemoryStick, Timer, X, XCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import { getStatusMeta } from "@/lib/utils/testcase-status";
+import type { SSEResult } from "@/services/sse-service";
+import { MemoryStick, Timer, X, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface SubmitResultTabProps {
   width: number;
@@ -18,7 +18,7 @@ export function SubmitResultTab({
   isSubmitting,
   onClose,
 }: SubmitResultTabProps) {
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   const statusInfo = result ? getStatusMeta(result.status) : null;
 
   if (isSubmitting) {
@@ -115,7 +115,7 @@ export function SubmitResultTab({
             {/* Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-                {t('submit_result_title')}
+                {t("submit_result_title")}
               </h2>
               <button
                 onClick={onClose}
@@ -134,7 +134,7 @@ export function SubmitResultTab({
                   <span>{statusInfo.label}</span>
                 </div>
                 <div className="text-slate-600 dark:text-slate-400 mt-2">
-                  {t('test_cases_passed', {
+                  {t("test_cases_passed", {
                     passed: result?.passedTests,
                     total: result?.totalTests,
                   })}
@@ -152,16 +152,16 @@ export function SubmitResultTab({
               </div> */}
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
                 <div className="text-xs text-slate-500">
-                  {t('runtime').toUpperCase()}
+                  {t("runtime").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
-                  {result?.runtime ? Number(result.runtime).toFixed(2) : '0.00'}{' '}
+                  {result?.runtime ? Number(result.runtime).toFixed(2) : "0.00"}{" "}
                   ms
                 </div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
                 <div className="text-xs text-slate-500">
-                  {t('memory').toUpperCase()}
+                  {t("memory").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
                   {result?.memory ?? 0} KB
@@ -169,56 +169,116 @@ export function SubmitResultTab({
               </div>
             </div>
 
-            {/* Failed Test Case Details - Only show for failed cases */}
-            {result?.resultDescription && result.status !== 'ACCEPTED' && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
-                  <XCircle className="w-5 h-5 text-red-500" />
-                  <span>{t('failed_description')}</span>
-                </div>
-
-                <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
-                  <div>
-                    <div className="text-red-600 dark:text-red-400 font-medium">
-                      {result.resultDescription.message}
-                    </div>
+            {/* Error Details - Only show for failed cases */}
+            {result &&
+              result.status !== "ACCEPTED" &&
+              (result.resultDescription ||
+                result.compileError ||
+                result.runtimeError) && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                    <XCircle className="w-5 h-5 text-red-500" />
+                    <span>{t("failed_description")}</span>
                   </div>
 
-                  {result.resultDescription.stdin && (
-                    <div>
-                      <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                        {t('input')}
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
+                    {/* Compilation Error (Root) */}
+                    {result.compileError && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("compile_output")}
+                        </div>
+                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                          {result.compileError}
+                        </pre>
                       </div>
-                      <pre className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm whitespace-pre-wrap">
-                        {result.resultDescription.stdin}
-                      </pre>
-                    </div>
-                  )}
+                    )}
 
-                  {result.resultDescription.expectedOutput && (
-                    <div>
-                      <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                        {t('expected_output')}
+                    {/* Runtime Error (Root) */}
+                    {result.runtimeError && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("runtime_error")}
+                        </div>
+                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                          {result.runtimeError}
+                        </pre>
                       </div>
-                      <pre className="bg-green-50 dark:bg-green-900 rounded p-3 text-sm whitespace-pre-wrap">
-                        {result.resultDescription.expectedOutput}
-                      </pre>
-                    </div>
-                  )}
+                    )}
 
-                  {result.resultDescription.stdout && (
-                    <div>
-                      <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                        {t('your_output')}
+                    {/* Message */}
+                    {result.resultDescription?.message && (
+                      <div>
+                        <div className="text-red-600 dark:text-red-400 font-medium whitespace-pre-wrap">
+                          {result.resultDescription.message}
+                        </div>
                       </div>
-                      <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap">
-                        {result.resultDescription.stdout}
-                      </pre>
-                    </div>
-                  )}
+                    )}
+
+                    {/* Compile Output */}
+                    {(result.resultDescription?.compileOutput ||
+                      result.resultDescription?.compile_output) && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("compile_output")}
+                        </div>
+                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                          {result.resultDescription.compileOutput ||
+                            result.resultDescription.compile_output}
+                        </pre>
+                      </div>
+                    )}
+
+                    {/* Input */}
+                    {result.resultDescription?.stdin && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("input")}
+                        </div>
+                        <pre className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm whitespace-pre-wrap">
+                          {result.resultDescription.stdin}
+                        </pre>
+                      </div>
+                    )}
+
+                    {/* Expected Output */}
+                    {result.resultDescription?.expectedOutput && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("expected_output")}
+                        </div>
+                        <pre className="bg-green-50 dark:bg-green-900 rounded p-3 text-sm whitespace-pre-wrap">
+                          {result.resultDescription.expectedOutput}
+                        </pre>
+                      </div>
+                    )}
+
+                    {/* Your Output */}
+                    {result.resultDescription?.stdout && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("your_output")}
+                        </div>
+                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap">
+                          {result.resultDescription.stdout}
+                        </pre>
+                      </div>
+                    )}
+
+                    {/* Standard Error (stderr) */}
+                    {result.resultDescription?.stderr && (
+                      <div>
+                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                          {t("stderr")}
+                        </div>
+                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                          {result.resultDescription.stderr}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       </div>

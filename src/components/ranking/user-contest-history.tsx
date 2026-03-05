@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useApp } from "@/contexts/app-context";
 import { UserService } from "@/services/user-service";
 import type { ContestHistoryEntry } from "@/types/user";
+import { format } from "date-fns";
 import { TrendingUp, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -93,7 +94,7 @@ export function UserContestHistory() {
     rating: entry.ratingAfter,
     rank: entry.contestRank,
     delta: entry.ratingDelta,
-    date: new Date(entry.contestEndTime).toLocaleDateString(),
+    date: format(new Date(entry.contestEndTime), "dd/MM/yyyy"),
   }));
 
   const currentRating = history[history.length - 1].ratingAfter;
@@ -214,7 +215,7 @@ export function UserContestHistory() {
                     <div className="flex flex-col">
                       <span className="font-medium">{entry.contestTitle}</span>
                       <span className="text-xs text-muted-foreground">
-                        {new Date(entry.contestEndTime).toLocaleDateString()}
+                        {format(new Date(entry.contestEndTime), "dd/MM/yyyy")}
                       </span>
                     </div>
                   </div>
