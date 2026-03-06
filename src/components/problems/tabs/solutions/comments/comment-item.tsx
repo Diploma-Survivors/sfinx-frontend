@@ -166,8 +166,16 @@ export default function CommentItem({
       <div className="flex-1 space-y-1.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold text-slate-900 dark:text-slate-200">
-              {comment.author?.username}
+            <span
+              className={
+                comment.isDeleted
+                  ? "font-semibold text-slate-500 dark:text-slate-400 italic"
+                  : "font-semibold text-slate-900 dark:text-slate-200"
+              }
+            >
+              {comment.isDeleted
+                ? t("deleted_status")
+                : comment.author?.username}
             </span>
             <span className="text-slate-500 dark:text-slate-400">
               {formatDistanceToNow(new Date(comment.createdAt), {
@@ -175,7 +183,7 @@ export default function CommentItem({
                 locale: vi,
               })}
             </span>
-            {comment.updatedAt !== comment.createdAt && (
+            {!comment.isDeleted && comment.isEdited && (
               <span className="text-slate-400 italic">({t("edited")})</span>
             )}
           </div>
@@ -211,80 +219,88 @@ export default function CommentItem({
           </div>
         ) : (
           <div className="text-sm text-slate-800 dark:text-slate-300 whitespace-pre-wrap">
-            {comment.content}
+            {comment.isDeleted ? (
+              <span className="text-slate-500 italic">
+                {t("comment_deleted_placeholder")}
+              </span>
+            ) : (
+              comment.content
+            )}
           </div>
         )}
 
-        <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => handleVote(SolutionCommentVoteType.UPVOTE)}
-              className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${
-                comment.userVote === SolutionCommentVoteType.UPVOTE
-                  ? "text-green-600"
-                  : ""
-              }`}
-            >
-              <ArrowBigUp
-                className={`w-4 h-4 ${
+        {!comment.isDeleted && (
+          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => handleVote(SolutionCommentVoteType.UPVOTE)}
+                className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${
                   comment.userVote === SolutionCommentVoteType.UPVOTE
-                    ? "fill-current"
+                    ? "text-green-600"
                     : ""
                 }`}
-              />
-              <span>{comment.upvoteCount}</span>
-            </button>
-          </div>
+              >
+                <ArrowBigUp
+                  className={`w-4 h-4 ${
+                    comment.userVote === SolutionCommentVoteType.UPVOTE
+                      ? "fill-current"
+                      : ""
+                  }`}
+                />
+                <span>{comment.upvoteCount}</span>
+              </button>
+            </div>
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => handleVote(SolutionCommentVoteType.DOWNVOTE)}
-              className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${
-                comment.userVote === SolutionCommentVoteType.DOWNVOTE
-                  ? "text-red-600"
-                  : ""
-              }`}
-            >
-              <ArrowBigDown
-                className={`w-4 h-4 ${
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => handleVote(SolutionCommentVoteType.DOWNVOTE)}
+                className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${
                   comment.userVote === SolutionCommentVoteType.DOWNVOTE
-                    ? "fill-current"
+                    ? "text-red-600"
                     : ""
                 }`}
-              />
-              <span>{comment.downvoteCount}</span>
+              >
+                <ArrowBigDown
+                  className={`w-4 h-4 ${
+                    comment.userVote === SolutionCommentVoteType.DOWNVOTE
+                      ? "fill-current"
+                      : ""
+                  }`}
+                />
+                <span>{comment.downvoteCount}</span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => setIsReplying(!isReplying)}
+              className="cursor-pointer flex items-center gap-1 hover:text-blue-600 transition-colors"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>{t("reply")}</span>
             </button>
+
+            {isAuthor && !isEditing && (
+              <>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="cursor-pointer flex items-center gap-1 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>{t("edit")}</span>
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="cursor-pointer flex items-center gap-1 hover:text-red-600 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{t("delete")}</span>
+                </button>
+              </>
+            )}
           </div>
+        )}
 
-          <button
-            onClick={() => setIsReplying(!isReplying)}
-            className="cursor-pointer flex items-center gap-1 hover:text-blue-600 transition-colors"
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>{t("reply")}</span>
-          </button>
-
-          {isAuthor && !isEditing && (
-            <>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="cursor-pointer flex items-center gap-1 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
-              >
-                <Pencil className="w-3.5 h-3.5" />
-                <span>{t("edit")}</span>
-              </button>
-              <button
-                onClick={handleDelete}
-                className="cursor-pointer flex items-center gap-1 hover:text-red-600 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>{t("delete")}</span>
-              </button>
-            </>
-          )}
-        </div>
-
-        {isReplying && (
+        {isReplying && !comment.isDeleted && (
           <div className="mt-3 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
             <Textarea
               value={replyContent}

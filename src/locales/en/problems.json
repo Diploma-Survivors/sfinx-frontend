@@ -274,5 +274,7 @@
   "memory_performance": "Memory Distribution",
   "beats_users": "Beats <strong>{{percent}}%</strong> of users",
   "submissions": "submissions",
-  "test_cases": "Test Cases"
+  "test_cases": "Test Cases",
+  "deleted_status": "Deleted",
+  "comment_deleted_placeholder": "This comment has been deleted."
 }

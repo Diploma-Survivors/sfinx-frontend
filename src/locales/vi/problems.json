@@ -272,5 +272,7 @@
   "memory_performance": "Phân bố bộ nhớ",
   "beats_users": "Nhanh hơn <strong>{{percent}}%</strong> người dùng",
   "submissions": "bài nộp",
-  "test_cases": "Test Cases"
+  "test_cases": "Test Cases",
+  "deleted_status": "Đã xóa",
+  "comment_deleted_placeholder": "Bình luận này đã bị xóa."
 }
