@@ -32,7 +32,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
         p: ({ node, ...props }) => (
           <p
-            className="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap"
+            className="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap break-words"
             {...props}
           />
         ),
@@ -57,7 +57,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
         a: ({ node, ...props }) => (
           <a
-            className="text-blue-600 dark:text-blue-400 hover:underline"
+            className="text-blue-600 dark:text-blue-400 hover:underline break-words"
             target="_blank"
             rel="noopener noreferrer"
             {...props}
@@ -70,13 +70,15 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
               style={oneDark}
               language={match[1]}
               PreTag="div"
+              wrapLines={true}
+              wrapLongLines={true}
               {...props}
             >
               {String(children).replace(/\n$/, '')}
             </SyntaxHighlighter>
           ) : (
             <code
-              className={`${className} bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-sm font-mono text-slate-800 dark:text-slate-200`}
+              className={`${className} bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-sm font-mono text-slate-800 dark:text-slate-200 break-words whitespace-pre-wrap`}
               {...props}
             >
               {children}

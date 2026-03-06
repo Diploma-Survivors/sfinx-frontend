@@ -290,7 +290,7 @@ export function CommentItem({
               />
             </div>
           ) : (
-            <div className="mt-1 text-sm text-foreground/90 prose prose-sm dark:prose-invert max-w-none leading-relaxed">
+            <div className="mt-1 text-sm text-foreground/90 prose prose-sm dark:prose-invert max-w-none leading-relaxed break-words">
               {comment.isDeleted ? (
                 <span className="text-muted-foreground italic">
                   {t("comment_deleted_placeholder")}
