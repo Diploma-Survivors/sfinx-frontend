@@ -42,8 +42,7 @@ export function DiscussDetail({ postId }: DiscussDetailProps) {
   };
 
   const getAvatarUrl = () => {
-    if (!post?.author.avatarKey) return null;
-    return `${post.author.avatarUrl}`;
+    return post?.author.avatarUrl || null;
   };
 
   useEffect(() => {
