@@ -4,6 +4,7 @@ import AIReviewModal from "@/components/problems/tabs/submissions/ai-review-moda
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
+import { formatMemory, formatRuntime } from "@/lib/utils/format-submission";
 import { getStatusMeta } from "@/lib/utils/testcase-status";
 import { toastService } from "@/services/toasts-service";
 import { selectProblem } from "@/store/slides/problem-slice";
@@ -24,15 +25,6 @@ interface SubmissionDetailProps {
   submission: Submission;
 }
 
-const formatRuntime = (runtime?: number) => {
-  if (runtime === undefined || runtime === 0) return "0ms";
-  return `${(runtime * 1000).toFixed(0)} ms`;
-};
-
-const formatMemory = (memory?: number) => {
-  if (memory === undefined || memory === 0) return "0 KB";
-  return `${(memory / 1024).toFixed(0)} KB`;
-};
 
 export default function SubmissionDetail({
   submission,

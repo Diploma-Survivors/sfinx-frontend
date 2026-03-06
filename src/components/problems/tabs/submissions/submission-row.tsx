@@ -1,6 +1,7 @@
 import { useLanguage } from "@/hooks/use-language";
 import { getStatusMeta } from "@/lib/utils/testcase-status";
 import type { Submission } from "@/types/submissions";
+import { formatMemory, formatRuntime } from "@/lib/utils/format-submission";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
 import { Clock, Cpu } from "lucide-react";
@@ -18,15 +19,6 @@ const locales: Record<string, any> = {
   vi: vi,
 };
 
-const formatRuntime = (runtime?: number) => {
-  if (runtime === undefined || runtime === 0) return "0ms";
-  return `${(runtime * 1000).toFixed(0)} ms`;
-};
-
-const formatMemory = (memory?: number) => {
-  if (memory === undefined || memory === 0) return "0 KB";
-  return `${(memory / 1024).toFixed(0)} KB`;
-};
 
 export default function SubmissionRow({
   submission,

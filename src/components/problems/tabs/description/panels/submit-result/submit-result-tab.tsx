@@ -24,8 +24,6 @@ export function SubmitResultTab({
   const { user } = useApp();
   const statusInfo = result ? getStatusMeta(result.status) : null;
 
-  console.log(result);
-
   if (isSubmitting) {
     return (
       <div
