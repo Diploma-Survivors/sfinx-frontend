@@ -151,7 +151,7 @@ export function SubmitResultTab({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
                 <div className="text-xs text-slate-500">
-                  {t('test_cases', 'TEST CASES').toUpperCase()}
+                  {t("test_cases").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
                   {result?.passedTests ?? 0} / {result?.totalTests ?? 0}
@@ -210,7 +210,7 @@ export function SubmitResultTab({
                     {result.resultDescription?.compileOutput && (
                       <div>
                         <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("compile_output", "Compile Output")}
+                          {t("compile_output")}
                         </div>
                         <pre className="bg-red-50 dark:bg-red-900/30 font-mono text-red-600 dark:text-red-400 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto border border-red-200 dark:border-red-800">
                           {result.resultDescription.compileOutput}
