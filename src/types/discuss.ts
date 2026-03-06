@@ -23,6 +23,7 @@ export interface Comment {
     author: Author;
     createdAt: string;
     updatedAt: string;
+    timeAgo?: string;
     upvoteCount: number;
     downvoteCount: number;
     replyCount: number;
@@ -41,6 +42,7 @@ export interface Post {
     upvoteCount: number;
     downvoteCount: number;
     commentCount: number;
+    timeAgo?: string;
     isLocked: boolean;
     isDeleted: boolean;
     author: Author;
