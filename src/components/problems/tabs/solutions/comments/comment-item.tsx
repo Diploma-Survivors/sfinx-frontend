@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useDialog } from '@/components/providers/dialog-provider';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { useApp } from '@/contexts/app-context';
-import { SolutionsService } from '@/services/solutions-service';
-import type { SolutionComment } from '@/types/solutions';
-import { SolutionCommentVoteType } from '@/types/solutions';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { useDialog } from "@/components/providers/dialog-provider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useApp } from "@/contexts/app-context";
+import { SolutionsService } from "@/services/solutions-service";
+import type { SolutionComment } from "@/types/solutions";
+import { SolutionCommentVoteType } from "@/types/solutions";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
   ArrowBigDown,
   ArrowBigUp,
   MessageSquare,
   Pencil,
   Trash2,
-} from 'lucide-react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+} from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CommentItemProps {
   comment: SolutionComment;
   solutionId: string;
   onReplySuccess: (newComment: SolutionComment) => void;
-  onUpdate: (commentId: string, content: string) => void;
-  onDelete: (commentId: string) => void;
+  onUpdate: (commentId: number, content: string) => void;
+  onDelete: (commentId: number) => void;
 }
 
 export default function CommentItem({
@@ -37,10 +37,10 @@ export default function CommentItem({
 }: CommentItemProps) {
   const { user } = useApp();
   const { confirm } = useDialog();
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   const [comment, setComment] = useState(initialComment);
   const [isReplying, setIsReplying] = useState(false);
-  const [replyContent, setReplyContent] = useState('');
+  const [replyContent, setReplyContent] = useState("");
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
   // Edit state
@@ -86,7 +86,7 @@ export default function CommentItem({
         }));
       }
     } catch (error) {
-      console.error('Error voting comment:', error);
+      console.error("Error voting comment:", error);
     }
   };
 
@@ -97,13 +97,13 @@ export default function CommentItem({
       const response = await SolutionsService.createComment(
         solutionId,
         replyContent,
-        comment.id
+        comment.id,
       );
       onReplySuccess(response.data.data);
       setIsReplying(false);
-      setReplyContent('');
+      setReplyContent("");
     } catch (error) {
-      console.error('Error replying:', error);
+      console.error("Error replying:", error);
     } finally {
       setIsSubmittingReply(false);
     }
@@ -115,14 +115,14 @@ export default function CommentItem({
     try {
       const response = await SolutionsService.updateComment(
         comment.id,
-        editContent
+        editContent,
       );
       const updatedComment = response.data.data;
       setComment(updatedComment);
       onUpdate(comment.id, editContent);
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating comment:', error);
+      console.error("Error updating comment:", error);
     } finally {
       setIsSubmittingEdit(false);
     }
@@ -130,11 +130,11 @@ export default function CommentItem({
 
   const handleDelete = async () => {
     const result = await confirm({
-      title: t('delete_comment'),
-      message: t('confirm_delete_comment'),
-      confirmText: t('delete'),
-      cancelText: t('cancel'),
-      color: 'red',
+      title: t("delete_comment"),
+      message: t("confirm_delete_comment"),
+      confirmText: t("delete"),
+      cancelText: t("cancel"),
+      color: "red",
     });
 
     if (result) {
@@ -142,7 +142,7 @@ export default function CommentItem({
         await SolutionsService.deleteComment(comment.id);
         onDelete(comment.id);
       } catch (error) {
-        console.error('Error deleting comment:', error);
+        console.error("Error deleting comment:", error);
       }
     }
   };
@@ -157,7 +157,7 @@ export default function CommentItem({
         <AvatarFallback>
           <img
             src="/avatars/placeholder.png"
-            alt={comment.author?.username || t('user_fallback')}
+            alt={comment.author?.username || t("user_fallback")}
             className="w-full h-full object-cover"
           />
         </AvatarFallback>
@@ -176,7 +176,7 @@ export default function CommentItem({
               })}
             </span>
             {comment.updatedAt !== comment.createdAt && (
-              <span className="text-slate-400 italic">({t('edited')})</span>
+              <span className="text-slate-400 italic">({t("edited")})</span>
             )}
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function CommentItem({
                   setEditContent(comment.content);
                 }}
               >
-                {t('cancel')}
+                {t("cancel")}
               </Button>
               <Button
                 size="sm"
@@ -205,7 +205,7 @@ export default function CommentItem({
                 disabled={!editContent.trim() || isSubmittingEdit}
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
-                {isSubmittingEdit ? t('saving') : t('save')}
+                {isSubmittingEdit ? t("saving") : t("save")}
               </Button>
             </div>
           </div>
@@ -221,15 +221,15 @@ export default function CommentItem({
               onClick={() => handleVote(SolutionCommentVoteType.UPVOTE)}
               className={`flex cursor-pointer items-center gap-1 hover:text-green-600 transition-colors ${
                 comment.userVote === SolutionCommentVoteType.UPVOTE
-                  ? 'text-green-600'
-                  : ''
+                  ? "text-green-600"
+                  : ""
               }`}
             >
               <ArrowBigUp
                 className={`w-4 h-4 ${
                   comment.userVote === SolutionCommentVoteType.UPVOTE
-                    ? 'fill-current'
-                    : ''
+                    ? "fill-current"
+                    : ""
                 }`}
               />
               <span>{comment.upvoteCount}</span>
@@ -241,15 +241,15 @@ export default function CommentItem({
               onClick={() => handleVote(SolutionCommentVoteType.DOWNVOTE)}
               className={`flex cursor-pointer items-center gap-1 hover:text-red-600 transition-colors ${
                 comment.userVote === SolutionCommentVoteType.DOWNVOTE
-                  ? 'text-red-600'
-                  : ''
+                  ? "text-red-600"
+                  : ""
               }`}
             >
               <ArrowBigDown
                 className={`w-4 h-4 ${
                   comment.userVote === SolutionCommentVoteType.DOWNVOTE
-                    ? 'fill-current'
-                    : ''
+                    ? "fill-current"
+                    : ""
                 }`}
               />
               <span>{comment.downvoteCount}</span>
@@ -261,7 +261,7 @@ export default function CommentItem({
             className="cursor-pointer flex items-center gap-1 hover:text-blue-600 transition-colors"
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>{t('reply')}</span>
+            <span>{t("reply")}</span>
           </button>
 
           {isAuthor && !isEditing && (
@@ -271,14 +271,14 @@ export default function CommentItem({
                 className="cursor-pointer flex items-center gap-1 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
               >
                 <Pencil className="w-3.5 h-3.5" />
-                <span>{t('edit')}</span>
+                <span>{t("edit")}</span>
               </button>
               <button
                 onClick={handleDelete}
                 className="cursor-pointer flex items-center gap-1 hover:text-red-600 transition-colors"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>{t('delete')}</span>
+                <span>{t("delete")}</span>
               </button>
             </>
           )}
@@ -291,7 +291,7 @@ export default function CommentItem({
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setReplyContent(e.target.value)
               }
-              placeholder={t('write_reply')}
+              placeholder={t("write_reply")}
               className="min-h-[80px] text-sm"
             />
             <div className="flex justify-end gap-2">
@@ -300,7 +300,7 @@ export default function CommentItem({
                 size="sm"
                 onClick={() => setIsReplying(false)}
               >
-                {t('cancel')}
+                {t("cancel")}
               </Button>
               <Button
                 className="bg-green-600 hover:bg-green-700 text-white"
@@ -308,7 +308,7 @@ export default function CommentItem({
                 onClick={handleReplySubmit}
                 disabled={!replyContent.trim() || isSubmittingReply}
               >
-                {isSubmittingReply ? t('sending') : t('reply')}
+                {isSubmittingReply ? t("sending") : t("reply")}
               </Button>
             </div>
           </div>

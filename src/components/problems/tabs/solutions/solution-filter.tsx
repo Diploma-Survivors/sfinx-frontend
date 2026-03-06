@@ -1,23 +1,24 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Tooltip } from '@/components/ui/tooltip';
-import { useApp } from '@/contexts/app-context';
-import { useProblemDetail } from '@/contexts/problem-detail-context';
-import { SubmissionsService } from '@/services/submissions-service';
-import { TagsService } from '@/services/tags-service';
-import { toastService } from '@/services/toasts-service';
-import { ProblemStatus } from '@/types/problems';
-import { SolutionSortBy } from '@/types/solutions';
-import type { Language } from '@/types/submissions';
-import type { Tag } from '@/types/tags';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Tooltip } from "@/components/ui/tooltip";
+import { useApp } from "@/contexts/app-context";
+import { useProblemDetail } from "@/contexts/problem-detail-context";
+import { SubmissionsService } from "@/services/submissions-service";
+import { TagsService } from "@/services/tags-service";
+import { toastService } from "@/services/toasts-service";
+import { ProblemStatus } from "@/types/problems";
+import { SolutionSortBy } from "@/types/solutions";
+import type { Language } from "@/types/submissions";
+import type { Tag } from "@/types/tags";
 import {
   ArrowDownWideNarrow,
   ChevronDown,
@@ -25,11 +26,11 @@ import {
   PenSquare,
   Search,
   X,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import ProblemStats from '../../problems-stats/problem-stats';
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import ProblemStats from "../../problems-stats/problem-stats";
 
 interface SolutionFilterProps {
   keyword: string;
@@ -43,6 +44,8 @@ interface SolutionFilterProps {
   onLanguagesChange: (ids: number[]) => void;
   submissionId?: string | null;
   problemId?: string;
+  isEditorial: boolean;
+  onEditorialChange: (val: boolean) => void;
 }
 
 export default function SolutionFilter({
@@ -57,8 +60,10 @@ export default function SolutionFilter({
   onLanguagesChange,
   submissionId,
   problemId,
+  isEditorial,
+  onEditorialChange,
 }: SolutionFilterProps) {
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   const [showFilters, setShowFilters] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -66,7 +71,7 @@ export default function SolutionFilter({
   const [showAllLangs, setShowAllLangs] = useState(false);
   const { problem } = useProblemDetail();
   const { isLoggedin, isEmailVerified } = useApp();
-  const { t: tCommon } = useTranslation('common');
+  const { t: tCommon } = useTranslation("common");
 
   useEffect(() => {
     TagsService.getAllTags().then(setTags);
@@ -105,32 +110,32 @@ export default function SolutionFilter({
           <Input
             value={keyword}
             onChange={(e) => onKeywordChange(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && onSearch()}
-            placeholder={t('search_solutions')}
+            onKeyDown={(e) => e.key === "Enter" && onSearch()}
+            placeholder={t("search_solutions")}
             className="pl-9 h-9 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700"
           />
         </div>
 
         {problem?.status === ProblemStatus.SOLVED && (
-          <Tooltip content={t('share_solution')}>
+          <Tooltip content={t("share_solution")}>
             <Button
               variant="outline"
               size="sm"
               className="h-9 w-9 p-0"
               onClick={() => {
                 if (!isLoggedin) {
-                  toastService.error(tCommon('login_required_action'));
+                  toastService.error(tCommon("login_required_action"));
                   return;
                 }
                 if (!isEmailVerified) {
                   toastService.error(
-                    tCommon('email_verification_required_action')
+                    tCommon("email_verification_required_action"),
                   );
                   return;
                 }
                 window.open(
                   `/problems/${problemId}/solutions/create/${submissionId}`,
-                  '_blank'
+                  "_blank",
                 );
               }}
             >
@@ -150,12 +155,12 @@ export default function SolutionFilter({
             <DropdownMenuItem
               onClick={() => onSortChange(SolutionSortBy.RECENT)}
             >
-              {t('sort_newest')}
+              {t("sort_newest")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => onSortChange(SolutionSortBy.MOST_VOTED)}
             >
-              {t('sort_most_voted')}
+              {t("sort_most_voted")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -175,7 +180,7 @@ export default function SolutionFilter({
           {/* Languages */}
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              {t('language')}
+              {t("language")}
             </h4>
             <div className="flex flex-wrap gap-2">
               {displayedLangs.map((lang) => (
@@ -184,8 +189,8 @@ export default function SolutionFilter({
                   onClick={() => toggleLang(lang.id)}
                   className={`px-3 py-1 cursor-pointer rounded-full text-xs font-medium transition-colors border ${
                     selectedLanguages.includes(lang.id)
-                      ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+                      ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
+                      : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
                   }`}
                 >
                   {lang.name}
@@ -196,7 +201,7 @@ export default function SolutionFilter({
                   onClick={() => setShowAllLangs(!showAllLangs)}
                   className="text-xs cursor-pointer text-blue-600 dark:text-blue-400 hover:underline px-2"
                 >
-                  {showAllLangs ? t('show_less') : t('show_more')}
+                  {showAllLangs ? t("show_less") : t("show_more")}
                 </button>
               )}
             </div>
@@ -207,7 +212,7 @@ export default function SolutionFilter({
           {/* Tags */}
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              {t('tags')}
+              {t("tags")}
             </h4>
             <div className="flex flex-wrap gap-2">
               {displayedTags.map((tag) => (
@@ -216,8 +221,8 @@ export default function SolutionFilter({
                   onClick={() => toggleTag(tag.id)}
                   className={`px-3 cursor-pointer py-1 rounded-full text-xs font-medium transition-colors border ${
                     selectedTags.includes(tag.id)
-                      ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+                      ? "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+                      : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
                   }`}
                 >
                   {tag.name}
@@ -228,10 +233,27 @@ export default function SolutionFilter({
                   onClick={() => setShowAllTags(!showAllTags)}
                   className="text-xs text-blue-600 dark:text-blue-400 hover:underline px-2"
                 >
-                  {showAllTags ? t('show_less') : t('show_more')}
+                  {showAllTags ? t("show_less") : t("show_more")}
                 </button>
               )}
             </div>
+          </div>
+
+          <div className="h-px bg-slate-200 dark:bg-slate-700" />
+
+          {/* Editorial Filter */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isEditorial"
+              checked={isEditorial}
+              onCheckedChange={(checked) => onEditorialChange(checked === true)}
+            />
+            <label
+              htmlFor="isEditorial"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-700 dark:text-slate-300 cursor-pointer"
+            >
+              {t("is_editorial")}
+            </label>
           </div>
         </div>
       )}

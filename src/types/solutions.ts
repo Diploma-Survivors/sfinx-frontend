@@ -1,5 +1,5 @@
-import type { Tag } from './tags';
-import type { UserProfile } from './user';
+import type { Tag } from "./tags";
+import type { UserProfile } from "./user";
 
 export enum SolutionVoteType {
   UPVOTE = 1,
@@ -21,16 +21,18 @@ export interface Solution {
   tags: Tag[];
   languageIds: number[];
   content: string;
+  isEditorial: boolean;
 }
 
 export interface SolutionFilters {
   tagIds?: number[];
   languageIds?: number[];
+  isEditorial?: boolean;
 }
 
 export enum SolutionSortBy {
-  RECENT = 'recent',
-  MOST_VOTED = 'most_voted',
+  RECENT = "recent",
+  MOST_VOTED = "most_voted",
 }
 
 export interface SolutionListRequest {
@@ -72,23 +74,30 @@ export enum SolutionCommentVoteType {
 }
 
 export interface SolutionComment {
-  id: string;
-  solutionId: string;
+  id: number;
+  solutionId: number;
   authorId: number;
   author?: UserProfile;
   content: string;
   upvoteCount: number;
   downvoteCount: number;
   userVote: SolutionCommentVoteType | null;
-  parentId: string | null;
-  replyCounts: number;
+  parentId: number | null;
+  replyCount: number;
+  isPinned: boolean;
+  isEdited: boolean;
+  isDeleted: boolean;
+  voteScore: number;
+  editedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  myVote?: "up_vote" | "down_vote" | null;
+  replies?: SolutionComment[];
 }
 
 export enum SolutionCommentSortBy {
-  RECENT = 'recent',
-  MOST_VOTED = 'most_voted',
+  RECENT = "recent",
+  MOST_VOTED = "most_voted",
 }
 
 export interface CreateSolutionRequest {

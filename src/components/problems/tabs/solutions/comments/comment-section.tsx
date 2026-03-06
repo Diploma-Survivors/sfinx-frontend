@@ -1,41 +1,41 @@
-'use client';
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
-import { useApp } from '@/contexts/app-context';
-import { SolutionsService } from '@/services/solutions-service';
-import { UserService } from '@/services/user-service';
-import { type SolutionComment, SolutionCommentSortBy } from '@/types/solutions';
-import type { UserProfile } from '@/types/user';
-import { ArrowUpDown, MessageSquare } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import CommentNode from './comment-node';
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { useApp } from "@/contexts/app-context";
+import { SolutionsService } from "@/services/solutions-service";
+import { UserService } from "@/services/user-service";
+import { type SolutionComment, SolutionCommentSortBy } from "@/types/solutions";
+import type { UserProfile } from "@/types/user";
+import { ArrowUpDown, MessageSquare } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import CommentNode from "./comment-node";
 interface CommentSectionProps {
   solutionId: string;
 }
 
 export default function CommentSection({ solutionId }: CommentSectionProps) {
   const { user } = useApp();
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   const [comments, setComments] = useState<SolutionComment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SolutionCommentSortBy>(
-    SolutionCommentSortBy.RECENT
+    SolutionCommentSortBy.RECENT,
   );
-  const [newCommentContent, setNewCommentContent] = useState('');
+  const [newCommentContent, setNewCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [expandedReplies, setExpandedReplies] = useState<Set<string>>(
-    new Set()
+  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(
+    new Set(),
   );
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +45,7 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
     // Fetch current user for the avatar in the input
     if (!user) return;
     UserService.getUserProfile(user.id).then((res) =>
-      setCurrentUser(res.data.data)
+      setCurrentUser(res.data.data),
     );
   }, [user]);
 
@@ -55,14 +55,14 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
       const response = await SolutionsService.getComments(solutionId);
       // Deduplicate comments based on ID
       const uniqueComments = Array.from(
-        new Map(response.data.data.map((c) => [c.id, c])).values()
+        new Map(response.data.data.map((c) => [c.id, c])).values(),
       );
 
       // Apply current sort
       const sorted = sortComments(uniqueComments, sortBy);
       setComments(sorted);
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error("Error fetching comments:", error);
     } finally {
       setIsLoading(false);
     }
@@ -74,9 +74,12 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
 
   const sortComments = (
     items: SolutionComment[],
-    sortOption: SolutionCommentSortBy
+    sortOption: SolutionCommentSortBy,
   ) => {
     return [...items].sort((a, b) => {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+
       if (sortOption === SolutionCommentSortBy.RECENT) {
         return (
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -99,7 +102,7 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
     try {
       const response = await SolutionsService.createComment(
         solutionId,
-        newCommentContent
+        newCommentContent,
       );
       setComments((prev) => {
         const newComment = response.data.data;
@@ -108,10 +111,10 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
         const newComments = [newComment, ...prev];
         return sortComments(newComments, sortBy);
       });
-      setNewCommentContent('');
+      setNewCommentContent("");
       setCurrentPage(1); // Go to first page to see new comment
     } catch (error) {
-      console.error('Error submitting comment:', error);
+      console.error("Error submitting comment:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -134,7 +137,7 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
     }
   };
 
-  const toggleReplies = (commentId: string) => {
+  const toggleReplies = (commentId: number) => {
     setExpandedReplies((prev) => {
       const next = new Set(prev);
       if (next.has(commentId)) {
@@ -146,17 +149,17 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
     });
   };
 
-  const handleUpdateComment = (commentId: string, content: string) => {
+  const handleUpdateComment = (commentId: number, content: string) => {
     setComments((prev) =>
       prev.map((c) =>
         c.id === commentId
           ? { ...c, content, updatedAt: new Date().toISOString() }
-          : c
-      )
+          : c,
+      ),
     );
   };
 
-  const handleDeleteComment = (commentId: string) => {
+  const handleDeleteComment = (commentId: number) => {
     setComments((prev) => prev.filter((c) => c.id !== commentId));
   };
 
@@ -166,11 +169,11 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
   const totalPages = Math.ceil(topLevelComments.length / ITEMS_PER_PAGE);
   const displayedComments = topLevelComments.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   // Helper to get replies for a comment
-  const getReplies = (parentId: string) => {
+  const getReplies = (parentId: number) => {
     return comments.filter((c) => c.parentId === parentId);
   };
 
@@ -181,7 +184,7 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
         <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
           <MessageSquare className="w-5 h-5" />
           <span className="font-semibold">
-            {comments.length} {t('comments')}
+            {comments.length} {t("comments")}
           </span>
         </div>
 
@@ -195,8 +198,8 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
               <ArrowUpDown className="w-4 h-4" />
               <span>
                 {sortBy === SolutionCommentSortBy.RECENT
-                  ? t('sort_newest')
-                  : t('sort_most_voted')}
+                  ? t("sort_newest")
+                  : t("sort_most_voted")}
               </span>
             </Button>
           </DropdownMenuTrigger>
@@ -204,12 +207,12 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
             <DropdownMenuItem
               onClick={() => handleSortChange(SolutionCommentSortBy.RECENT)}
             >
-              {t('sort_newest')}
+              {t("sort_newest")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => handleSortChange(SolutionCommentSortBy.MOST_VOTED)}
             >
-              {t('sort_most_voted')}
+              {t("sort_most_voted")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -225,14 +228,14 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
           <AvatarFallback>
             <img
               src="/avatars/placeholder.png"
-              alt={currentUser?.username || t('user_fallback')}
+              alt={currentUser?.username || t("user_fallback")}
               className="w-full h-full object-cover"
             />
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 space-y-2">
           <Textarea
-            placeholder={t('write_comment')}
+            placeholder={t("write_comment")}
             value={newCommentContent}
             onChange={(e) => setNewCommentContent(e.target.value)}
             className="min-h-[100px]"
@@ -243,7 +246,7 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
               onClick={handleSubmitComment}
               disabled={!newCommentContent.trim() || isSubmitting}
             >
-              {isSubmitting ? t('sending') : t('post_comment')}
+              {isSubmitting ? t("sending") : t("post_comment")}
             </Button>
           </div>
         </div>
@@ -284,10 +287,10 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
-              {t('previous')}
+              {t("previous")}
             </Button>
             <span className="text-sm text-slate-600 dark:text-slate-400">
-              {t('page_of', { current: currentPage, total: totalPages })}
+              {t("page_of", { current: currentPage, total: totalPages })}
             </span>
             <Button
               variant="outline"
@@ -297,7 +300,7 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
               }
               disabled={currentPage === totalPages}
             >
-              {t('next')}
+              {t("next")}
             </Button>
           </div>
         )}

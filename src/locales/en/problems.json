@@ -266,5 +266,8 @@
   "list_updated": "List updated successfully",
   "update_failed": "Failed to update list",
   "edit_list": "Edit List",
-  "save_changes": "Save Changes"
+  "save_changes": "Save Changes",
+  "pinned_comment": "Pinned",
+  "editorial": "Editorial",
+  "is_editorial": "Only show Editorial"
 }
