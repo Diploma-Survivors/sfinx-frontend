@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useApp } from "@/contexts/app-context";
 import { toastService } from "@/services/toasts-service";
 import { Code, ImageIcon, Link as LinkIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -35,6 +35,77 @@ export function CommentForm({
   const { user } = useApp();
   const [content, setContent] = useState(initialValue);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleFormat = (e: React.MouseEvent, type: "code" | "image" | "link") => {
+    e.preventDefault();
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = content;
+    const selectedText = text.substring(start, end);
+
+    let replacement = "";
+    let newSelectionStart = start;
+    let newSelectionEnd = start;
+
+    switch (type) {
+      case "code":
+        if (!selectedText) {
+          replacement = "```\n\n```";
+          newSelectionStart = start + 4;
+          newSelectionEnd = start + 4;
+        } else if (selectedText.includes("\n")) {
+          replacement = `\`\`\`\n${selectedText}\n\`\`\``;
+          newSelectionStart = start + replacement.length;
+          newSelectionEnd = start + replacement.length;
+        } else {
+          replacement = `\`${selectedText}\``;
+          newSelectionStart = start + replacement.length;
+          newSelectionEnd = start + replacement.length;
+        }
+        break;
+      case "image":
+        if (!selectedText) {
+          replacement = "![alt text](url)";
+          newSelectionStart = start + 2;
+          newSelectionEnd = start + 10;
+        } else {
+          replacement = `![${selectedText}](url)`;
+          newSelectionStart = start + replacement.length - 4;
+          newSelectionEnd = start + replacement.length - 1;
+        }
+        break;
+      case "link":
+        if (!selectedText) {
+          replacement = "[link text](url)";
+          newSelectionStart = start + 1;
+          newSelectionEnd = start + 10;
+        } else {
+          replacement = `[${selectedText}](url)`;
+          newSelectionStart = start + replacement.length - 4;
+          newSelectionEnd = start + replacement.length - 1;
+        }
+        break;
+    }
+
+    const newContent = text.substring(0, start) + replacement + text.substring(end);
+    setContent(newContent);
+
+    setTimeout(() => {
+      textarea.focus({ preventScroll: true });
+      textarea.setSelectionRange(newSelectionStart, newSelectionEnd);
+    }, 0);
+  };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
@@ -79,8 +150,9 @@ export function CommentForm({
       <div className="flex-1 space-y-2">
         <div className="relative rounded-xl border border-border bg-background focus-within:ring-1 focus-within:ring-ring focus-within:border-primary/50 transition-all shadow-sm">
           <Textarea
+            ref={textareaRef}
             placeholder={placeholder || t("type_comment_here")}
-            className="min-h-[100px] resize-y bg-transparent border-none focus-visible:ring-0 px-4 py-3 text-sm placeholder:text-muted-foreground/60 leading-relaxed"
+            className="min-h-[100px] max-h-[300px] resize-none overflow-y-auto bg-transparent border-none focus-visible:ring-0 px-4 py-3 text-sm placeholder:text-muted-foreground/60 leading-relaxed"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             autoFocus={autoFocus}
@@ -91,22 +163,28 @@ export function CommentForm({
           <div className="flex items-center justify-between px-3 py-2 border-t border-border/50 bg-muted/20 rounded-b-xl">
             <div className="flex items-center gap-0.5">
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
+                onClick={(e) => handleFormat(e, "code")}
                 className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-md"
               >
                 <Code className="h-4 w-4" />
               </Button>
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
+                onClick={(e) => handleFormat(e, "image")}
                 className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-md"
               >
                 <ImageIcon className="h-4 w-4" />
               </Button>
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
+                onClick={(e) => handleFormat(e, "link")}
                 className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-md"
               >
                 <LinkIcon className="h-4 w-4" />

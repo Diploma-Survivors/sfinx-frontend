@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Bell, Search } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { UserMenu } from './user-menu';
@@ -82,6 +83,7 @@ export default function Header() {
       <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
+          <Image src="/logo.svg" alt="Logo" width={32} height={32} className="w-8 h-8" />
           <span className="text-xl font-bold tracking-tight text-primary">
             {t('app_name')}
           </span>

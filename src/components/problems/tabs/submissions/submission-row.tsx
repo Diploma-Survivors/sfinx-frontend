@@ -1,6 +1,7 @@
 import { useLanguage } from "@/hooks/use-language";
 import { getStatusMeta } from "@/lib/utils/testcase-status";
 import type { Submission } from "@/types/submissions";
+import { formatMemory, formatRuntime } from "@/lib/utils/format-submission";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
 import { Clock, Cpu } from "lucide-react";
@@ -18,17 +19,6 @@ const locales: Record<string, any> = {
   vi: vi,
 };
 
-const formatRuntime = (runtime: number) => {
-  if (runtime === 0) return "CE";
-  const runtimeInMs = runtime * 1000;
-  return `${runtimeInMs.toFixed(0)} ms`;
-};
-
-const formatMemory = (memory: number) => {
-  if (memory === 0) return "CE";
-  const memoryInMB = memory / 1024;
-  return `${memoryInMB.toFixed(0)} MB`;
-};
 
 export default function SubmissionRow({
   submission,
@@ -41,9 +31,8 @@ export default function SubmissionRow({
 
   return (
     <tr
-      className={`cursor-pointer transition-all duration-200 group ${
-        isSelected ? "bg-gray-200" : "hover:bg-gray-100"
-      }`}
+      className={`cursor-pointer transition-all duration-200 group ${isSelected ? "bg-gray-200" : "hover:bg-gray-100"
+        }`}
       onClick={() => onSelect(submission)}
       style={{
         animationDelay: `${index * 50}ms`,

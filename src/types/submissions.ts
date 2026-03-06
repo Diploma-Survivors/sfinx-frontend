@@ -83,9 +83,11 @@ export interface TestCaseResult {
 
 export interface FailedResult {
   message: string;
-  stdin: string;
-  expectedOutput: string;
-  stdout: string;
+  input?: string;
+  stdin?: string;
+  expectedOutput?: string;
+  actualOutput?: string;
+  stdout?: string;
   stderr: string;
   compileOutput: string;
 }
@@ -97,9 +99,13 @@ export interface Submission {
   memoryUsed?: number;
   testcasesPassed: number;
   totalTestcases: number;
+  testcaseResults?: TestCaseResult[];
+  failedResult?: FailedResult;
   resultDescription?: FailedResult;
   user?: Partial<UserProfile>;
   problem?: Partial<Problem>;
+  compileError?: string;
+  runtimeError?: string;
   submittedAt: string;
   judgedAt?: string;
   problemId: number;
@@ -107,6 +113,29 @@ export interface Submission {
   language?: Partial<Language>;
   sourceCode?: string;
   contest?: Partial<Contest>;
+  aiReview?: string | null;
+}
+
+export interface DistributionBin {
+  bin: string;
+  count: number;
+  min: number;
+  max: number;
+}
+
+export interface SubmissionPerformanceStats {
+  averageRuntime: number | null;
+  averageMemory: number | null;
+  fastestRuntime: number | null;
+  lowestMemory: number | null;
+  percentile: {
+    runtime: number | null;
+    memory: number | null;
+  };
+  distribution?: {
+    runtime: DistributionBin[];
+    memory: DistributionBin[];
+  };
 }
 
 // Map language names to Highlight.js language keys

@@ -267,5 +267,10 @@
   "save_changes": "Lưu thay đổi",
   "pinned_comment": "Đã ghim",
   "editorial": "Lời giải của Ban tổ chức",
-  "is_editorial": "Chỉ hiện lời giải của BTC"
+  "is_editorial": "Chỉ hiện lời giải của BTC",
+  "runtime_performance": "Phân bố thời gian chạy",
+  "memory_performance": "Phân bố bộ nhớ",
+  "beats_users": "Nhanh hơn <strong>{{percent}}%</strong> người dùng",
+  "submissions": "bài nộp",
+  "test_cases": "Test Cases"
 }

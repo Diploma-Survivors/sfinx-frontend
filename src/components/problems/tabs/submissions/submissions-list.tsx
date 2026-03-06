@@ -35,13 +35,13 @@ export default function SubmissionsList({
   const { t } = useTranslation('problems');
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden pl-2">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden pl-2 min-h-0">
       {/* Search Filters */}
       <SubmissionsFilter onFilterChange={onFilterChange} filters={filters} />
 
       {/* Submissions Table */}
       <div
-        className="flex-1 overflow-y-auto bg-gray-50"
+        className="flex-1 overflow-y-auto bg-gray-50 min-h-0"
         id="submissions-scroll-container"
       >
         {submissions.length === 0 ? (
@@ -59,11 +59,11 @@ export default function SubmissionsList({
         ) : (
           <InfiniteScroll
             dataLength={submissions.length}
-            next={onLoadMore || (() => {})}
+            next={onLoadMore || (() => { })}
             hasMore={hasMore}
             loader={
-              <div className="flex flex-col items-center justify-center py-12 px-4">
-                <div className="dots-loader mb-4" />
+              <div className="flex flex-col items-center justify-center py-8 px-4">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
             }
             scrollableTarget="submissions-scroll-container"

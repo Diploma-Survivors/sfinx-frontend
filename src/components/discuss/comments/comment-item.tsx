@@ -58,57 +58,13 @@ export function CommentItem({
   const currentRootId = depth === 0 ? comment.id : rootId;
 
   const isAuthor = user?.id === comment.author.id;
-  const getAvatarUrl = () =>
-    comment.author.avatarUrl ||
-    (comment.author.avatarKey
-      ? `${process.env.NEXT_PUBLIC_S3_URL}/${comment.author.avatarKey}`
-      : undefined);
+
+  const getAvatarUrl = () => comment.author.avatarUrl || undefined;
+
   const getDisplayName = () =>
     comment.author.fullName || comment.author.username || t("anonymous");
 
-  // LeetCode style: relative time
-  const getTimeAgo = (dateString: string | Date | undefined) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    let interval = seconds / 31536000;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1 ? t("years_ago_one") : t("years_ago_other", { count });
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1
-        ? t("months_ago_one")
-        : t("months_ago_other", { count });
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1 ? t("days_ago_one") : t("days_ago_other", { count });
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1 ? t("hours_ago_one") : t("hours_ago_other", { count });
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1
-        ? t("minutes_ago_one")
-        : t("minutes_ago_other", { count });
-    }
-    const count = Math.floor(seconds);
-    return count === 1
-      ? t("seconds_ago_one")
-      : t("seconds_ago_other", { count });
-  };
-
-  const formattedDate = getTimeAgo(comment.createdAt);
+  const formattedDate = comment.timeAgo || "";
 
   // Fetch user vote on mount
   useEffect(() => {
@@ -141,25 +97,14 @@ export function CommentItem({
 
     setUserVote(newVote);
 
-    // Update counts optimistically
-    // Only tracking upvotes mostly based on UI, but let's try to be accurate
-    // If we toggled OFF upvote -> decrement
-    // If we toggled ON upvote -> increment
-    // If we switched from downvote to upvote -> increment
-    // If we switched from upvote to downvote -> decrement
-
     if (type === "UPVOTE") {
       if (userVote === 1) {
-        // Toggling off upvote
         setUpvoteCount((prev) => Math.max(0, prev - 1));
       } else {
         // Toggling on upvote (from null or downvote)
         setUpvoteCount((prev) => prev + 1);
       }
     } else {
-      // Downvote logic affecting upvote count?
-      // Usually downvotes don't affect upvote count unless we show a score (up-down).
-      // But if we switch from Upvote to Downvote, upvote count should decrease.
       if (userVote === 1) {
         setUpvoteCount((prev) => Math.max(0, prev - 1));
       }
@@ -334,7 +279,7 @@ export function CommentItem({
               />
             </div>
           ) : (
-            <div className="mt-1 text-sm text-foreground/90 prose prose-sm dark:prose-invert max-w-none leading-relaxed">
+            <div className="mt-1 text-sm text-foreground/90 prose prose-sm dark:prose-invert max-w-none leading-relaxed break-words">
               {comment.isDeleted ? (
                 <span className="text-muted-foreground italic">
                   {t("comment_deleted_placeholder")}

@@ -23,6 +23,7 @@ export default function SubmissionsPage({
   const {
     submissions,
     totalCount,
+    hasMore,
     isLoading,
     error,
     filters,
@@ -51,14 +52,14 @@ export default function SubmissionsPage({
   }
 
   return (
-    <div className="h-full bg-card">
+    <div className="h-full bg-card overflow-hidden flex flex-col">
       <SubmissionsList
         submissions={submissions}
         selectedSubmissionId={null}
         onSelectSubmission={(s) => handleSelectSubmission(s)}
         filters={filters}
         onFilterChange={handleFiltersChange}
-        hasMore={false}
+        hasMore={hasMore}
         onLoadMore={handleLoadMore}
         isLoading={isLoading}
         totalCount={totalCount}

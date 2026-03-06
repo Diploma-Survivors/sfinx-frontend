@@ -33,6 +33,8 @@ export function PostCard({ post, openInNewTab }: PostCardProps) {
   const { data: session } = useSession();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  console.log(post.author.avatarUrl);
+
   const { text, images } = useMemo(() => {
     const imgRegex = /!\[.*?\]\((.*?)\)/g;
     const imgs: string[] = [];
@@ -49,8 +51,7 @@ export function PostCard({ post, openInNewTab }: PostCardProps) {
   };
 
   const getAvatarUrl = () => {
-    if (!post.author.avatarKey) return null;
-    return `${post.author.avatarUrl}`;
+    return post.author.avatarUrl || null;
   };
 
   const handleUsernameClick = (e: React.MouseEvent) => {
@@ -71,49 +72,13 @@ export function PostCard({ post, openInNewTab }: PostCardProps) {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
-  const getTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    let interval = seconds / 31536000;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1 ? t("years_ago_one") : t("years_ago_other", { count });
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1
-        ? t("months_ago_one")
-        : t("months_ago_other", { count });
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1 ? t("days_ago_one") : t("days_ago_other", { count });
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1 ? t("hours_ago_one") : t("hours_ago_other", { count });
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      const count = Math.floor(interval);
-      return count === 1
-        ? t("minutes_ago_one")
-        : t("minutes_ago_other", { count });
-    }
-    const count = Math.floor(seconds);
-    return count === 1
-      ? t("seconds_ago_one")
-      : t("seconds_ago_other", { count });
-  };
-
   return (
     <div className="group border-b border-border py-6 px-4 hover:bg-muted/30 transition-colors first:pt-4">
-      <Link href={`/discuss/${post.id}`} className="block space-y-4" target={openInNewTab ? "_blank" : undefined}>
+      <Link
+        href={session ? `/discuss/${post.id}` : `/login?callbackUrl=/discuss/${post.id}`}
+        className="block space-y-4"
+        target={openInNewTab ? "_blank" : undefined}
+      >
         {/* Header: Avatar, Name, Time */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -136,7 +101,7 @@ export function PostCard({ post, openInNewTab }: PostCardProps) {
               {getDisplayName()}
             </span>
             <span className="text-sm text-muted-foreground">
-              • {getTimeAgo(post.createdAt)}
+              • {post.timeAgo || "Just now"}
             </span>
           </div>
 

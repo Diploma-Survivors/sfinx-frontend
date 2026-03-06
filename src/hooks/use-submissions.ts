@@ -7,7 +7,7 @@ import type {
 } from '@/types/submissions';
 import { useCallback, useEffect, useState } from 'react';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 20;
 
 interface UseSubmissionsState {
   submissions: Submission[];
@@ -25,7 +25,7 @@ interface UseSubmissionsActions {
 
 interface UseSubmissionsReturn
   extends UseSubmissionsState,
-    UseSubmissionsActions {
+  UseSubmissionsActions {
   // Request params (exposed for UI)
   filters: SubmissionFilters;
   problemId: number;
