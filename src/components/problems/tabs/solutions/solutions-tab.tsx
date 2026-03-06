@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useApp } from '@/contexts/app-context';
-import useSolutions from '@/hooks/use-solutions';
-import { usePathname, useRouter } from 'next/navigation';
-import SolutionFilter from './solution-filter';
-import SolutionList from './solution-list';
+import { useApp } from "@/contexts/app-context";
+import useSolutions from "@/hooks/use-solutions";
+import { usePathname, useRouter } from "next/navigation";
+import SolutionFilter from "./solution-filter";
+import SolutionList from "./solution-list";
 
 interface SolutionsTabProps {
   problemId: string;
@@ -41,6 +41,13 @@ export default function SolutionsTab({ problemId }: SolutionsTabProps) {
         selectedLanguages={filters.languageIds || []}
         onLanguagesChange={(ids) =>
           handleFiltersChange({ ...filters, languageIds: ids })
+        }
+        isEditorial={filters.isEditorial || false}
+        onEditorialChange={(val) =>
+          handleFiltersChange({
+            ...filters,
+            isEditorial: val ? true : undefined,
+          })
         }
         problemId={problemId}
       />

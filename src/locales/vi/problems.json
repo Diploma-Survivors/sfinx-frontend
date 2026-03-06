@@ -265,9 +265,14 @@
   "update_failed": "Cập nhật danh sách thất bại",
   "edit_list": "Chỉnh sửa danh sách",
   "save_changes": "Lưu thay đổi",
+  "pinned_comment": "Đã ghim",
+  "editorial": "Lời giải của Ban tổ chức",
+  "is_editorial": "Chỉ hiện lời giải của BTC",
   "runtime_performance": "Phân bố thời gian chạy",
   "memory_performance": "Phân bố bộ nhớ",
   "beats_users": "Nhanh hơn <strong>{{percent}}%</strong> người dùng",
   "submissions": "bài nộp",
-  "test_cases": "Test Cases"
+  "test_cases": "Test Cases",
+  "deleted_status": "Đã xóa",
+  "comment_deleted_placeholder": "Bình luận này đã bị xóa."
 }

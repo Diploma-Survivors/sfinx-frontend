@@ -1,6 +1,6 @@
-import { type } from 'os';
-import clientApi from '@/lib/apis/axios-client';
-import type { ApiResponse } from '@/types/api';
+import { type } from "os";
+import clientApi from "@/lib/apis/axios-client";
+import type { ApiResponse } from "@/types/api";
 import type {
   CreateSolutionRequest,
   Solution,
@@ -9,12 +9,12 @@ import type {
   SolutionListRequest,
   SolutionListResponse,
   SolutionVoteType,
-} from '@/types/solutions';
-import type { AxiosResponse } from 'axios';
-import qs from 'qs';
+} from "@/types/solutions";
+import type { AxiosResponse } from "axios";
+import qs from "qs";
 
 async function getSolutionsList(
-  request: SolutionListRequest
+  request: SolutionListRequest,
 ): Promise<AxiosResponse<ApiResponse<SolutionListResponse>>> {
   const { filters, ...rest } = request;
   const params = qs.stringify(
@@ -22,30 +22,30 @@ async function getSolutionsList(
     {
       allowDots: true,
       skipNulls: true,
-    }
+    },
   );
   return await clientApi.get<ApiResponse<SolutionListResponse>>(
-    `/solutions?${params}`
+    `/solutions?${params}`,
   );
 }
 
 async function getAllSolutions(
-  userId: number
+  userId: number,
 ): Promise<AxiosResponse<ApiResponse<Solution[]>>> {
   return await clientApi.get<ApiResponse<Solution[]>>(
-    `/users/${userId}/solutions`
+    `/users/${userId}/solutions`,
   );
 }
 
 async function getSolutionDetail(
-  id: string
+  id: string,
 ): Promise<AxiosResponse<ApiResponse<Solution>>> {
   return await clientApi.get<ApiResponse<Solution>>(`/solutions/${id}`);
 }
 
 async function reactSolution(
   id: string,
-  voteType: SolutionVoteType
+  voteType: SolutionVoteType,
 ): Promise<AxiosResponse<ApiResponse<void>>> {
   return await clientApi.post<ApiResponse<void>>(`/solutions/${id}/vote`, {
     voteType,
@@ -53,88 +53,88 @@ async function reactSolution(
 }
 
 async function unreactSolution(
-  id: string
+  id: string,
 ): Promise<AxiosResponse<ApiResponse<void>>> {
   return await clientApi.delete<ApiResponse<void>>(`/solutions/${id}/vote`);
 }
 
 async function getComments(
-  solutionId: string
+  solutionId: number | string,
 ): Promise<AxiosResponse<ApiResponse<SolutionComment[]>>> {
   return await clientApi.get<ApiResponse<SolutionComment[]>>(
-    `/solutions/${solutionId}/comments`
+    `/solutions/${solutionId}/comments`,
   );
 }
 
 async function createComment(
-  solutionId: string,
+  solutionId: number | string,
   content: string,
-  parentId?: string
+  parentId?: number,
 ): Promise<AxiosResponse<ApiResponse<SolutionComment>>> {
   return await clientApi.post<ApiResponse<SolutionComment>>(
     `/solutions/${solutionId}/comments`,
     {
       content,
       parentId,
-    }
+    },
   );
 }
 
 async function reactComment(
-  commentId: string,
-  voteType: SolutionCommentVoteType
+  commentId: number,
+  voteType: SolutionCommentVoteType,
 ): Promise<AxiosResponse<ApiResponse<void>>> {
   return await clientApi.post<ApiResponse<void>>(
     `/solutions/comments/${commentId}/vote`,
-    { voteType }
+    { voteType },
   );
 }
 
 async function unreactComment(
-  commentId: string
+  commentId: number,
 ): Promise<AxiosResponse<ApiResponse<void>>> {
   return await clientApi.delete<ApiResponse<void>>(
-    `/solutions/comments/${commentId}/vote`
+    `/solutions/comments/${commentId}/vote`,
   );
 }
 
 async function deleteComment(
-  commentId: string
+  commentId: number,
 ): Promise<AxiosResponse<ApiResponse<void>>> {
   return await clientApi.delete<ApiResponse<void>>(
-    `/solutions/comments/${commentId}`
+    `/solutions/comments/${commentId}`,
   );
 }
 
 async function updateComment(
-  commentId: string,
-  content: string
+  commentId: number,
+  content: string,
 ): Promise<AxiosResponse<ApiResponse<SolutionComment>>> {
   return await clientApi.put<ApiResponse<SolutionComment>>(
     `/solutions/comments/${commentId}`,
-    { content }
+    { content },
   );
 }
 
 async function createSolution(
-  request: CreateSolutionRequest
+  request: CreateSolutionRequest,
 ): Promise<AxiosResponse<ApiResponse<Solution>>> {
-  return await clientApi.post<ApiResponse<Solution>>('/solutions', request);
+  return await clientApi.post<ApiResponse<Solution>>("/solutions", request);
 }
 
 async function deleteSolution(
-  solutionId: string
+  solutionId: string,
 ): Promise<AxiosResponse<ApiResponse<void>>> {
   return await clientApi.delete<ApiResponse<void>>(`/solutions/${solutionId}`);
 }
 
 async function updateSolution(
   solutionId: string,
-  request: CreateSolutionRequest
+  request: CreateSolutionRequest,
 ): Promise<AxiosResponse<ApiResponse<Solution>>> {
   return await clientApi.put<ApiResponse<Solution>>(
     `/solutions/${solutionId}`,
-    request
+    request,
   );
 }
 

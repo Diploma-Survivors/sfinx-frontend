@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { SubmissionsService } from '@/services/submissions-service';
-import { type Solution, SolutionVoteType } from '@/types/solutions';
-import type { Language } from '@/types/submissions';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import { ArrowBigDown, ArrowBigUp, MessageSquare } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SubmissionsService } from "@/services/submissions-service";
+import { type Solution, SolutionVoteType } from "@/types/solutions";
+import type { Language } from "@/types/submissions";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
+import { ArrowBigDown, ArrowBigUp, MessageSquare } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SolutionItemProps {
   solution: Solution;
@@ -21,7 +21,7 @@ export default function SolutionItem({
   isSelected,
   onClick,
 }: SolutionItemProps) {
-  const { t } = useTranslation('problems');
+  const { t } = useTranslation("problems");
   const [languages, setLanguages] = useState<Language[]>([]);
 
   useEffect(() => {
@@ -33,13 +33,13 @@ export default function SolutionItem({
   }, []);
 
   const solutionLangs = languages.filter((l) =>
-    solution.languageIds.includes(l.id)
+    solution.languageIds.includes(l.id),
   );
 
   return (
     <div
       onClick={onClick}
-      className={`p-4 border-b border-slate-200 dark:border-slate-700 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${isSelected ? 'bg-slate-200 dark:bg-slate-800/80' : ''}`}
+      className={`p-4 border-b border-slate-200 dark:border-slate-700 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${isSelected ? "bg-slate-200 dark:bg-slate-800/80" : ""}`}
     >
       <div className="flex gap-4">
         <Avatar
@@ -50,7 +50,7 @@ export default function SolutionItem({
           <AvatarFallback>
             <img
               src="/avatars/placeholder.png"
-              alt={solution.author?.username || t('user_fallback')}
+              alt={solution.author?.username || t("user_fallback")}
               className="w-full h-full object-cover"
             />
           </AvatarFallback>
@@ -70,9 +70,16 @@ export default function SolutionItem({
             </span>
           </div>
 
-          <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
-            {solution.title}
-          </h3>
+          <div className="flex items-center gap-2 max-w-full">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+              {solution.title}
+            </h3>
+            {solution.isEditorial && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/40 dark:text-green-400 dark:border-green-700 uppercase shrink-0">
+                {t("editorial")}
+              </span>
+            )}
+          </div>
 
           <div className="flex flex-wrap gap-1.5 py-1">
             {solutionLangs.map((lang) => (
@@ -99,8 +106,8 @@ export default function SolutionItem({
               <ArrowBigUp
                 className={`w-4 h-4 ${
                   solution.userVote === SolutionVoteType.UPVOTE
-                    ? 'fill-green-500 text-green-500'
-                    : ''
+                    ? "fill-green-500 text-green-500"
+                    : ""
                 }`}
               />
               <span>{solution.upvoteCount}</span>
@@ -109,8 +116,8 @@ export default function SolutionItem({
               <ArrowBigDown
                 className={`w-4 h-4 ${
                   solution.userVote === SolutionVoteType.DOWNVOTE
-                    ? 'fill-red-500 text-red-500'
-                    : ''
+                    ? "fill-red-500 text-red-500"
+                    : ""
                 }`}
               />
               <span>{solution.downvoteCount}</span>
