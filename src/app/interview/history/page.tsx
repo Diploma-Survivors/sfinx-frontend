@@ -21,6 +21,7 @@ import {
   Play,
   TrendingUp,
 } from "lucide-react";
+import { format } from "date-fns";
 
 function formatDuration(startedAt: string, endedAt?: string, t?: any) {
   if (!endedAt) return t ? t("history.in_progress") : "In progress";
@@ -36,11 +37,7 @@ function formatDuration(startedAt: string, endedAt?: string, t?: any) {
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  return format(new Date(dateString), "dd/MM/yyyy HH:mm");
 }
 
 function getStatusBadge(status: InterviewStatus, t: any) {

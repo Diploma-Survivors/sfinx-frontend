@@ -15,6 +15,7 @@ export interface SSEResult {
     token: string;
     status: string;
     expectedOutput?: string;
+    compileOutput?: string;
   }>;
   resultDescription?: {
     message: string;
@@ -33,12 +34,12 @@ export class SSEService {
   connect(
     submissionId: string,
     onResult: (result: SSEResult) => void,
-    onError?: (error: Event) => void
+    onError?: (error: Event) => void,
   ): void {
     // Close existing connection if any
     this.disconnect();
     const baseURL =
-      process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/v1';
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/v1";
     const url = `${baseURL}/submissions/${submissionId}/stream`;
     this.eventSource = new EventSource(url);
 
@@ -46,7 +47,7 @@ export class SSEService {
       // connection opened
     };
 
-    this.eventSource.addEventListener('result', (event) => {
+    this.eventSource.addEventListener("result", (event) => {
       try {
         const result: SSEResult = JSON.parse(event.data);
 
@@ -58,13 +59,13 @@ export class SSEService {
 
         onResult(result);
       } catch (error) {
-        console.error('Error parsing SSE result:', error);
+        console.error("Error parsing SSE result:", error);
         onError?.(error as Event);
       }
     });
 
     this.eventSource.onerror = (error) => {
-      console.error('SSE connection error:', error);
+      console.error("SSE connection error:", error);
       onError?.(error);
     };
 

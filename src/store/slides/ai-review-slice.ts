@@ -12,10 +12,10 @@ interface AIReviewState {
   aiResponse: string | null;
   isLoading: boolean;
   error: string | null;
+  cached: boolean;
 }
 
-const DEFAULT_PROMPT =
-  'Vui lòng xem xét bài nộp mã nguồn này. Hãy phân tích độ phức tạp thời gian và bộ nhớ, chỉ ra các lỗi tiềm ẩn hoặc các trường hợp biên, và đề xuất cải thiện về khả năng đọc cũng như hiệu năng. ';
+const DEFAULT_PROMPT = '';
 const initialState: AIReviewState = {
   isVisible: false,
   customPrompt: DEFAULT_PROMPT,
@@ -23,16 +23,16 @@ const initialState: AIReviewState = {
   aiResponse: null,
   isLoading: false,
   error: null,
+  cached: false,
 };
 
 export const generateAIReview = createAsyncThunk(
   'aiReview/generate',
   async ({
     submissionId,
-    prompt,
-    code,
-  }: { submissionId: string; prompt: string; code: string }) => {
-    const response = await AIService.generateReview(submissionId, prompt, code);
+    customPrompt,
+  }: { submissionId: string; customPrompt?: string }) => {
+    const response = await AIService.generateReview(submissionId, customPrompt);
     return response;
   }
 );
@@ -63,14 +63,17 @@ const aiReviewSlice = createSlice({
       .addCase(generateAIReview.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.cached = false;
       })
       .addCase(generateAIReview.fulfilled, (state, action) => {
         state.isLoading = false;
         state.aiResponse = action.payload;
+        state.cached = false;
       })
       .addCase(generateAIReview.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Failed to generate review';
+        state.cached = false;
       });
   },
 });

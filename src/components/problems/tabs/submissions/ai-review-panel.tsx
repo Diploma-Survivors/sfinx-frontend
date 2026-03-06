@@ -1,15 +1,15 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { AppDispatch, RootState } from '@/store';
 import {
   generateAIReview,
-  resetPrompt,
+  resetReview,
   setCustomPrompt,
-  setIsCustomizing,
   toggleVisibility,
 } from '@/store/slides/ai-review-slice';
-import { Loader2, RotateCcw, Sparkles } from 'lucide-react';
+import { CheckCircle2, Loader2, RotateCcw, Sparkles } from 'lucide-react';
 import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,22 +17,33 @@ import { useDispatch, useSelector } from 'react-redux';
 interface AIReviewPanelProps {
   submissionId: string;
   sourceCode: string;
+  persistedReview?: string | null;
 }
 
 export default function AIReviewPanel({
   submissionId,
   sourceCode,
+  persistedReview,
 }: AIReviewPanelProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { customPrompt, isCustomizing, aiResponse, isLoading } = useSelector(
+  const { customPrompt, aiResponse, isLoading, cached } = useSelector(
     (state: RootState) => state.aiReview
   );
 
+  // Load persisted review when panel opens
+  useEffect(() => {
+    if (persistedReview) {
+      // If there's a persisted review, show it
+      // We don't dispatch to avoid triggering a new review generation
+    }
+  }, [persistedReview]);
+
   const handleSubmit = () => {
-    dispatch(
-      generateAIReview({ submissionId, prompt: customPrompt, code: sourceCode })
-    );
+    dispatch(generateAIReview({ submissionId, customPrompt }));
   };
+
+  // Use persisted review if no generated review yet
+  const displayReview = aiResponse || persistedReview;
 
   return (
     <div className="h-full rounded-xl flex flex-col bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-700">
@@ -138,9 +149,17 @@ export default function AIReviewPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto p-4">
-        {aiResponse ? (
-          <div className="prose dark:prose-invert max-w-none text-sm">
-            <ReactMarkdown>{aiResponse}</ReactMarkdown>
+        {displayReview ? (
+          <div className="space-y-3">
+            {(cached || persistedReview) && (
+              <Badge variant="secondary" className="text-xs">
+                <CheckCircle2 className="w-3 h-3 mr-1" />
+                {cached ? 'Generated just now' : 'Saved review'}
+              </Badge>
+            )}
+            <div className="prose dark:prose-invert max-w-none text-sm">
+              <ReactMarkdown>{displayReview}</ReactMarkdown>
+            </div>
           </div>
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-2">

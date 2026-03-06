@@ -18,16 +18,14 @@ const locales: Record<string, any> = {
   vi: vi,
 };
 
-const formatRuntime = (runtime?: number | null) => {
-  if (runtime === undefined || runtime === null || isNaN(runtime)) return "N/A";
-  if (runtime === 0) return "0 ms";
-  return `${Number(runtime).toFixed(2)} ms`;
+const formatRuntime = (runtime?: number) => {
+  if (runtime === undefined || runtime === 0) return "0ms";
+  return `${(runtime * 1000).toFixed(0)} ms`;
 };
 
-const formatMemory = (memory?: number | null) => {
-  if (memory === undefined || memory === null || isNaN(memory)) return "N/A";
-  if (memory === 0) return "0 KB";
-  return `${memory} KB`;
+const formatMemory = (memory?: number) => {
+  if (memory === undefined || memory === 0) return "0 KB";
+  return `${(memory / 1024).toFixed(0)} KB`;
 };
 
 export default function SubmissionRow({
@@ -92,7 +90,7 @@ export default function SubmissionRow({
         <div className="flex items-center gap-1">
           <Clock className="h-4 w-4 text-gray-400" />
           <span className="text-xs font-medium text-gray-900">
-            {formatRuntime(submission.executionTime)}
+            {formatRuntime(submission?.executionTime || 0)}
           </span>
         </div>
       </td>
@@ -102,7 +100,7 @@ export default function SubmissionRow({
         <div className="flex items-center gap-1">
           <Cpu className="h-4 w-4 text-gray-400" />
           <span className="text-xs font-medium text-gray-900">
-            {formatMemory(submission.memoryUsed)}
+            {formatMemory(submission?.memoryUsed || 0)}
           </span>
         </div>
       </td>
