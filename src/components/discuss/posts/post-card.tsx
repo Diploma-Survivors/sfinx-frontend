@@ -113,7 +113,11 @@ export function PostCard({ post, openInNewTab }: PostCardProps) {
 
   return (
     <div className="group border-b border-border py-6 px-4 hover:bg-muted/30 transition-colors first:pt-4">
-      <Link href={`/discuss/${post.id}`} className="block space-y-4" target={openInNewTab ? "_blank" : undefined}>
+      <Link
+        href={session ? `/discuss/${post.id}` : `/login?callbackUrl=/discuss/${post.id}`}
+        className="block space-y-4"
+        target={openInNewTab ? "_blank" : undefined}
+      >
         {/* Header: Avatar, Name, Time */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

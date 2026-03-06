@@ -2,8 +2,10 @@ import { getStatusMeta } from "@/lib/utils/testcase-status";
 import type { SSEResult } from "@/services/sse-service";
 import { MemoryStick, Timer, X, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { PerformanceChart } from "./performance-chart";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useApp } from "@/contexts/app-context";
 
 interface SubmitResultTabProps {
   width: number;
@@ -19,6 +21,7 @@ export function SubmitResultTab({
   onClose,
 }: SubmitResultTabProps) {
   const { t } = useTranslation("problems");
+  const { user } = useApp();
   const statusInfo = result ? getStatusMeta(result.status) : null;
 
   if (isSubmitting) {
@@ -144,12 +147,14 @@ export function SubmitResultTab({
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
-                <div className="text-xs text-slate-500">SCORE</div>
-                <div className="text-xl font-semibold">
-                  {result?.score ?? 0} / 100
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
+                <div className="text-xs text-slate-500">
+                  {t("test_cases").toUpperCase()}
                 </div>
-              </div> */}
+                <div className="text-xl font-semibold">
+                  {result?.passedTests ?? 0} / {result?.totalTests ?? 0}
+                </div>
+              </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
                 <div className="text-xs text-slate-500">
                   {t("runtime").toUpperCase()}
@@ -168,6 +173,16 @@ export function SubmitResultTab({
                 </div>
               </div>
             </div>
+
+            {/* Performance Chart - Only show for Accepted cases with an ID */}
+            {result?.status === "ACCEPTED" && result?.id && (
+              <PerformanceChart
+                submissionId={result.id}
+                userAvatarUrl={user?.avatarUrl}
+                userRuntimeMs={result.runtime ? Number(result.runtime) : undefined}
+                userMemoryKb={result.memory}
+              />
+            )}
 
             {/* Error Details - Only show for failed cases */}
             {result &&
@@ -195,7 +210,7 @@ export function SubmitResultTab({
                         <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                           {t("compile_output")}
                         </div>
-                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
+                        <pre className="bg-red-50 dark:bg-red-900/30 font-mono text-red-600 dark:text-red-400 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto border border-red-200 dark:border-red-800">
                           {result.resultDescription.compileOutput}
                         </pre>
                       </div>
