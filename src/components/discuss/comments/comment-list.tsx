@@ -48,7 +48,7 @@ export function CommentList({
 
   return (
     <div className="flex flex-col space-y-0">
-      {comments.map((comment, index) => (
+      {[...comments].reverse().map((comment, index) => (
         <CommentItem
           key={comment.id}
           comment={comment}

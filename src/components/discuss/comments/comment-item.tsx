@@ -97,25 +97,14 @@ export function CommentItem({
 
     setUserVote(newVote);
 
-    // Update counts optimistically
-    // Only tracking upvotes mostly based on UI, but let's try to be accurate
-    // If we toggled OFF upvote -> decrement
-    // If we toggled ON upvote -> increment
-    // If we switched from downvote to upvote -> increment
-    // If we switched from upvote to downvote -> decrement
-
     if (type === "UPVOTE") {
       if (userVote === 1) {
-        // Toggling off upvote
         setUpvoteCount((prev) => Math.max(0, prev - 1));
       } else {
         // Toggling on upvote (from null or downvote)
         setUpvoteCount((prev) => prev + 1);
       }
     } else {
-      // Downvote logic affecting upvote count?
-      // Usually downvotes don't affect upvote count unless we show a score (up-down).
-      // But if we switch from Upvote to Downvote, upvote count should decrease.
       if (userVote === 1) {
         setUpvoteCount((prev) => Math.max(0, prev - 1));
       }
