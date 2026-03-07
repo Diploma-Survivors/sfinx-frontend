@@ -33,10 +33,11 @@ import { ProblemDiscussion } from "./problem-discussion";
 import { ProblemHints } from "./problem-hints";
 import { ProblemTopicsTags } from "./problem-topics-tags";
 import { ReportProblemModal } from "./report-problem-modal";
-import { useRouter } from "next/navigation";
-import { MessageSquare } from "lucide-react";
-import { useApp } from "@/contexts/app-context";
 import { PremiumModal } from "@/components/problems/premium-modal";
+import { useApp } from "@/contexts/app-context";
+import { useRouter } from "next/navigation";
+
+import { MessageSquare } from "lucide-react";
 
 interface DescriptionPanelProps {
   problem: Problem;
