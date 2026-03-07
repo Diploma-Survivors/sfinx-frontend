@@ -122,27 +122,16 @@ export function ResultTab({
           )}
 
           <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3 space-y-4">
-            {testResult.stderr ? (
+            {(testResult.stderr || testResult.stdout) ? (
               <div>
                 <div className="text-xs font-semibold text-red-800 dark:text-red-400 mb-1">
-                  {t('standard_error', 'Standard Error')}
+                  {t('error', 'Error')}
                 </div>
                 <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
-                  {testResult.stderr}
+                  {testResult.stderr || testResult.stdout}
                 </pre>
               </div>
-            ) : null}
-            {testResult.stdout ? (
-              <div>
-                <div className="text-xs font-semibold text-red-800 dark:text-red-400 mb-1">
-                  {t('standard_output', 'Standard Output / Crash Info')}
-                </div>
-                <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
-                  {testResult.stdout}
-                </pre>
-              </div>
-            ) : null}
-            {!testResult.stderr && !testResult.stdout && (
+            ) : (
               <div className="text-sm text-red-600 dark:text-red-400">
                 {t('no_error_details', 'No error details available.')}
               </div>

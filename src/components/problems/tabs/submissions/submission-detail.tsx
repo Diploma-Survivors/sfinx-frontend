@@ -205,75 +205,135 @@ export default function SubmissionDetail({
             )}
 
             {/* Failed Test Case Details - Only show for failed cases */}
-            {(submission.failedResult || submission.resultDescription) && submission.status !== SubmissionStatus.ACCEPTED && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
-                  <XCircle className="w-5 h-5 text-red-500" />
-                  <span>{t("failed_description")}</span>
+            {(submission.failedResult || submission.resultDescription) && submission.status !== SubmissionStatus.ACCEPTED && (() => {
+              const desc = submission.failedResult || submission.resultDescription;
+              if (!desc) return null;
+
+              if (submission.status === SubmissionStatus.COMPILATION_ERROR) {
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                      <XCircle className="w-5 h-5 text-red-500" />
+                      <span>{t("failed_description")}</span>
+                    </div>
+                    <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                      <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
+                        {desc.compileOutput}
+                      </pre>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (submission.status === SubmissionStatus.RUNTIME_ERROR) {
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                      <XCircle className="w-5 h-5 text-red-500" />
+                      <span>{t("failed_description")}</span>
+                    </div>
+                    <div className="space-y-3">
+                      {desc.compileOutput && (
+                        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-3">
+                          <div className="text-xs font-semibold text-yellow-800 dark:text-yellow-400 mb-2">
+                            {t("compile_warnings", "Compile Warnings")}
+                          </div>
+                          <pre className="text-sm font-mono text-yellow-700 dark:text-yellow-300 whitespace-pre-wrap overflow-x-auto">
+                            {desc.compileOutput}
+                          </pre>
+                        </div>
+                      )}
+                      <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3 space-y-4">
+                        {desc.stderr ? (
+                          <div>
+                            <div className="text-xs font-semibold text-red-800 dark:text-red-400 mb-1">
+                              {t("error", "Error")}
+                            </div>
+                            <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
+                              {desc.stderr}
+                            </pre>
+                          </div>
+                        ) : null}
+                        {(desc.stdout || desc.actualOutput) ? (
+                          <div>
+                            <div className="text-xs font-semibold text-red-800 dark:text-red-400 mb-1">
+                              {t("stdout", "stdout")}
+                            </div>
+                            <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
+                              {desc.stdout || desc.actualOutput}
+                            </pre>
+                          </div>
+                        ) : null}
+                        {!desc.stderr && !desc.stdout && !desc.actualOutput && (
+                          <div className="text-sm text-red-600 dark:text-red-400">
+                            {t("no_error_details", "No error details available.")}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (submission.status === SubmissionStatus.WRONG_ANSWER) {
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                      <XCircle className="w-5 h-5 text-red-500" />
+                      <span>{t("failed_description")}</span>
+                    </div>
+                    <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
+                      {(desc.input || desc.stdin) && (
+                        <div>
+                          <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            {t("input")}
+                          </div>
+                          <pre className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap overflow-x-auto">
+                            {desc.input || desc.stdin}
+                          </pre>
+                        </div>
+                      )}
+                      {desc.expectedOutput && (
+                        <div>
+                          <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            {t("expected_output")}
+                          </div>
+                          <pre className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono text-sm whitespace-pre-wrap overflow-x-auto">
+                            {desc.expectedOutput}
+                          </pre>
+                        </div>
+                      )}
+                      {(desc.stdout || desc.actualOutput) && (
+                        <div>
+                          <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            {t("your_output")}
+                          </div>
+                          <div className="bg-slate-200 dark:bg-slate-600 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                            <pre className="text-black dark:text-black font-mono text-sm whitespace-pre-wrap overflow-x-auto">
+                              {desc.stdout || desc.actualOutput}
+                            </pre>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                    <XCircle className="w-5 h-5 text-red-500" />
+                    <span>{t("failed_description")}</span>
+                  </div>
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                    <div className="text-red-600 dark:text-red-400 font-medium whitespace-pre-wrap">
+                      {desc.message}
+                    </div>
+                  </div>
                 </div>
-
-                <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
-                  {(() => {
-                    const resultDetails = submission.failedResult || submission.resultDescription;
-                    return (
-                      <>
-                        {resultDetails?.message && (
-                          <div>
-                            <div className="text-red-600 dark:text-red-400 font-medium">
-                              {resultDetails.message}
-                            </div>
-                          </div>
-                        )}
-
-                        {resultDetails?.compileOutput && (
-                          <div>
-                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                              {t("compile_output")}
-                            </div>
-                            <pre className="bg-red-50 dark:bg-red-900/30 font-mono text-red-600 dark:text-red-400 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto border border-red-200 dark:border-red-800">
-                              {resultDetails.compileOutput}
-                            </pre>
-                          </div>
-                        )}
-
-                        {(resultDetails?.input || resultDetails?.stdin) && (
-                          <div>
-                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                              {t("input")}
-                            </div>
-                            <pre className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto">
-                              {resultDetails.input || resultDetails.stdin}
-                            </pre>
-                          </div>
-                        )}
-
-                        {resultDetails?.expectedOutput && (
-                          <div>
-                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                              {t("expected_output")}
-                            </div>
-                            <pre className="bg-green-50 dark:bg-green-900 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto text-green-800 dark:text-green-300">
-                              {resultDetails.expectedOutput}
-                            </pre>
-                          </div>
-                        )}
-
-                        {(resultDetails?.stdout || resultDetails?.actualOutput) && (
-                          <div>
-                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                              {t("your_output")}
-                            </div>
-                            <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto text-red-800 dark:text-red-300">
-                              {resultDetails.stdout || resultDetails.actualOutput}
-                            </pre>
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Source Code */}
             <div className="space-y-2">
@@ -345,7 +405,7 @@ export default function SubmissionDetail({
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       <AIReviewModal
         submissionId={submission.id.toString()}
@@ -353,6 +413,6 @@ export default function SubmissionDetail({
         onClose={() => setIsAIReviewModalOpen(false)}
         persistedReview={submission.aiReview}
       />
-    </div>
+    </div >
   );
 }

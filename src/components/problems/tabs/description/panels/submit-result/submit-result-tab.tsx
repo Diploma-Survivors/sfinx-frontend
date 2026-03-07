@@ -3,6 +3,7 @@ import { formatMemory, formatRuntime } from "@/lib/utils/format-submission";
 import type { SSEResult } from "@/services/sse-service";
 import { MemoryStick, Timer, X, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { SubmissionStatus } from "@/types/submissions";
 import { PerformanceChart } from "./performance-chart";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -186,86 +187,135 @@ export function SubmitResultTab({
 
             {/* Error Details - Only show for failed cases */}
             {result &&
-              result.status !== "ACCEPTED" &&
-              result.resultDescription && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
-                    <XCircle className="w-5 h-5 text-red-500" />
-                    <span>{t("failed_description")}</span>
+              result.status !== SubmissionStatus.ACCEPTED &&
+              result.resultDescription && (() => {
+                const desc = result.resultDescription;
+
+                if (result.status === SubmissionStatus.COMPILATION_ERROR) {
+                  return (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                        <XCircle className="w-5 h-5 text-red-500" />
+                        <span>{t("failed_description")}</span>
+                      </div>
+                      <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                        <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
+                          {desc.compileOutput}
+                        </pre>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (result.status === SubmissionStatus.RUNTIME_ERROR) {
+                  return (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                        <XCircle className="w-5 h-5 text-red-500" />
+                        <span>{t("failed_description")}</span>
+                      </div>
+                      <div className="space-y-3">
+                        {desc.compileOutput && (
+                          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-3">
+                            <div className="text-xs font-semibold text-yellow-800 dark:text-yellow-400 mb-2">
+                              {t("compile_warnings", "Compile Warnings")}
+                            </div>
+                            <pre className="text-sm font-mono text-yellow-700 dark:text-yellow-300 whitespace-pre-wrap overflow-x-auto">
+                              {desc.compileOutput}
+                            </pre>
+                          </div>
+                        )}
+                        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3 space-y-4">
+                          {desc.stderr ? (
+                            <div>
+                              <div className="text-xs font-semibold text-red-800 dark:text-red-400 mb-1">
+                                {t("error", "Error")}
+                              </div>
+                              <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
+                                {desc.stderr}
+                              </pre>
+                            </div>
+                          ) : null}
+                          {desc.stdout ? (
+                            <div>
+                              <div className="text-xs font-semibold text-red-800 dark:text-red-400 mb-1">
+                                {t("stdout", "stdout")}
+                              </div>
+                              <pre className="text-sm font-mono text-red-600 dark:text-red-400 whitespace-pre-wrap overflow-x-auto">
+                                {desc.stdout}
+                              </pre>
+                            </div>
+                          ) : null}
+                          {!desc.stderr && !desc.stdout && (
+                            <div className="text-sm text-red-600 dark:text-red-400">
+                              {t("no_error_details", "No error details available.")}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (result.status === SubmissionStatus.WRONG_ANSWER) {
+                  return (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                        <XCircle className="w-5 h-5 text-red-500" />
+                        <span>{t("failed_description")}</span>
+                      </div>
+                      <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
+                        {desc.stdin && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("input")}
+                            </div>
+                            <pre className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                              {desc.stdin}
+                            </pre>
+                          </div>
+                        )}
+                        {desc.expectedOutput && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("expected_output")}
+                            </div>
+                            <pre className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono text-sm whitespace-pre-wrap">
+                              {desc.expectedOutput}
+                            </pre>
+                          </div>
+                        )}
+                        {desc.stdout && (
+                          <div>
+                            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                              {t("your_output")}
+                            </div>
+                            <div className="bg-slate-200 dark:bg-slate-600 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                              <pre className="text-black dark:text-black font-mono text-sm whitespace-pre-wrap overflow-x-auto">
+                                {desc.stdout}
+                              </pre>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300">
+                      <XCircle className="w-5 h-5 text-red-500" />
+                      <span>{t("failed_description")}</span>
+                    </div>
+                    <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                      <div className="text-red-600 dark:text-red-400 font-medium whitespace-pre-wrap">
+                        {desc.message}
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
-                    {/* Message */}
-                    {result.resultDescription?.message && (
-                      <div>
-                        <div className="text-red-600 dark:text-red-400 font-medium whitespace-pre-wrap">
-                          {result.resultDescription.message}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Compile Output */}
-                    {result.resultDescription?.compileOutput && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("compile_output")}
-                        </div>
-                        <pre className="bg-red-50 dark:bg-red-900/30 font-mono text-red-600 dark:text-red-400 rounded p-3 text-sm whitespace-pre-wrap overflow-x-auto border border-red-200 dark:border-red-800">
-                          {result.resultDescription.compileOutput}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Input */}
-                    {result.resultDescription?.stdin && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("input")}
-                        </div>
-                        <pre className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm whitespace-pre-wrap">
-                          {result.resultDescription.stdin}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Expected Output */}
-                    {result.resultDescription?.expectedOutput && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("expected_output")}
-                        </div>
-                        <pre className="bg-green-50 dark:bg-green-900 rounded p-3 text-sm whitespace-pre-wrap">
-                          {result.resultDescription.expectedOutput}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Your Output */}
-                    {result.resultDescription?.stdout && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("your_output")}
-                        </div>
-                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap">
-                          {result.resultDescription.stdout}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Standard Error (stderr) */}
-                    {result.resultDescription?.stderr && (
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {t("stderr")}
-                        </div>
-                        <pre className="bg-red-50 dark:bg-red-900 rounded p-3 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
-                          {result.resultDescription.stderr}
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+                );
+              })()}
           </div>
         </div>
       </div>
