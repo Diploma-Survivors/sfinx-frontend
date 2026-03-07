@@ -20,6 +20,7 @@ interface InterviewGreetingProps {
   onStartInterview: () => void;
   onViewHistory?: () => void;
   isLoading?: boolean;
+  problemDisplay?: React.ReactNode;
 }
 
 export function InterviewGreeting({
@@ -28,6 +29,7 @@ export function InterviewGreeting({
   onStartInterview,
   onViewHistory,
   isLoading = false,
+  problemDisplay,
 }: InterviewGreetingProps) {
   const { t } = useTranslation("interview");
 
@@ -108,6 +110,9 @@ export function InterviewGreeting({
                 {t("greeting.configure_env")}
               </p>
             </div>
+
+            {/* Selected Problem Display */}
+            {problemDisplay}
 
             {/* Random Problem Notice */}
             <div className="flex items-start gap-4 p-5 rounded-2xl bg-primary/10 border border-primary/20 shadow-inner relative overflow-hidden group">
