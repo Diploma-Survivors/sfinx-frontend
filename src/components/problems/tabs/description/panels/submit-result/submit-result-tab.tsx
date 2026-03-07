@@ -1,4 +1,5 @@
 import { getStatusMeta } from "@/lib/utils/testcase-status";
+import { formatMemory, formatRuntime } from "@/lib/utils/format-submission";
 import type { SSEResult } from "@/services/sse-service";
 import { MemoryStick, Timer, X, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -160,8 +161,7 @@ export function SubmitResultTab({
                   {t("runtime").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
-                  {result?.runtime ? Number(result.runtime).toFixed(2) : "0.00"}{" "}
-                  ms
+                  {formatRuntime(result?.runtime ? Number(result.runtime) : null)}
                 </div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-5">
@@ -169,7 +169,7 @@ export function SubmitResultTab({
                   {t("memory").toUpperCase()}
                 </div>
                 <div className="text-xl font-semibold">
-                  {result?.memory ?? 0} KB
+                  {formatMemory(result?.memory)}
                 </div>
               </div>
             </div>
