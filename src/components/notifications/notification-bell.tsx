@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSocket } from "@/hooks/use-socket";
 import {
   notificationService,
@@ -190,8 +191,20 @@ export function NotificationBell() {
         </div>
         <ScrollArea className="h-[400px]">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground w-full min-h-[200px]">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="flex flex-col">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col p-4 border-b border-border/40 gap-3"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-12" />
+                  </div>
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-2/3" />
+                </div>
+              ))}
             </div>
           ) : notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground">
