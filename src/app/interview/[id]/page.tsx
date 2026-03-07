@@ -319,11 +319,11 @@ export default function InterviewSessionPage() {
   const handleEndInterview = useCallback(async () => {
     try {
       await endInterview();
-      router.push("/interview/history");
+      // Stay on page — feedback will render when phase === "completed"
     } catch (error) {
       // Error handled by hook
     }
-  }, [endInterview, router]);
+  }, [endInterview]);
 
   const handleRun = useCallback(
     async (sourceCode: string, languageId: number) => {
@@ -450,10 +450,8 @@ export default function InterviewSessionPage() {
         <InterviewFeedback
           interviewTime={interviewTime}
           evaluation={evaluation}
-          onViewHistory={() => {
-            // Stay on the same page but change phase to show read-only view
-            setPhase("active");
-          }}
+          onViewHistory={() => router.push("/interview/history")}
+          onStartNew={() => router.push("/interview")}
         />
       </div>
     );

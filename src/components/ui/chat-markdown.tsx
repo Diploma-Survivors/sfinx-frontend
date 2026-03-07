@@ -1,9 +1,10 @@
 'use client';
 
+import { useTheme } from 'next-themes';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface ChatMarkdownProps {
   content: string;
@@ -11,9 +12,12 @@ interface ChatMarkdownProps {
 
 /**
  * Compact markdown renderer for chat bubbles.
- * Tighter spacing and smaller type than the full-page FormattedMarkdown.
+ * Tighter spacing and smaller type than the full-page MarkdownRenderer.
  */
 export function ChatMarkdown({ content }: ChatMarkdownProps) {
+  const { resolvedTheme } = useTheme();
+  const syntaxTheme = resolvedTheme === 'dark' ? oneDark : oneLight;
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkBreaks]}
@@ -60,11 +64,11 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
             {children}
           </a>
         ),
-        code: ({ node, inline, className, children, ...props }: any) => {
+        code: ({ className, children, ...props }) => {
           const match = /language-(\w+)/.exec(className || '');
-          return !inline && match ? (
+          return match ? (
             <SyntaxHighlighter
-              style={oneDark}
+              style={syntaxTheme}
               language={match[1]}
               PreTag="div"
               customStyle={{
@@ -72,7 +76,6 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                 borderRadius: '6px',
                 fontSize: '12px',
               }}
-              {...props}
             >
               {String(children).replace(/\n$/, '')}
             </SyntaxHighlighter>

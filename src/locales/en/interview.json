@@ -127,7 +127,10 @@
     "score_communication": "Communication",
     "score_code_quality": "Code Quality",
     "score_technical": "Technical",
-    "duration_format": "{{mins}}m {{secs}}s"
+    "duration_format": "{{mins}}m {{secs}}s",
+    "total_sessions": "Total Sessions",
+    "completed": "Completed",
+    "avg_score": "Avg. Score"
   },
   "greeting": {
     "experience_natural_ai": "Experience a natural, AI-driven assessment tailored to your skills.",

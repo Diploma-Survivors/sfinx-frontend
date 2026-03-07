@@ -127,7 +127,10 @@
     "score_communication": "Giao tiếp",
     "score_code_quality": "Chất lượng code",
     "score_technical": "Kỹ thuật",
-    "duration_format": "{{mins}}p {{secs}}g"
+    "duration_format": "{{mins}}p {{secs}}g",
+    "total_sessions": "Tổng buổi",
+    "completed": "Hoàn thành",
+    "avg_score": "Điểm TB"
   },
   "greeting": {
     "experience_natural_ai": "Trải nghiệm bài đánh giá qua AI, tự nhiên và sát với kỹ năng của bạn.",
