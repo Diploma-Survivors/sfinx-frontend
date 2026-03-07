@@ -66,7 +66,7 @@ export interface LiveKitTokenResponse {
 
 export interface SendMessageRequest {
   content: string;
-  type?: 'text' | 'code_review';
+  type?: 'text' | 'code-review';
   /** Current code snapshot - sent with every message so AI has full context */
   code?: string;
   /** Programming language of the code */

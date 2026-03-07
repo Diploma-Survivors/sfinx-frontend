@@ -13,9 +13,11 @@ import { toastService } from "@/services/toasts-service";
 import type { Interview, InterviewStatus } from "@/types/interview";
 import {
   ArrowLeft,
+  Brain,
   Calendar,
   CheckCircle2,
   Clock,
+  Code2,
   Loader2,
   MessageSquare,
   Play,
@@ -69,6 +71,50 @@ function getStatusBadge(status: InterviewStatus, t: any) {
   }
 }
 
+function getDifficultyBadge(difficulty?: string) {
+  if (!difficulty) return null;
+  const lower = difficulty.toLowerCase();
+  const classes =
+    lower === "easy"
+      ? "bg-green-500/10 text-green-600"
+      : lower === "medium"
+        ? "bg-yellow-500/10 text-yellow-600"
+        : "bg-red-500/10 text-red-600";
+  return (
+    <span
+      className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium capitalize ${classes}`}
+    >
+      {difficulty}
+    </span>
+  );
+}
+
+function ScoreBar({ score, color }: { score: number; color: string }) {
+  return (
+    <div className="h-1 w-full rounded-full bg-muted mt-1 overflow-hidden">
+      <div
+        className={`h-full rounded-full ${color} transition-all duration-500`}
+        style={{ width: `${Math.min((score / 10) * 100, 100)}%` }}
+      />
+    </div>
+  );
+}
+
+const SCORE_CATEGORIES = [
+  { key: "problemSolvingScore", icon: Brain, color: "text-purple-500", bar: "bg-purple-500", labelKey: "history.score_problem_solving" },
+  { key: "communicationScore", icon: MessageSquare, color: "text-blue-500", bar: "bg-blue-500", labelKey: "history.score_communication" },
+  { key: "codeQualityScore", icon: Code2, color: "text-green-500", bar: "bg-green-500", labelKey: "history.score_code_quality" },
+  { key: "technicalScore", icon: TrendingUp, color: "text-orange-500", bar: "bg-orange-500", labelKey: "history.score_technical" },
+] as const;
+
+function getCardAccent(status: InterviewStatus) {
+  switch (status) {
+    case "completed": return "border-l-[3px] border-l-primary";
+    case "active": return "border-l-[3px] border-l-blue-500";
+    default: return "border-l-[3px] border-l-muted-foreground/30";
+  }
+}
+
 export default function InterviewHistoryPage() {
   const { t } = useTranslation("interview");
   const router = useRouter();
@@ -94,45 +140,44 @@ export default function InterviewHistoryPage() {
     }
   };
 
-  const handleResume = (interviewId: string) => {
+  const requireAuth = (): boolean => {
     if (!isLoggedin) {
       toastService.error(t("login_required_action"));
-      return;
+      return false;
     }
     if (!isEmailVerified) {
       toastService.error(t("email_verification_required_action"));
-      return;
+      return false;
     }
-    router.push(`/interview/${interviewId}`);
+    return true;
   };
 
-  const handleViewDetails = (interviewId: string) => {
-    if (!isLoggedin) {
-      toastService.error(t("login_required_action"));
-      return;
-    }
-    if (!isEmailVerified) {
-      toastService.error(t("email_verification_required_action"));
-      return;
-    }
+  const handleOpenInterview = (interviewId: string) => {
+    if (!requireAuth()) return;
     router.push(`/interview/${interviewId}`);
   };
 
   const handleStartNewInterview = () => {
-    if (!isLoggedin) {
-      toastService.error(t("login_required_action"));
-      return;
-    }
-    if (!isEmailVerified) {
-      toastService.error(t("email_verification_required_action"));
-      return;
-    }
+    if (!requireAuth()) return;
     router.push("/interview");
   };
 
+  const completedInterviews = interviews.filter(
+    (iv) => iv.status === "completed" && iv.evaluation,
+  );
+  const averageScore =
+    completedInterviews.length > 0
+      ? Math.round(
+          completedInterviews.reduce(
+            (sum, iv) => sum + (iv.evaluation?.overallScore ?? 0),
+            0,
+          ) / completedInterviews.length,
+        )
+      : null;
+
   return (
-    <div className="h-[calc(100vh-64px)] overflow-hidden bg-muted/30">
-      <div className="h-full max-w-5xl mx-auto p-6">
+    <div className="min-h-[calc(100vh-64px)] bg-muted/30">
+      <div className="max-w-5xl mx-auto p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <Button
@@ -147,6 +192,51 @@ export default function InterviewHistoryPage() {
             {t("history.interview_history_title")}
           </h1>
         </div>
+
+        {/* Stats Summary */}
+        {!isLoading && !error && interviews.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+            <Card className="p-4 border-primary/20 bg-primary/5 overflow-hidden relative">
+              <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-primary/10 pointer-events-none" />
+              <div className="p-1.5 rounded-md bg-primary/10 w-fit mb-2">
+                <MessageSquare className="w-3.5 h-3.5 text-primary" />
+              </div>
+              <div className="text-2xl font-bold text-primary">{interviews.length}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {t("history.total_sessions")}
+              </div>
+            </Card>
+            <Card className="p-4 border-green-500/20 bg-green-500/5 overflow-hidden relative">
+              <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-green-500/10 pointer-events-none" />
+              <div className="p-1.5 rounded-md bg-green-500/10 w-fit mb-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+              </div>
+              <div className="text-2xl font-bold text-green-600">
+                {completedInterviews.length}
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {t("history.completed")}
+              </div>
+            </Card>
+            {averageScore !== null && (
+              <Card className="p-4 col-span-2 sm:col-span-1 border-orange-500/20 bg-orange-500/5 overflow-hidden relative">
+                <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-orange-500/10 pointer-events-none" />
+                <div className="p-1.5 rounded-md bg-orange-500/10 w-fit mb-2">
+                  <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
+                </div>
+                <div className="text-2xl font-bold text-orange-500">
+                  {averageScore}
+                  <span className="text-sm font-normal text-muted-foreground ml-1">
+                    /10
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {t("history.avg_score")}
+                </div>
+              </Card>
+            )}
+          </div>
+        )}
 
         {/* Content */}
         {isLoading ? (
@@ -173,19 +263,22 @@ export default function InterviewHistoryPage() {
             </Button>
           </Card>
         ) : (
-          <div className="space-y-4 overflow-auto max-h-[calc(100%-80px)]">
+          <div className="space-y-4">
             {interviews.map((interview) => (
               <Card
                 key={interview.id}
-                className="p-5 hover:shadow-md transition-shadow"
+                className={`p-5 hover:shadow-md transition-shadow ${getCardAccent(interview.status)}`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-semibold truncate">
                         {interview.problemSnapshot?.title ||
                           t("history.unknown_problem")}
                       </h3>
+                      {getDifficultyBadge(
+                        interview.problemSnapshot?.difficulty,
+                      )}
                       {getStatusBadge(interview.status, t)}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -202,20 +295,19 @@ export default function InterviewHistoryPage() {
                         )}
                       </span>
                       {interview.evaluation && (
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 font-medium text-primary">
                           <TrendingUp className="w-3.5 h-3.5" />
-                          {t("history.score")}:{" "}
                           {interview.evaluation.overallScore}/10
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     {interview.status === "active" && (
                       <Button
                         size="sm"
-                        onClick={() => handleResume(interview.id)}
+                        onClick={() => handleOpenInterview(interview.id)}
                       >
                         {t("history.resume")}
                       </Button>
@@ -224,7 +316,7 @@ export default function InterviewHistoryPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleViewDetails(interview.id)}
+                        onClick={() => handleOpenInterview(interview.id)}
                       >
                         {t("history.view_details")}
                       </Button>
@@ -232,41 +324,21 @@ export default function InterviewHistoryPage() {
                   </div>
                 </div>
 
-                {/* Evaluation Summary */}
+                {/* Score breakdown */}
                 {interview.evaluation && (
-                  <div className="mt-4 pt-4 border-t grid grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-purple-500">
-                        {interview.evaluation.problemSolvingScore}
+                  <div className="mt-4 pt-4 border-t grid grid-cols-4 gap-2">
+                    {SCORE_CATEGORIES.map(({ key, icon: Icon, color, bar, labelKey }) => (
+                      <div key={key} className="text-center p-2 rounded-lg bg-muted/40">
+                        <Icon className={`w-3.5 h-3.5 mx-auto mb-1 ${color}`} />
+                        <div className={`text-base font-bold ${color}`}>
+                          {interview.evaluation[key]}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground leading-tight">
+                          {t(labelKey)}
+                        </div>
+                        <ScoreBar score={interview.evaluation[key]} color={bar} />
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("history.score_problem_solving")}
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-blue-500">
-                        {interview.evaluation.communicationScore}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("history.score_communication")}
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-green-500">
-                        {interview.evaluation.codeQualityScore}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("history.score_code_quality")}
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-orange-500">
-                        {interview.evaluation.technicalScore}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("history.score_technical")}
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 )}
               </Card>
