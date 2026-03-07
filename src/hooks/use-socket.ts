@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { getSession } from 'next-auth/react';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000';
 
 export const useSocket = (namespace = '') => {
     const [socket, setSocket] = useState<Socket | null>(null);
