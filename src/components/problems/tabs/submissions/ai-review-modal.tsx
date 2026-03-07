@@ -16,6 +16,7 @@ import {
 } from '@/store/slides/ai-review-slice';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 interface AIReviewModalProps {
@@ -31,6 +32,7 @@ export default function AIReviewModal({
   onClose,
   persistedReview,
 }: AIReviewModalProps) {
+  const { t } = useTranslation('problems');
   const dispatch = useDispatch<AppDispatch>();
   const { aiResponse, isLoading, error } = useSelector(
     (state: RootState) => state.aiReview
@@ -103,10 +105,10 @@ export default function AIReviewModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-yellow-500" />
-            AI Code Review
+            {t('ai_review_title')}
           </DialogTitle>
           <DialogDescription>
-            AI-powered analysis for Submission #{submissionId}
+            {t('ai_review_description', { id: submissionId })}
           </DialogDescription>
         </DialogHeader>
 
@@ -115,17 +117,17 @@ export default function AIReviewModal({
             <div className="h-full flex flex-col items-center justify-center space-y-4 py-12">
               <Loader2 className="w-10 h-10 animate-spin text-yellow-500" />
               <p className="text-muted-foreground">
-                {isPolling ? 'Checking for saved review...' : 'Analyzing your code with AI...'}
+                {isPolling ? t('ai_review_checking') : t('ai_review_analyzing')}
               </p>
               <p className="text-xs text-muted-foreground">
-                This may take up to 2 minutes
+                {t('ai_review_duration')}
               </p>
             </div>
           ) : error && !displayReview ? (
             <div className="h-full flex flex-col items-center justify-center space-y-4 py-12 text-center">
               <div className="text-destructive text-lg">⚠️</div>
               <p className="text-destructive font-medium">
-                Failed to generate review
+                {t('ai_review_failed')}
               </p>
               <p className="text-muted-foreground text-sm max-w-md">
                 {error}
@@ -134,7 +136,7 @@ export default function AIReviewModal({
                 onClick={() => dispatch(generateAIReview({ submissionId }))}
                 className="text-sm text-primary hover:underline"
               >
-                Try again
+                {t('ai_review_try_again')}
               </button>
             </div>
           ) : displayReview ? (
@@ -142,7 +144,7 @@ export default function AIReviewModal({
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-2 py-12">
               <Sparkles className="w-12 h-12 opacity-20" />
-              <p className="text-sm">Ready to review your code</p>
+              <p className="text-sm">{t('ai_review_ready')}</p>
             </div>
           )}
         </div>

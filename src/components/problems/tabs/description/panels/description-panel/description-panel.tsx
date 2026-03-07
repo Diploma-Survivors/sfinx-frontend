@@ -33,6 +33,11 @@ import { ProblemDiscussion } from "./problem-discussion";
 import { ProblemHints } from "./problem-hints";
 import { ProblemTopicsTags } from "./problem-topics-tags";
 import { ReportProblemModal } from "./report-problem-modal";
+import { PremiumModal } from "@/components/problems/premium-modal";
+import { useApp } from "@/contexts/app-context";
+import { useRouter } from "next/navigation";
+
+import { MessageSquare } from "lucide-react";
 
 interface DescriptionPanelProps {
   problem: Problem;
@@ -46,6 +51,9 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
   const [isSimilarOpen, setIsSimilarOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const router = useRouter();
+  const { isLoggedin, isEmailVerified, user } = useApp();
 
   const hintsRef = useRef<HTMLDivElement>(null);
   const topicsRef = useRef<HTMLDivElement>(null);
@@ -62,6 +70,22 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleStartInterview = () => {
+    if (!isLoggedin) {
+      toastService.error(t("login_required_action"));
+      return;
+    }
+    if (!isEmailVerified) {
+      toastService.error(t("email_verification_required_action"));
+      return;
+    }
+    if (user && !user.isPremium) {
+      setIsPremiumModalOpen(true);
+      return;
+    }
+    router.push(`/interview?problemId=${problem.id}`);
   };
 
   return (
@@ -132,6 +156,16 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
               >
                 <TriangleAlert className="w-4 h-4" />
                 {t("report")}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground gap-2"
+                onClick={handleStartInterview}
+              >
+                <MessageSquare className="w-4 h-4" />
+                {t("interview")}
               </Button>
             </div>
           </div>
@@ -323,6 +357,11 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
         isOpen={isReportOpen}
         onOpenChange={setIsReportOpen}
         problemId={problem.id}
+      />
+
+      <PremiumModal
+        isOpen={isPremiumModalOpen}
+        onClose={() => setIsPremiumModalOpen(false)}
       />
     </div>
   );
