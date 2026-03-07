@@ -30,9 +30,10 @@ import { setProblem } from "@/store/slides/problem-slice";
 import { selectWorkspace } from "@/store/slides/workspace-slice";
 import { MessageRole } from "@/types/interview";
 import { SortBy, SortOrder } from "@/types/problems";
+import type { Problem } from "@/types/problems";
 import type { SampleTestCase } from "@/types/testcases";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,9 +56,21 @@ async function fetchRandomProblem() {
   return detailResponse.data.data;
 }
 
+async function fetchProblemById(problemId: number): Promise<Problem | null> {
+  try {
+    const detailResponse = await ProblemsService.getProblemById(problemId);
+    return detailResponse.data.data;
+  } catch (error) {
+    console.error('Failed to fetch problem:', error);
+    return null;
+  }
+}
+
 export default function LiveInterviewPage() {
   const { t } = useTranslation("interview");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const problemIdFromQuery = searchParams.get('problemId');
   const dispatch = useDispatch();
   const [isStarting, setIsStarting] = useState(false);
   const { isLoggedin, isEmailVerified, user } = useApp();
@@ -91,6 +104,8 @@ export default function LiveInterviewPage() {
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
+  const [isLoadingProblem, setIsLoadingProblem] = useState(false);
   
 
   const workspace = useSelector(selectWorkspace);
@@ -169,6 +184,44 @@ export default function LiveInterviewPage() {
     isVoiceConnecting,
   ]);
 
+  // Load specific problem from query parameter
+  useEffect(() => {
+    if (problemIdFromQuery && phase === 'greeting' && !selectedProblem && !isLoadingProblem) {
+      const loadProblem = async () => {
+        // Validate problemId
+        const problemId = Number.parseInt(problemIdFromQuery);
+        if (Number.isNaN(problemId) || problemId <= 0) {
+          toastService.error(t('invalid_problem_id'));
+          return;
+        }
+
+        setIsLoadingProblem(true);
+        try {
+          const problem = await fetchProblemById(problemId);
+          if (problem) {
+            setSelectedProblem(problem);
+            // Pre-populate test cases
+            if (problem.sampleTestcases?.length) {
+              setTestCases(
+                problem.sampleTestcases.map((tc: SampleTestCase, idx: number) => ({
+                  ...tc,
+                  id: tc.id || idx + 1,
+                })),
+              );
+            }
+          } else {
+            toastService.error(t('problem_not_found'));
+          }
+        } catch (error) {
+          toastService.error(t('failed_to_load_problem'));
+        } finally {
+          setIsLoadingProblem(false);
+        }
+      };
+      loadProblem();
+    }
+  }, [problemIdFromQuery, phase, selectedProblem, isLoadingProblem, t]);
+
   // Redirect to session URL when interview is created (only once)
   useEffect(() => {
     if (
@@ -226,9 +279,19 @@ export default function LiveInterviewPage() {
       setIsPremiumModalOpen(true);
       return;
     }
+    
     setIsStarting(true);
     try {
-      const problem = await fetchRandomProblem();
+      let problem: Problem;
+      
+      if (selectedProblem) {
+        // Use pre-selected problem
+        problem = selectedProblem;
+      } else {
+        // Fall back to random problem
+        problem = await fetchRandomProblem();
+      }
+      
       if (problem?.sampleTestcases?.length) {
         setTestCases(
           problem.sampleTestcases.map((tc: SampleTestCase, idx: number) => ({
@@ -239,6 +302,7 @@ export default function LiveInterviewPage() {
       } else {
         setTestCases([{ id: 1, input: "", expectedOutput: "" }]);
       }
+      
       await startInterview(problem.id);
       dispatch(setProblem(problem));
       await SubmissionsService.getLanguageList();
@@ -251,7 +315,7 @@ export default function LiveInterviewPage() {
     } finally {
       setIsStarting(false);
     }
-  }, [startInterview, dispatch]);
+  }, [startInterview, dispatch, selectedProblem, isLoggedin, isEmailVerified, user, t]);
 
   const handleSendMessage = useCallback(async () => {
     console.log(
@@ -391,6 +455,23 @@ export default function LiveInterviewPage() {
         </div>
       );
     }
+    // Show problem info if one is selected
+    const problemDisplay = selectedProblem ? (
+      <div className="mb-6 p-4 bg-muted rounded-lg">
+        <p className="text-sm text-muted-foreground mb-1">Selected Problem:</p>
+        <h3 className="text-lg font-semibold">{selectedProblem.title}</h3>
+        <span className={`inline-block mt-2 px-2 py-1 text-xs rounded-full ${
+          selectedProblem.difficulty === 'easy'
+            ? 'bg-green-500/10 text-green-600'
+            : selectedProblem.difficulty === 'medium'
+            ? 'bg-yellow-500/10 text-yellow-600'
+            : 'bg-red-500/10 text-red-600'
+        }`}>
+          {selectedProblem.difficulty}
+        </span>
+      </div>
+    ) : null;
+
     return (
       <div className="h-screen overflow-hidden">
         <InterviewGreeting
@@ -414,6 +495,7 @@ export default function LiveInterviewPage() {
             router.push('/interview/history');
           }}
           isLoading={isStarting}
+          problemDisplay={problemDisplay}
         />
         <PremiumModal
           isOpen={isPremiumModalOpen}

@@ -105,7 +105,10 @@
     "no_code_written_yet": "// Chưa có code nào được viết",
     "read_only_mode": "Chế độ chỉ xem: Buổi phỏng vấn này đã kết thúc. Bạn có thể xem lại cuộc trò chuyện và mã nguồn nhưng không thể chỉnh sửa.",
     "warning_submit_ends_session": "Cảnh báo: Nộp bài sẽ kết thúc buổi phỏng vấn này.",
-    "dismiss": "Đã hiểu"
+    "dismiss": "Đã hiểu",
+    "invalid_problem_id": "ID bài toán không hợp lệ",
+    "problem_not_found": "Không tìm thấy bài toán",
+    "failed_to_load_problem": "Tải bài toán thất bại"
   },
   "history": {
     "in_progress": "Đang diễn ra",
