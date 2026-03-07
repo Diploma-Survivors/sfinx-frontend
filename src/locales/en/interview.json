@@ -103,7 +103,9 @@
     "loading_interview": "Loading interview...",
     "please_wait": "Please wait",
     "no_code_written_yet": "// No code written yet",
-    "read_only_mode": "Read-only mode: This interview is completed. You can view the conversation and code but cannot make changes."
+    "read_only_mode": "Read-only mode: This interview is completed. You can view the conversation and code but cannot make changes.",
+    "warning_submit_ends_session": "Warning: Submitting your code will end this interview session.",
+    "dismiss": "Dismiss"
   },
   "history": {
     "in_progress": "In progress",

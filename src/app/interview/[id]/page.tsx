@@ -30,7 +30,7 @@ import { selectWorkspace } from "@/store/slides/workspace-slice";
 import { MessageRole } from "@/types/interview";
 import { initialProblemData, ProblemStatus } from "@/types/problems";
 import type { SampleTestCase } from "@/types/testcases";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 
 export default function InterviewSessionPage() {
   const { t } = useTranslation("interview");
@@ -67,6 +67,19 @@ export default function InterviewSessionPage() {
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [showWarningBanner, setShowWarningBanner] = useState(false);
+
+  useEffect(() => {
+    const hasSeenWarning = localStorage.getItem("interview_submit_warning_seen");
+    if (!hasSeenWarning) {
+      setShowWarningBanner(true);
+    }
+  }, []);
+
+  const handleDismissWarning = useCallback(() => {
+    localStorage.setItem("interview_submit_warning_seen", "true");
+    setShowWarningBanner(false);
+  }, []);
 
   // Auto-enable voice from URL param (set by greeting page)
   useEffect(() => {
@@ -491,6 +504,23 @@ export default function InterviewSessionPage() {
                 <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">
                   {t("live.read_only_mode")}
                 </span>
+              </div>
+            )}
+
+            {!isReadOnly && showWarningBanner && (
+              <div className="px-4 py-2 border-b bg-blue-50 dark:bg-blue-900/20 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-400 font-medium">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{t("live.warning_submit_ends_session")}</span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleDismissWarning} 
+                  className="h-6 text-xs text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                >
+                  {t("live.dismiss")}
+                </Button>
               </div>
             )}
 
