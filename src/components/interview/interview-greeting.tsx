@@ -114,8 +114,9 @@ export function InterviewGreeting({
             {/* Selected Problem Display */}
             {problemDisplay}
 
-            {/* Random Problem Notice */}
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-primary/10 border border-primary/20 shadow-inner relative overflow-hidden group">
+            {/* Random Problem Notice - only show when no specific problem is selected */}
+            {!problemDisplay && (
+              <div className="flex items-start gap-4 p-5 rounded-2xl bg-primary/10 border border-primary/20 shadow-inner relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               <Trophy className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
               <div className="text-sm">
@@ -128,6 +129,7 @@ export function InterviewGreeting({
                 </p>
               </div>
             </div>
+            )}
 
             <button
               onClick={() => onVoiceEnabledChange(!voiceEnabled)}

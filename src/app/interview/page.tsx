@@ -188,9 +188,16 @@ export default function LiveInterviewPage() {
   useEffect(() => {
     if (problemIdFromQuery && phase === 'greeting' && !selectedProblem && !isLoadingProblem) {
       const loadProblem = async () => {
+        // Validate problemId
+        const problemId = Number.parseInt(problemIdFromQuery);
+        if (Number.isNaN(problemId) || problemId <= 0) {
+          toastService.error(t('invalid_problem_id'));
+          return;
+        }
+
         setIsLoadingProblem(true);
         try {
-          const problem = await fetchProblemById(Number.parseInt(problemIdFromQuery));
+          const problem = await fetchProblemById(problemId);
           if (problem) {
             setSelectedProblem(problem);
             // Pre-populate test cases
@@ -203,17 +210,17 @@ export default function LiveInterviewPage() {
               );
             }
           } else {
-            toastService.error('Problem not found');
+            toastService.error(t('problem_not_found'));
           }
         } catch (error) {
-          toastService.error('Failed to load problem');
+          toastService.error(t('failed_to_load_problem'));
         } finally {
           setIsLoadingProblem(false);
         }
       };
       loadProblem();
     }
-  }, [problemIdFromQuery, phase, selectedProblem, isLoadingProblem]);
+  }, [problemIdFromQuery, phase, selectedProblem, isLoadingProblem, t]);
 
   // Redirect to session URL when interview is created (only once)
   useEffect(() => {
