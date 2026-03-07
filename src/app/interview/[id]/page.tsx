@@ -91,8 +91,8 @@ export default function InterviewSessionPage() {
 
   const workspace = useSelector(selectWorkspace);
   const currentLanguageId = interview?.problemId
-    ? (workspace.currentLanguage?.[String(interview.problemId)] ?? 46)
-    : 46;
+    ? (workspace.currentLanguage?.[String(interview.problemId)] ?? 11)
+    : 11;
   const currentCodeMap = interview?.problemId
     ? workspace.currentCode[String(interview.problemId)]
     : undefined;

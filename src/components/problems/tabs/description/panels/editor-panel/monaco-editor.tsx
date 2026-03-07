@@ -114,19 +114,23 @@ export default function MonacoEditor({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Format Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleFormatCode}
-            className="h-8 text-muted-foreground hover:text-foreground"
-            title={t("format_code")}
-          >
-            <Wand2 className="w-4 h-4 mr-1.5" />
-            {t("format")}
-          </Button>
+          {/* Format Button - Only supported out of the box for specific languages */}
+          {currLanguage && ["javascript", "typescript", "json", "html", "css", "scss", "less"].some(lang => currLanguage.name.toLowerCase().startsWith(lang)) && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleFormatCode}
+                className="h-8 text-muted-foreground hover:text-foreground"
+                title={t("format_code")}
+              >
+                <Wand2 className="w-4 h-4 mr-1.5" />
+                {t("format")}
+              </Button>
 
-          <div className="w-px h-4 bg-border mx-1" />
+              <div className="w-px h-4 bg-border mx-1" />
+            </>
+          )}
 
           {/* Copy Button */}
           <Button

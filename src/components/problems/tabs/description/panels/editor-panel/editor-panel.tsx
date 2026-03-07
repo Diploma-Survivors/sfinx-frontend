@@ -56,7 +56,7 @@ export function EditorPanel({
   const { t: tCommon } = useTranslation("common");
   const { t } = useTranslation("problems");
 
-  const currentLanguageId = workspace?.currentLanguage?.[problem.id] ?? 46;
+  const currentLanguageId = workspace?.currentLanguage?.[problem.id] ?? 11;
   const currentCode =
     workspace?.currentCode?.[problem.id]?.[currentLanguageId] ??
     workspace?.languages?.find((lang) => lang.id === currentLanguageId)
