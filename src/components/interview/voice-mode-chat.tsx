@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ChatMarkdown } from "@/components/ui/chat-markdown";
 import { cn } from "@/lib/utils";
 import type { InterviewMessage } from "@/types/interview";
 import {
@@ -266,9 +267,13 @@ export function VoiceModeChat({
                     : "bg-muted/60 text-foreground rounded-bl-md border border-border/30",
                 )}
               >
-                <p className="whitespace-pre-wrap">
-                  {isUser ? `\u201C${msg.content}\u201D` : msg.content}
-                </p>
+                {isUser ? (
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {`\u201C${msg.content}\u201D`}
+                  </p>
+                ) : (
+                  <ChatMarkdown content={msg.content} />
+                )}
               </div>
 
               <div

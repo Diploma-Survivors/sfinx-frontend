@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { ChatMarkdown } from "@/components/ui/chat-markdown";
 import { cn } from "@/lib/utils";
 import type { InterviewMessage } from "@/types/interview";
 import { Bot, Loader2, Send, User } from "lucide-react";
@@ -109,7 +110,11 @@ export function InterviewChat({
                       : "bg-muted text-foreground rounded-bl-sm border",
                   )}
                 >
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {isUser ? (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  ) : (
+                    <ChatMarkdown content={msg.content} />
+                  )}
                 </div>
                 <span className="text-[10px] text-muted-foreground mt-1">
                   {formatTime(msg.createdAt)}

@@ -23,6 +23,7 @@ import { EditorPanel } from "@/components/problems/tabs/description/panels/edito
 import { SampleTestCasesPanel } from "@/components/problems/tabs/description/panels/sample-testcases-panel/sample-testcases-panel";
 import { Button } from "@/components/ui/button";
 import { useInterview } from "@/hooks/use-interview";
+import { InterviewService } from "@/services/interview-service";
 import { SubmissionsService } from "@/services/submissions-service";
 import { toastService } from "@/services/toasts-service";
 import { setProblem } from "@/store/slides/problem-slice";
@@ -210,6 +211,33 @@ export default function InterviewSessionPage() {
       }
     }
   }, [interview?.startedAt, interview?.endedAt, phase]);
+
+  // Sync immediately when voice connects so the AI has current code on the first turn
+  useEffect(() => {
+    if (!isVoiceConnected || !interview?.id) return;
+    InterviewService.syncCodeSnapshot(interview.id, {
+      code: code || "",
+      language,
+      timestamp: Date.now(),
+    });
+    // Only re-run when voice connection state changes, not on every code change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVoiceConnected, interview?.id]);
+
+  // Sync on code changes while voice is active (short debounce to avoid per-keystroke calls)
+  useEffect(() => {
+    if (!isVoiceConnected || !interview?.id) return;
+
+    const timer = setTimeout(() => {
+      InterviewService.syncCodeSnapshot(interview.id, {
+        code: code || "",
+        language,
+        timestamp: Date.now(),
+      });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [code, language, isVoiceConnected, interview?.id]);
 
   // Auto-connect voice when enabled
   useEffect(() => {

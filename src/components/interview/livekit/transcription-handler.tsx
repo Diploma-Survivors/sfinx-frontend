@@ -78,11 +78,14 @@ export function TranscriptionHandler({
             onTranscript?.('assistant', segment.text, segment.id);
           }
         } else {
+          // Show partial user speech in real-time so the user sees their words
+          // appear as they speak. addLocalMessage upserts by ID, so the final
+          // segment naturally replaces the partial one.
+          if (processedFinalRef.current.has(segment.id)) continue;
           if (segment.final) {
-            if (processedFinalRef.current.has(segment.id)) continue;
             processedFinalRef.current.add(segment.id);
-            onTranscript?.('user', segment.text, segment.id);
           }
+          onTranscript?.('user', segment.text, segment.id);
         }
       }
     };
