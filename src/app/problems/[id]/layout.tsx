@@ -137,9 +137,10 @@ function ProblemLayoutInner({ children }: { children: React.ReactNode }) {
                       key={item.id}
                       variant={isActive ? 'secondary' : 'ghost'}
                       size="sm"
-                      onClick={() =>
-                        router.push(`/problems/${problemId}/${item.id}`)
-                      }
+                      onClick={() => {
+                        clearSubmitResults();
+                        router.push(`/problems/${problemId}/${item.id}`);
+                      }}
                       className={cn(
                         'h-8 text-xs font-medium gap-2 px-3',
                         isActive
