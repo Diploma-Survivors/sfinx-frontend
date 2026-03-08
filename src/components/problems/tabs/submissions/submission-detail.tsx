@@ -118,21 +118,23 @@ export default function SubmissionDetail({
                 </h2>
                 {submission.status.toLowerCase() ===
                   SubmissionStatus.ACCEPTED.toLowerCase() && (
-                    <Link
-                      href={`/problems/${problemId}/solutions/create/${submission.id}`}
-                      target="_blank"
-                    >
-                      <Tooltip content={t("share_solution_tooltip")}>
-                        <Button
-                          className="bg-green-600 hover:bg-green-700 text-white gap-2"
-                          size="sm"
-                        >
-                          <PenSquare className="w-4 h-4" />
-                        </Button>
-                      </Tooltip>
-                    </Link>
+                      <Link
+                        href={`/problems/${problemId}/solutions/create/${submission.id}`}
+                        target="_blank"
+                      >
+                        <Tooltip content={t("share_solution_tooltip")}>
+                          <Button
+                            className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                            size="sm"
+                          >
+                            <PenSquare className="w-4 h-4" />
+                          </Button>
+                        </Tooltip>
+                      </Link>
                   )}
               </div>
+              {submission.status.toLowerCase() ===
+                  SubmissionStatus.ACCEPTED.toLowerCase() &&(
               <Button
                 variant="outline"
                 size="sm"
@@ -142,6 +144,7 @@ export default function SubmissionDetail({
                 <Sparkles className="w-4 h-4" />
                 {t("ai_review_button")}
               </Button>
+            )}
             </div>
 
             {/* Verdict */}

@@ -1,13 +1,16 @@
 import { getStatusMeta } from "@/lib/utils/testcase-status";
 import { formatMemory, formatRuntime } from "@/lib/utils/format-submission";
 import type { SSEResult } from "@/services/sse-service";
-import { MemoryStick, Timer, X, XCircle } from "lucide-react";
+import { MemoryStick, Timer, X, XCircle, Copy, Loader2, PenSquare, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SubmissionStatus } from "@/types/submissions";
 import { PerformanceChart } from "./performance-chart";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useApp } from "@/contexts/app-context";
+import AIReviewModal from "@/components/problems/tabs/submissions/ai-review-modal";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface SubmitResultTabProps {
   width: number;
@@ -25,6 +28,7 @@ export function SubmitResultTab({
   const { t } = useTranslation("problems");
   const { user } = useApp();
   const statusInfo = result ? getStatusMeta(result.status) : null;
+  const [isAIReviewModalOpen, setIsAIReviewModalOpen] = useState(false);
 
   if (isSubmitting) {
     return (
@@ -122,13 +126,26 @@ export function SubmitResultTab({
               <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
                 {t("submit_result_title")}
               </h2>
-              <button
-                onClick={onClose}
-                className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {result?.status === SubmissionStatus.ACCEPTED && result?.id && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAIReviewModalOpen(true)}
+                    className="gap-2 text-yellow-600 border-yellow-200 hover:bg-yellow-50 dark:text-yellow-400 dark:border-yellow-900 dark:hover:bg-yellow-900/20"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {t("ai_review_button")}
+                  </Button>
+                )}
+                <button
+                  onClick={onClose}
+                  className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Verdict */}
@@ -319,6 +336,14 @@ export function SubmitResultTab({
           </div>
         </div>
       </div>
+      
+      {result?.id && (
+        <AIReviewModal
+          submissionId={result.id.toString()}
+          isOpen={isAIReviewModalOpen}
+          onClose={() => setIsAIReviewModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
