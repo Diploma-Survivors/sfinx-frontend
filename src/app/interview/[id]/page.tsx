@@ -476,30 +476,11 @@ export default function InterviewSessionPage() {
 
     return (
       <LiveKitErrorBoundary
-        fallback={
-          <div className="flex flex-col h-[calc(100vh-64px)] bg-background overflow-hidden">
-            <InterviewHeader
-              interviewTime={interviewTime}
-              voiceEnabled={false}
-              voiceConnected={false}
-              onVoiceToggle={() => {}}
-              onEndInterview={handleEndInterview}
-              isEnding={isLoading}
-              problem={interview.problemSnapshot}
-              readOnly={isReadOnly}
-            />
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-muted-foreground mb-4">
-                  {t("live.voice_unavailable_fallback")}
-                </p>
-                <Button onClick={() => window.location.reload()}>
-                  {t("live.retry_connection")}
-                </Button>
-              </div>
-            </div>
-          </div>
-        }
+        onError={() => {
+          setVoiceEnabled(false);
+          setIsVoiceConnected(false);
+          clearLiveKitToken();
+        }}
       >
         <LiveKitProvider
           token={!isReadOnly ? liveKitToken : null}
