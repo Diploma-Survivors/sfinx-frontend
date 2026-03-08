@@ -157,7 +157,11 @@ export default function ContestProblemWrapper({
                 <>
                   {activeTab === ContestNavTabs.DESCRIPTION && (
                     <div className="h-full">
-                      <DescriptionPanel problem={problem} width={100} />
+                      <DescriptionPanel 
+                        problem={problem} 
+                        width={100} 
+                        contestMode={contestMode}
+                      />
                     </div>
                   )}
                   {activeTab === ContestNavTabs.SUBMISSIONS && (
