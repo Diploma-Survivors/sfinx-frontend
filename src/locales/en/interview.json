@@ -63,7 +63,8 @@
     "viewReport": "View Full Report",
     "viewHistory": "View History",
     "newInterview": "New Interview",
-    "detailed_feedback": "Detailed Feedback"
+    "detailed_feedback": "Detailed Feedback",
+    "reviewConversation": "Review Conversation"
   },
   "endDialog": {
     "title": "End Interview?",
@@ -106,6 +107,7 @@
     "read_only_mode": "Read-only mode: This interview is completed. You can view the conversation and code but cannot make changes.",
     "warning_submit_ends_session": "Warning: Submitting your code will end this interview session.",
     "dismiss": "Dismiss",
+    "view_evaluation": "View Evaluation",
     "invalid_problem_id": "Invalid problem ID",
     "problem_not_found": "Problem not found",
     "failed_to_load_problem": "Failed to load problem"
@@ -126,6 +128,8 @@
     "score": "Score",
     "resume": "Resume",
     "view_details": "View Details",
+    "view_evaluation": "Evaluation",
+    "view_conversation": "Conversation",
     "score_problem_solving": "Problem Solving",
     "score_communication": "Communication",
     "score_code_quality": "Code Quality",

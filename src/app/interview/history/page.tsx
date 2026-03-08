@@ -313,13 +313,26 @@ export default function InterviewHistoryPage() {
                       </Button>
                     )}
                     {interview.status === "completed" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleOpenInterview(interview.id)}
-                      >
-                        {t("history.view_details")}
-                      </Button>
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-muted-foreground hover:text-foreground"
+                          onClick={() => router.push(`/interview/${interview.id}?view=conversation`)}
+                        >
+                          <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                          {t("history.view_conversation")}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="border-primary/40 text-primary hover:bg-primary/5 hover:border-primary/60"
+                          onClick={() => router.push(`/interview/${interview.id}`)}
+                        >
+                          <TrendingUp className="w-3.5 h-3.5 mr-1.5" />
+                          {t("history.view_evaluation")}
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>

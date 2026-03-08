@@ -21,6 +21,7 @@ interface InterviewFeedbackProps {
   evaluation?: InterviewEvaluation | null;
   onStartNew?: () => void;
   onViewHistory?: () => void;
+  onViewConversation?: () => void;
 }
 
 function ScoreRing({ score }: { score: number }) {
@@ -103,6 +104,7 @@ export function InterviewFeedback({
   evaluation,
   onStartNew,
   onViewHistory,
+  onViewConversation,
 }: InterviewFeedbackProps) {
   const { t } = useTranslation("interview");
 
@@ -261,6 +263,16 @@ export function InterviewFeedback({
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2">
+              {onViewConversation && (
+                <Button
+                  variant="ghost"
+                  onClick={onViewConversation}
+                  className="flex-1 text-muted-foreground hover:text-foreground"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                  {t("feedback.reviewConversation")}
+                </Button>
+              )}
               {onViewHistory && (
                 <Button
                   variant="outline"
