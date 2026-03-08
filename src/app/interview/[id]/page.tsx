@@ -313,12 +313,13 @@ export default function InterviewSessionPage() {
 
   const handleEndInterview = useCallback(async () => {
     try {
-      await endInterview();
+      const currentCode = workspace.currentCode[String(interview?.problemId)]?.[currentLanguageId] || '';
+      await endInterview(currentCode, currentLanguageId);
       // Stay on page — feedback will render when phase === "completed"
     } catch (error) {
       // Error handled by hook
     }
-  }, [endInterview]);
+  }, [endInterview, workspace.currentCode, interview?.problemId, currentLanguageId]);
 
   const handleRun = useCallback(
     async (sourceCode: string, languageId: number) => {
@@ -342,12 +343,13 @@ export default function InterviewSessionPage() {
     [interview?.problemId, testCases, executeRun, t],
   );
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      await handleEndInterview();
+    } finally {
       setIsSubmitting(false);
-      handleEndInterview();
-    }, 1500);
+    }
   }, [handleEndInterview]);
 
   const handleTestCaseAdd = useCallback(() => {

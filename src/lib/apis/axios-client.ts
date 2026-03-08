@@ -133,7 +133,7 @@ clientApi.interceptors.response.use(
     if (error.response) {
       const status = error.response.status;
       const message =
-        (error.response?.data as any)?.message ||
+        (error.response?.data as any)?.error ||
         error.message ||
         'An error occurred';
 
