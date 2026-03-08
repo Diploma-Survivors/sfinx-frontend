@@ -27,7 +27,7 @@ import { InterviewService } from "@/services/interview-service";
 import { SubmissionsService } from "@/services/submissions-service";
 import { toastService } from "@/services/toasts-service";
 import { setProblem } from "@/store/slides/problem-slice";
-import { selectWorkspace } from "@/store/slides/workspace-slice";
+import { selectWorkspace, updateCurrentCode } from "@/store/slides/workspace-slice";
 import { MessageRole } from "@/types/interview";
 import { initialProblemData, ProblemStatus } from "@/types/problems";
 import type { SampleTestCase } from "@/types/testcases";
@@ -187,6 +187,17 @@ export default function InterviewSessionPage() {
       };
       dispatch(setProblem(problemWithDefaults));
 
+      // Initialize workspace with starter code if empty
+      const problemId = interview.problemId;
+      const languageId = workspace.currentLanguage?.[String(problemId)] ?? 11;
+      const existingCode = workspace.currentCode?.[problemId]?.[languageId];
+      if (!existingCode && problemId) {
+        const starterCode = workspace.languages?.find((l) => l.id === languageId)?.starterCode ?? "";
+        if (starterCode) {
+          dispatch(updateCurrentCode({ problemId, languageId, code: starterCode }));
+        }
+      }
+
       if (interview.problemSnapshot.sampleTestcases?.length) {
         setTestCases(
           interview.problemSnapshot.sampleTestcases.map(
@@ -313,7 +324,11 @@ export default function InterviewSessionPage() {
 
   const handleEndInterview = useCallback(async () => {
     try {
-      const currentCode = workspace.currentCode[String(interview?.problemId)]?.[currentLanguageId] || '';
+      // Use numeric problemId as key (consistent with how code is stored in workspace)
+      const problemId = interview?.problemId;
+      const currentCode = problemId
+        ? (workspace.currentCode[problemId]?.[currentLanguageId] || '')
+        : '';
       await endInterview(currentCode, currentLanguageId);
       // Stay on page — feedback will render when phase === "completed"
     } catch (error) {
