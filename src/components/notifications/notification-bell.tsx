@@ -239,7 +239,8 @@ export function NotificationBell() {
                     <Link
                       href={notification.link}
                       className="text-xs text-primary font-medium mt-2 hover:underline"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleMarkAsRead(notification.id, notification.isRead);
                         setIsOpen(false);
                       }}
