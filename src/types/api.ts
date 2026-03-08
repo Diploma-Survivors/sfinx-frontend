@@ -4,6 +4,12 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface ApiError {
+  status: string;
+  message: string;
+  code?: string;
+}
+
 export enum HttpStatus {
   CONTINUE = 'CONTINUE',
   SWITCHING_PROTOCOLS = 'SWITCHING_PROTOCOLS',

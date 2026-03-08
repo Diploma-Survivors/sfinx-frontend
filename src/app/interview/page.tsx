@@ -351,12 +351,13 @@ export default function LiveInterviewPage() {
 
   const handleEndInterview = useCallback(async () => {
     try {
-      await endInterview();
+      const currentCode = workspace.currentCode[String(interview?.problemId)]?.[currentLanguageId] || '';
+      await endInterview(currentCode, currentLanguageId);
       router.push("/interview/history");
     } catch (error) {
       // Error handled by hook
     }
-  }, [endInterview, router]);
+  }, [endInterview, router, workspace.currentCode, interview?.problemId, currentLanguageId]);
 
   const handleRun = useCallback(
     async (sourceCode: string, languageId: number) => {

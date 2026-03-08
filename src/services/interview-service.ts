@@ -2,6 +2,7 @@ import clientApi from '@/lib/apis/axios-client';
 import type { ApiResponse } from '@/types/api';
 import type {
   CodeSnapshot,
+  EndInterviewRequest,
   Interview,
   InterviewEvaluation,
   InterviewMessage,
@@ -72,10 +73,12 @@ async function getChatHistory(
  * End an interview and get evaluation
  */
 async function endInterview(
-  interviewId: string
+  interviewId: string,
+  data: EndInterviewRequest
 ): Promise<AxiosResponse<ApiResponse<InterviewEvaluation>>> {
   return clientApi.post<ApiResponse<InterviewEvaluation>>(
-    `/ai-interviews/${interviewId}/end`
+    `/ai-interviews/${interviewId}/end`,
+    data
   );
 }
 
