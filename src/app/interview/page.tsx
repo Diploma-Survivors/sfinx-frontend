@@ -28,6 +28,7 @@ import { SubmissionsService } from "@/services/submissions-service";
 import { toastService } from "@/services/toasts-service";
 import { setProblem } from "@/store/slides/problem-slice";
 import { selectWorkspace } from "@/store/slides/workspace-slice";
+import type { InterviewLanguage } from "@/types/interview";
 import { MessageRole } from "@/types/interview";
 import { SortBy, SortOrder } from "@/types/problems";
 import type { Problem } from "@/types/problems";
@@ -106,6 +107,7 @@ export default function LiveInterviewPage() {
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
   const [isLoadingProblem, setIsLoadingProblem] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<InterviewLanguage>("en");
   
 
   const workspace = useSelector(selectWorkspace);
@@ -303,7 +305,7 @@ export default function LiveInterviewPage() {
         setTestCases([{ id: 1, input: "", expectedOutput: "" }]);
       }
       
-      await startInterview(problem.id);
+      await startInterview(problem.id, selectedLanguage);
       dispatch(setProblem(problem));
       await SubmissionsService.getLanguageList();
     } catch (error) {
@@ -315,7 +317,7 @@ export default function LiveInterviewPage() {
     } finally {
       setIsStarting(false);
     }
-  }, [startInterview, dispatch, selectedProblem, isLoggedin, isEmailVerified, user, t]);
+  }, [startInterview, dispatch, selectedProblem, selectedLanguage, isLoggedin, isEmailVerified, user, t]);
 
   const handleSendMessage = useCallback(async () => {
     console.log(
@@ -497,6 +499,8 @@ export default function LiveInterviewPage() {
           }}
           isLoading={isStarting}
           problemDisplay={problemDisplay}
+          selectedLanguage={selectedLanguage}
+          onLanguageChange={setSelectedLanguage}
         />
         <PremiumModal
           isOpen={isPremiumModalOpen}

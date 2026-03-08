@@ -26,11 +26,14 @@ export interface InterviewMessage {
   createdAt: string;
 }
 
+export type InterviewLanguage = 'en' | 'vi';
+
 export interface Interview {
   id: string;
   userId: number;
   problemId: number;
   problemSnapshot: ProblemSnapshot;
+  language: InterviewLanguage;
   status: InterviewStatus;
   startedAt: string;
   endedAt?: string;

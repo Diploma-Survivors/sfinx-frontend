@@ -16,10 +16,12 @@ import type { AxiosResponse } from 'axios';
  * Start a new AI interview session
  */
 async function startInterview(
-  problemId: number
+  problemId: number,
+  language: string = 'en'
 ): Promise<AxiosResponse<ApiResponse<StartInterviewResponse>>> {
   return clientApi.post<ApiResponse<StartInterviewResponse>>('/ai-interviews', {
     problemId,
+    language,
   });
 }
 

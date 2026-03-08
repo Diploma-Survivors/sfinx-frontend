@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import type { InterviewLanguage } from "@/types/interview";
 import {
   Code2,
   Loader2,
@@ -14,6 +15,15 @@ import {
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+const LANGUAGE_OPTIONS: {
+  value: InterviewLanguage;
+  label: string;
+  flag: string;
+}[] = [
+  { value: "en", label: "English", flag: "🇺🇸" },
+  { value: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+];
+
 interface InterviewGreetingProps {
   voiceEnabled: boolean;
   onVoiceEnabledChange: (enabled: boolean) => void;
@@ -21,6 +31,8 @@ interface InterviewGreetingProps {
   onViewHistory?: () => void;
   isLoading?: boolean;
   problemDisplay?: React.ReactNode;
+  selectedLanguage?: InterviewLanguage;
+  onLanguageChange?: (language: InterviewLanguage) => void;
 }
 
 export function InterviewGreeting({
@@ -30,6 +42,8 @@ export function InterviewGreeting({
   onViewHistory,
   isLoading = false,
   problemDisplay,
+  selectedLanguage = "en",
+  onLanguageChange,
 }: InterviewGreetingProps) {
   const { t } = useTranslation("interview");
 
@@ -129,6 +143,36 @@ export function InterviewGreeting({
                 </p>
               </div>
             </div>
+            )}
+
+            {/* Language Selector */}
+            {onLanguageChange && (
+              <div className="flex gap-2">
+                {LANGUAGE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => onLanguageChange(option.value)}
+                    disabled={isLoading}
+                    className={`flex-1 flex items-center justify-center gap-2.5 p-4 rounded-2xl border transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-sm ${
+                      selectedLanguage === option.value
+                        ? "border-primary/60 bg-primary/10 shadow-[0_0_15px_rgba(var(--primary),0.1)]"
+                        : "border-border/40 hover:bg-white/50 dark:hover:bg-black/30"
+                    }`}
+                  >
+                    <span className="text-xl">{option.flag}</span>
+                    <span
+                      className={`text-sm font-medium transition-colors ${
+                        selectedLanguage === option.value
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {option.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
             )}
 
             <button
