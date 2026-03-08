@@ -29,7 +29,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ConnectionAlert } from "./livekit";
 
 interface InterviewHeaderProps {
   interviewTime: number;
@@ -190,13 +189,6 @@ export function InterviewHeader({
           )}
         </div>
       </div>
-
-      {/* Connection Alert Banner — only when LiveKit room is mounted (started + not fully disconnected) */}
-      {hasVoiceStarted && !isVoiceDisconnected && (
-        <div className="px-4 pb-2">
-          <ConnectionAlert />
-        </div>
-      )}
 
       {/* Mic Permission Warning Banner */}
       {showMicWarning && (

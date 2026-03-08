@@ -1,29 +1,25 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { logger } from "@/lib/logger";
-import { AlertCircle } from "lucide-react";
 import type React from "react";
 import { Component, type ReactNode } from "react";
-import { withTranslation, type WithTranslation } from "react-i18next";
 
-interface LiveKitErrorBoundaryProps extends WithTranslation {
+interface LiveKitErrorBoundaryProps {
   children: ReactNode;
-  fallback?: ReactNode;
   onError?: (error: Error) => void;
 }
 
 interface LiveKitErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
 }
 
 /**
- * Error Boundary for LiveKit components
+ * Error Boundary for LiveKit components.
  *
- * Catches errors in the LiveKit component tree and provides a fallback UI.
- * This prevents the entire interview page from crashing if the voice
- * connection fails.
+ * When a LiveKit render error is caught (e.g. "No room provided"), the
+ * onError callback fires so the parent can disable voice and clear the
+ * token. The boundary then auto-resets on the next tick so children
+ * re-render cleanly in text-chat mode — no full-page error screen.
  */
 class LiveKitErrorBoundaryComponent extends Component<
   LiveKitErrorBoundaryProps,
@@ -34,8 +30,8 @@ class LiveKitErrorBoundaryComponent extends Component<
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): LiveKitErrorBoundaryState {
-    return { hasError: true, error };
+  static getDerivedStateFromError(): LiveKitErrorBoundaryState {
+    return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
@@ -46,46 +42,24 @@ class LiveKitErrorBoundaryComponent extends Component<
     });
 
     this.props.onError?.(error);
-  }
 
-  handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
-  };
+    // Auto-reset after parent state (voice disabled + token cleared) settles,
+    // so children re-render without the LiveKit room and no error UI is shown.
+    setTimeout(() => {
+      this.setState({ hasError: false });
+    }, 0);
+  }
 
   render() {
     if (this.state.hasError) {
-      // Custom fallback UI
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-
-      return (
-        <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-          <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
-            <AlertCircle className="w-6 h-6 text-destructive" />
-          </div>
-          <h3 className="text-lg font-semibold mb-2">
-            {this.props.t("livekit.voice_connection_error")}
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-            {this.props.t("livekit.connection_issue_message")}
-          </p>
-          <div className="flex gap-2">
-            <Button onClick={this.handleRetry} variant="outline">
-              {this.props.t("livekit.try_again")}
-            </Button>
-          </div>
-        </div>
-      );
+      // Render nothing while waiting for the auto-reset tick.
+      return null;
     }
-
     return this.props.children;
   }
 }
 
-export const LiveKitErrorBoundary = withTranslation("interview")(
-  LiveKitErrorBoundaryComponent,
-);
+export { LiveKitErrorBoundaryComponent as LiveKitErrorBoundary };
 
 /**
  * Hook to handle LiveKit-specific errors
