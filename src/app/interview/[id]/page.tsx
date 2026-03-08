@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +31,7 @@ import { selectWorkspace } from "@/store/slides/workspace-slice";
 import { MessageRole } from "@/types/interview";
 import { initialProblemData, ProblemStatus } from "@/types/problems";
 import type { SampleTestCase } from "@/types/testcases";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, BarChart2 } from "lucide-react";
 
 export default function InterviewSessionPage() {
   const { t } = useTranslation("interview");
@@ -69,6 +69,8 @@ export default function InterviewSessionPage() {
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [showWarningBanner, setShowWarningBanner] = useState(false);
+  const queryParams = useSearchParams();
+  const viewConversation = queryParams.get("view") === "conversation";
 
   useEffect(() => {
     const hasSeenWarning = localStorage.getItem("interview_submit_warning_seen");
@@ -444,12 +446,13 @@ export default function InterviewSessionPage() {
     );
   }
 
-  if (phase === "completed" && evaluation) {
+  if (phase === "completed" && evaluation && !viewConversation) {
     return (
       <div className="min-h-[calc(100vh-64px)] overflow-auto">
         <InterviewFeedback
           interviewTime={interviewTime}
           evaluation={evaluation}
+          onViewConversation={() => router.push(`/interview/${interviewId}?view=conversation`)}
           onViewHistory={() => router.push("/interview/history")}
           onStartNew={() => router.push("/interview")}
         />
@@ -457,7 +460,7 @@ export default function InterviewSessionPage() {
     );
   }
 
-  if (phase === "active" && interview) {
+  if ((phase === "active" || (phase === "completed" && viewConversation)) && interview) {
     // Determine if this is a read-only view (completed interview)
     const isReadOnly = interview.status === "completed";
 
@@ -526,10 +529,21 @@ export default function InterviewSessionPage() {
             />
 
             {isReadOnly && (
-              <div className="px-4 py-2 border-b bg-amber-50 dark:bg-amber-900/20 flex items-center gap-3">
+              <div className="px-4 py-2 border-b bg-amber-50 dark:bg-amber-900/20 flex items-center justify-between gap-3">
                 <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">
                   {t("live.read_only_mode")}
                 </span>
+                {viewConversation && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                    onClick={() => router.push(`/interview/${interviewId}`)}
+                  >
+                    <BarChart2 className="w-3 h-3 mr-1" />
+                    {t("live.view_evaluation")}
+                  </Button>
+                )}
               </div>
             )}
 
