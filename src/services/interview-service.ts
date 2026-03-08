@@ -8,7 +8,6 @@ import type {
   InterviewMessage,
   LiveKitTokenResponse,
   SendMessageRequest,
-  StartInterviewResponse,
 } from '@/types/interview';
 import type { AxiosResponse } from 'axios';
 
@@ -18,8 +17,8 @@ import type { AxiosResponse } from 'axios';
 async function startInterview(
   problemId: number,
   language: string = 'en'
-): Promise<AxiosResponse<ApiResponse<StartInterviewResponse>>> {
-  return clientApi.post<ApiResponse<StartInterviewResponse>>('/ai-interviews', {
+): Promise<AxiosResponse<ApiResponse<Interview>>> {
+  return clientApi.post<ApiResponse<Interview>>('/ai-interviews', {
     problemId,
     language,
   });

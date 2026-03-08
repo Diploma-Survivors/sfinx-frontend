@@ -67,7 +67,16 @@ export default function InterviewSessionPage() {
   const [interviewTime, setInterviewTime] = useState(0);
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
+  // True once the room has connected at least once. Guards the reconnect
+  // effect so it never fires on the initial render (before first connect).
+  const hasEverConnectedRef = useRef(false);
+  // Monotonically increasing counter — each voice-ON attempt gets its own
+  // generation. If the user clicks OFF before the attempt resolves, the
+  // generation is invalidated and setVoiceEnabled(true) is suppressed.
+  const voiceToggleGenRef = useRef(0);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [hasVoiceStarted, setHasVoiceStarted] = useState(false);
+  const [isVoiceDisconnected, setIsVoiceDisconnected] = useState(false);
   const [showWarningBanner, setShowWarningBanner] = useState(false);
   const queryParams = useSearchParams();
   const viewConversation = queryParams.get("view") === "conversation";
@@ -89,6 +98,7 @@ export default function InterviewSessionPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("voice") === "1") {
       setVoiceEnabled(true);
+      setHasVoiceStarted(true);
     }
   }, []);
 
@@ -241,59 +251,42 @@ export default function InterviewSessionPage() {
     return () => clearTimeout(timer);
   }, [code, language, isVoiceConnected, interview?.id]);
 
-  // Auto-connect voice when enabled
-  useEffect(() => {
-    if (isVoiceConnecting) return;
-
-    if (voiceEnabled && interview && phase === "active" && !liveKitToken) {
-      console.log("[VoiceAutoConnect] Connecting...");
-      setIsVoiceConnecting(true);
-      connectVoice()
-        .then(() => console.log("[VoiceAutoConnect] Success"))
-        .catch((err) => {
-          console.error("[VoiceAutoConnect] Failed:", err);
-          setVoiceEnabled(false);
-        })
-        .finally(() => setIsVoiceConnecting(false));
-    }
-  }, [
-    voiceEnabled,
-    interview,
-    phase,
-    liveKitToken,
-    connectVoice,
-    isVoiceConnecting,
-  ]);
-
   const handleVoiceToggle = useCallback(async () => {
-    const newVoiceEnabled = !voiceEnabled;
-    console.log("[VoiceToggle]", {
-      from: voiceEnabled,
-      to: newVoiceEnabled,
-      hasToken: !!liveKitToken,
-    });
-
-    if (newVoiceEnabled) {
-      if (!liveKitToken) {
-        setIsVoiceConnecting(true);
-        try {
-          await connectVoice();
+    if (!voiceEnabled) {
+      const myGen = ++voiceToggleGenRef.current;
+      setIsVoiceConnecting(true);
+      try {
+        await connectVoice();
+        // Only enable voice if the user hasn't already clicked OFF while
+        // connectVoice was in-flight (rapid toggle race).
+        if (voiceToggleGenRef.current === myGen) {
           setVoiceEnabled(true);
-        } catch {
-          setVoiceEnabled(false);
-          setIsVoiceConnected(false);
-        } finally {
-          setIsVoiceConnecting(false);
+          setHasVoiceStarted(true);
         }
-      } else {
-        setVoiceEnabled(true);
+      } catch {
+        setVoiceEnabled(false);
+      } finally {
+        setIsVoiceConnecting(false);
       }
     } else {
+      voiceToggleGenRef.current++; // invalidate any in-flight connect attempt
       setVoiceEnabled(false);
-      setIsVoiceConnected(false);
-      clearLiveKitToken();
+      // Keep the token — room stays connected (just muted).
     }
-  }, [voiceEnabled, liveKitToken, connectVoice, clearLiveKitToken]);
+  }, [voiceEnabled, connectVoice]);
+
+  const handleReconnect = useCallback(async () => {
+    setIsVoiceDisconnected(false);
+    setIsVoiceConnecting(true);
+    try {
+      await connectVoice();
+      setVoiceEnabled(true);
+    } catch {
+      setIsVoiceDisconnected(true);
+    } finally {
+      setIsVoiceConnecting(false);
+    }
+  }, [connectVoice]);
 
   const handleSendMessage = useCallback(async () => {
     if (!inputText.trim()) return;
@@ -305,7 +298,7 @@ export default function InterviewSessionPage() {
         language: language,
       });
     } catch (err) {
-      console.error("[handleSendMessage] Error:", err);
+      // error handled by hook
     }
   }, [inputText, sendMessage, code, language, t]);
 
@@ -494,20 +487,23 @@ export default function InterviewSessionPage() {
         }
       >
         <LiveKitProvider
-          token={voiceEnabled && !isReadOnly ? liveKitToken : null}
+          token={!isReadOnly ? liveKitToken : null}
+          audioEnabled={voiceEnabled && !isReadOnly}
           onConnected={() => {
-            console.log("[LiveKit] Connected");
+            hasEverConnectedRef.current = true;
             setIsVoiceConnected(true);
+            setIsVoiceDisconnected(false);
           }}
           onDisconnected={() => {
-            console.log("[LiveKit] Disconnected");
             setIsVoiceConnected(false);
+            setIsVoiceDisconnected(true);
+            clearLiveKitToken();
           }}
           onError={(error) => {
-            console.error("[LiveKit] Error:", error);
             toastService.error(t("live.voice_connection_error_fallback"));
             setVoiceEnabled(false);
             setIsVoiceConnected(false);
+            clearLiveKitToken();
           }}
         >
           {isVoiceConnected && !isReadOnly && (
@@ -523,6 +519,8 @@ export default function InterviewSessionPage() {
               interviewTime={interviewTime}
               voiceEnabled={voiceEnabled && !isReadOnly}
               voiceConnected={isVoiceConnected && !isReadOnly}
+              hasVoiceStarted={hasVoiceStarted && !isReadOnly}
+              isVoiceDisconnected={isVoiceDisconnected}
               onVoiceToggle={handleVoiceToggle}
               onEndInterview={handleEndInterview}
               isEnding={isLoading}
@@ -577,7 +575,7 @@ export default function InterviewSessionPage() {
                 style={{ width: `${leftWidth}%` }}
               >
                 <div className="flex-1 overflow-hidden">
-                  {voiceEnabled && !isReadOnly ? (
+                  {hasVoiceStarted && !isReadOnly ? (
                     <VoiceModeChat
                       messages={messages}
                       inputText={inputText}
@@ -589,6 +587,9 @@ export default function InterviewSessionPage() {
                       voiceConnected={isVoiceConnected}
                       interviewStartedAt={interview.startedAt}
                       isEnding={isLoading}
+                      isDisconnected={isVoiceDisconnected}
+                      isReconnecting={isVoiceConnecting}
+                      onReconnect={handleReconnect}
                       voiceIndicator={
                         isVoiceConnected ? (
                           <VoiceChatIndicator isAgentSpeaking={isTyping} />

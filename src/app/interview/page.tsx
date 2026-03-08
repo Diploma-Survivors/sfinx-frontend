@@ -61,8 +61,7 @@ async function fetchProblemById(problemId: number): Promise<Problem | null> {
   try {
     const detailResponse = await ProblemsService.getProblemById(problemId);
     return detailResponse.data.data;
-  } catch (error) {
-    console.error('Failed to fetch problem:', error);
+  } catch {
     return null;
   }
 }
@@ -164,27 +163,13 @@ export default function LiveInterviewPage() {
 
   // Auto-connect voice when enabled
   useEffect(() => {
-    if (isVoiceConnecting) return;
+    if (isVoiceConnecting || !voiceEnabled || !interview || phase !== "active" || liveKitToken) return;
 
-    if (voiceEnabled && interview && phase === "active" && !liveKitToken) {
-      console.log("[VoiceAutoConnect] Connecting...");
-      setIsVoiceConnecting(true);
-      connectVoice()
-        .then(() => console.log("[VoiceAutoConnect] Success"))
-        .catch((err) => {
-          console.error("[VoiceAutoConnect] Failed:", err);
-          setVoiceEnabled(false);
-        })
-        .finally(() => setIsVoiceConnecting(false));
-    }
-  }, [
-    voiceEnabled,
-    interview,
-    phase,
-    liveKitToken,
-    connectVoice,
-    isVoiceConnecting,
-  ]);
+    setIsVoiceConnecting(true);
+    connectVoice()
+      .catch(() => setVoiceEnabled(false))
+      .finally(() => setIsVoiceConnecting(false));
+  }, [voiceEnabled, interview, phase, liveKitToken, connectVoice, isVoiceConnecting]);
 
   // Load specific problem from query parameter
   useEffect(() => {
@@ -239,34 +224,23 @@ export default function LiveInterviewPage() {
   }, [interview?.id, phase, isStarting, router, voiceEnabled]);
 
   const handleVoiceToggle = useCallback(async () => {
-    const newVoiceEnabled = !voiceEnabled;
-    console.log("[VoiceToggle]", {
-      from: voiceEnabled,
-      to: newVoiceEnabled,
-      hasToken: !!liveKitToken,
-    });
-
-    if (newVoiceEnabled) {
-      if (!liveKitToken) {
-        setIsVoiceConnecting(true);
-        try {
-          await connectVoice();
-          setVoiceEnabled(true);
-        } catch {
-          setVoiceEnabled(false);
-          setIsVoiceConnected(false);
-        } finally {
-          setIsVoiceConnecting(false);
-        }
-      } else {
+    if (!voiceEnabled) {
+      setIsVoiceConnecting(true);
+      try {
+        await connectVoice();
         setVoiceEnabled(true);
+      } catch {
+        setVoiceEnabled(false);
+        setIsVoiceConnected(false);
+      } finally {
+        setIsVoiceConnecting(false);
       }
     } else {
       setVoiceEnabled(false);
       setIsVoiceConnected(false);
       clearLiveKitToken();
     }
-  }, [voiceEnabled, liveKitToken, connectVoice, clearLiveKitToken]);
+  }, [voiceEnabled, connectVoice, clearLiveKitToken]);
 
   const handleStartInterview = useCallback(async () => {
     if (!isLoggedin) {
@@ -320,26 +294,13 @@ export default function LiveInterviewPage() {
   }, [startInterview, dispatch, selectedProblem, selectedLanguage, isLoggedin, isEmailVerified, user, t]);
 
   const handleSendMessage = useCallback(async () => {
-    console.log(
-      "[handleSendMessage] Called, input:",
-      inputText.substring(0, 50),
-    );
-    if (!inputText.trim()) {
-      console.log("[handleSendMessage] Empty input, returning");
-      return;
-    }
+    if (!inputText.trim()) return;
     const text = inputText;
     setInputText("");
-    console.log("[handleSendMessage] Calling sendMessage...");
-    try {
-      await sendMessage(text, {
-        code: code || "// No code written yet",
-        language: language,
-      });
-      console.log("[handleSendMessage] sendMessage completed");
-    } catch (err) {
-      console.error("[handleSendMessage] Error:", err);
-    }
+    await sendMessage(text, {
+      code: code || "// No code written yet",
+      language: language,
+    });
   }, [inputText, sendMessage, code, language]);
 
   const handleVoiceTranscript = useCallback(
@@ -571,17 +532,14 @@ export default function LiveInterviewPage() {
         }
       >
         <LiveKitProvider
-          token={voiceEnabled ? liveKitToken : null}
-          onConnected={() => {
-            console.log("[LiveKit] Connected");
-            setIsVoiceConnected(true);
-          }}
+          token={liveKitToken}
+          audioEnabled={voiceEnabled}
+          onConnected={() => setIsVoiceConnected(true)}
           onDisconnected={() => {
-            console.log("[LiveKit] Disconnected");
             setIsVoiceConnected(false);
+            clearLiveKitToken();
           }}
-          onError={(error) => {
-            console.error("[LiveKit] Error:", error);
+          onError={() => {
             toastService.error(t("live.voice_connection_error_fallback"));
             setVoiceEnabled(false);
             setIsVoiceConnected(false);

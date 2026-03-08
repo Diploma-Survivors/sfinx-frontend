@@ -14,7 +14,6 @@ import type {
   InterviewMessage,
   LiveKitTokenResponse,
   MessageRole,
-  StartInterviewResponse,
 } from '@/types/interview';
 import type { ApiError } from '@/types/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -97,6 +96,8 @@ export function useInterview(
   // Refs for stable callbacks and cleanup
   const interviewRef = useRef(interview);
   interviewRef.current = interview;
+  const liveKitTokenRef = useRef(liveKitToken);
+  liveKitTokenRef.current = liveKitToken;
   const isConnectingVoiceRef = useRef(false);
   const pendingMessagesRef = useRef<Set<string>>(new Set());
   const isActiveRef = useRef(true);
@@ -139,18 +140,11 @@ export function useInterview(
 
       try {
         const response = await InterviewService.startInterview(problemId, language);
-        const data = response.data.data as StartInterviewResponse;
-
-        // Fetch full interview details
-        const interviewResponse = await InterviewService.getInterview(
-          data.interviewId
-        );
-        const interviewData = interviewResponse.data.data as Interview;
+        const interviewData = response.data.data as Interview;
 
         if (isActiveRef.current) {
           setInterview(interviewData);
-          setMessages(interviewData.messages || []);
-          // Transition to active phase
+          setMessages([]);
           setPhase('active');
         }
       } catch (err) {
@@ -159,9 +153,7 @@ export function useInterview(
         handleError(error);
         throw error;
       } finally {
-        if (isActiveRef.current) {
-          setIsLoading(false);
-        }
+        if (isActiveRef.current) setIsLoading(false);
       }
     },
     [handleError]
@@ -186,8 +178,7 @@ export function useInterview(
         if (isActiveRef.current) {
           setInterview(interviewData);
           setMessages(interviewData.messages || []);
-          
-          // Set phase based on interview status
+
           if (interviewData.status === 'completed') {
             setEvaluation(interviewData.evaluation || null);
             setPhase('completed');
@@ -196,6 +187,21 @@ export function useInterview(
           } else {
             setPhase('greeting');
           }
+        }
+
+        // Pre-connect LiveKit for all active interviews so Iris is always in
+        // the room. Fresh sessions get a greeting; reconnects are silent
+        // (generateGreeting returns '' when messages already exist).
+        if (interviewData.status === 'active') {
+          InterviewService.getLiveKitToken(interviewData.id)
+            .then((res) => {
+              if (isActiveRef.current) {
+                setLiveKitToken(res.data.data as LiveKitTokenResponse);
+              }
+            })
+            .catch(() => {
+              // non-critical — falls back to text-only mode
+            });
         }
       } catch (err) {
         const error =
@@ -212,13 +218,12 @@ export function useInterview(
   );
 
   /**
-   * Get LiveKit token and connect to voice room
+   * Ensure mic permission and connect to the LiveKit room.
+   * If a token already exists (Iris pre-connected via loadInterview), the
+   * token fetch is skipped — only mic permission is verified.
    */
   const connectVoice = useCallback(async () => {
-    // Prevent duplicate connection attempts
-    if (isConnectingVoiceRef.current) {
-      return;
-    }
+    if (isConnectingVoiceRef.current) return;
 
     if (!interviewRef.current) {
       const error = new Error('No active interview');
@@ -229,16 +234,13 @@ export function useInterview(
     isConnectingVoiceRef.current = true;
 
     try {
-      // Check current permission status first
       const currentPermission = await checkMicrophonePermission();
-
       if (currentPermission === 'denied') {
         const error = new Error(getMicrophonePermissionErrorMessage());
         handleError(error);
         throw error;
       }
 
-      // Request microphone permission before connecting
       const permissionGranted = await requestMicrophonePermission();
       if (!permissionGranted) {
         const error = new Error(getMicrophonePermissionErrorMessage());
@@ -246,19 +248,17 @@ export function useInterview(
         throw error;
       }
 
-      if (isActiveRef.current) {
-        setIsLoading(true);
-        setPhase('connecting');
-      }
+      // Token already set (background pre-connect) — nothing else needed.
+      if (liveKitTokenRef.current) return;
+
+      if (isActiveRef.current) setIsLoading(true);
 
       try {
         const response = await InterviewService.getLiveKitToken(
           interviewRef.current.id
         );
-        const tokenData = response.data.data as LiveKitTokenResponse;
         if (isActiveRef.current) {
-          setLiveKitToken(tokenData);
-          setPhase('active');
+          setLiveKitToken(response.data.data as LiveKitTokenResponse);
         }
       } catch (err) {
         const error =
@@ -266,14 +266,9 @@ export function useInterview(
             ? err
             : new Error('Failed to connect to voice room');
         handleError(error);
-        if (isActiveRef.current) {
-          setPhase('active'); // Fall back to text-only mode
-        }
         throw error;
       } finally {
-        if (isActiveRef.current) {
-          setIsLoading(false);
-        }
+        if (isActiveRef.current) setIsLoading(false);
       }
     } finally {
       isConnectingVoiceRef.current = false;
@@ -286,13 +281,7 @@ export function useInterview(
    */
   const sendMessage = useCallback(
     async (content: string, options?: SendMessageOptions) => {
-      console.log('[sendMessage] Starting:', {
-        content: content.substring(0, 50),
-        options,
-      });
-
       if (!interviewRef.current) {
-        console.error('[sendMessage] No active interview');
         handleError(new Error('No active interview'));
         return;
       }
@@ -300,7 +289,6 @@ export function useInterview(
       const tempId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       pendingMessagesRef.current.add(tempId);
 
-      // Optimistically add user message
       const tempUserMessage: InterviewMessage = {
         id: tempId,
         interviewId: interviewRef.current.id,
@@ -312,11 +300,9 @@ export function useInterview(
       if (isActiveRef.current) {
         setMessages((prev) => [...prev, tempUserMessage]);
         setIsTyping(true);
-        console.log('[sendMessage] Added optimistic user message');
       }
 
       try {
-        console.log('[sendMessage] Sending to API...');
         const response = await InterviewService.sendMessage(
           interviewRef.current.id,
           {
@@ -326,28 +312,20 @@ export function useInterview(
             language: options?.language,
           }
         );
-        console.log('[sendMessage] API response:', response.data);
 
         const aiMessage = response.data.data as InterviewMessage;
-        console.log('[sendMessage] AI message:', aiMessage);
 
         if (isActiveRef.current) {
           setMessages((prev) => {
             const filtered = prev.filter((m) => m.id !== tempId);
-
-            // Convert temp to permanent
             const userMessage: InterviewMessage = {
               ...tempUserMessage,
               id: `user-${Date.now()}`,
             };
-
-            console.log('[sendMessage] Adding user and AI messages to state');
             return [...filtered, userMessage, aiMessage];
           });
         }
       } catch (err) {
-        console.error('[sendMessage] Error:', err);
-        // Remove optimistic message on error
         if (isActiveRef.current) {
           setMessages((prev) => prev.filter((m) => m.id !== tempId));
         }
@@ -424,36 +402,42 @@ export function useInterview(
 
       if (isActiveRef.current) {
         setMessages((prev) => {
-          // Check if we're updating an existing streaming message
           const existingIndex = prev.findIndex((m) => m.id === id);
 
           if (existingIndex >= 0) {
-            // Update existing message (streaming continuation)
+            // Streaming update: accumulate content into the existing entry.
+            // If the fully-accumulated text now matches another message (e.g.
+            // the greeting already seeded from the DB), remove this streaming
+            // copy — the DB message is the canonical one.
+            const isDuplicateOfAnother = prev.some(
+              (m, i) => i !== existingIndex && m.content === content && m.role === role
+            );
+            if (isDuplicateOfAnother) {
+              return prev.filter((_, i) => i !== existingIndex);
+            }
             const updated = [...prev];
             updated[existingIndex] = { ...updated[existingIndex], content };
             return updated;
           }
 
-          // Check for duplicate (avoid adding same content twice within 5 seconds)
-          const isDuplicate = prev.some(
-            (m) =>
-              m.content === content &&
-              m.role === role &&
-              Date.now() - new Date(m.createdAt).getTime() < 5000
-          );
+          // New entry: skip exact duplicates for assistant only (prevents DB greeting
+          // from duplicating when LiveKit also sends it as a transcript).
+          // User STT messages must always be added — the same words can appear in
+          // different turns (e.g. "okay" → think → "okay" again).
+          if (role !== 'user' && prev.some((m) => m.content === content && m.role === role)) {
+            return prev;
+          }
 
-          if (isDuplicate) return prev;
-
-          // Add new message
-          const newMessage: InterviewMessage = {
-            id,
-            interviewId: interviewRef.current!.id,
-            role,
-            content,
-            createdAt: new Date().toISOString(),
-          };
-
-          return [...prev, newMessage];
+          return [
+            ...prev,
+            {
+              id,
+              interviewId: interviewRef.current!.id,
+              role,
+              content,
+              createdAt: new Date().toISOString(),
+            },
+          ];
         });
       }
     },
@@ -498,13 +482,12 @@ export function useInterview(
   }, []);
 
   /**
-   * Clear LiveKit token (for disconnecting voice)
+   * Clear LiveKit token (forces a fresh connect on next enable).
    */
   const clearLiveKitToken = useCallback(() => {
-    if (isActiveRef.current) {
-      setLiveKitToken(null);
-    }
+    if (isActiveRef.current) setLiveKitToken(null);
   }, []);
+
 
   return {
     phase,

@@ -56,11 +56,6 @@ export interface InterviewEvaluation {
   createdAt: string;
 }
 
-export interface StartInterviewResponse {
-  interviewId: string;
-  greeting: string;
-}
-
 export interface LiveKitTokenResponse {
   token: string;
   roomName: string;
