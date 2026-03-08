@@ -84,7 +84,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             className={`
               flex min-w-[300px] items-center justify-between rounded-lg p-4 shadow-lg transition-all animate-in slide-in-from-right-full
               ${toast.type === 'success' ? 'bg-primary text-primary-foreground' : ''}
-              ${toast.type === 'error' ? 'bg-destructive text-destructive-foreground' : ''}
+              ${toast.type === 'error' ? 'bg-destructive text-white' : ''}
               ${toast.type === 'info' ? 'bg-blue-500 text-white' : ''}
               ${toast.type === 'warning' ? 'bg-orange-500 text-white' : ''}
             `}
