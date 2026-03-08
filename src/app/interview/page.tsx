@@ -27,7 +27,7 @@ import { ProblemsService } from "@/services/problems-service";
 import { SubmissionsService } from "@/services/submissions-service";
 import { toastService } from "@/services/toasts-service";
 import { setProblem } from "@/store/slides/problem-slice";
-import { selectWorkspace } from "@/store/slides/workspace-slice";
+import { selectWorkspace, updateCurrentCode } from "@/store/slides/workspace-slice";
 import type { InterviewLanguage } from "@/types/interview";
 import { MessageRole } from "@/types/interview";
 import { SortBy, SortOrder } from "@/types/problems";
@@ -281,6 +281,18 @@ export default function LiveInterviewPage() {
       
       await startInterview(problem.id, selectedLanguage);
       dispatch(setProblem(problem));
+
+      // Initialize workspace with starter code if empty
+      const problemId = problem.id;
+      const languageId = workspace.currentLanguage?.[String(problemId)] ?? 11;
+      const existingCode = workspace.currentCode?.[problemId]?.[languageId];
+      if (!existingCode) {
+        const starterCode = workspace.languages?.find((l) => l.id === languageId)?.starterCode ?? "";
+        if (starterCode) {
+          dispatch(updateCurrentCode({ problemId, languageId, code: starterCode }));
+        }
+      }
+
       await SubmissionsService.getLanguageList();
     } catch (error) {
       const message =
@@ -314,7 +326,11 @@ export default function LiveInterviewPage() {
 
   const handleEndInterview = useCallback(async () => {
     try {
-      const currentCode = workspace.currentCode[String(interview?.problemId)]?.[currentLanguageId] || '';
+      // Use numeric problemId as key (consistent with how code is stored in workspace)
+      const problemId = interview?.problemId;
+      const currentCode = problemId
+        ? (workspace.currentCode[problemId]?.[currentLanguageId] || '')
+        : '';
       await endInterview(currentCode, currentLanguageId);
       router.push("/interview/history");
     } catch (error) {
