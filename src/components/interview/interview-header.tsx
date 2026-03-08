@@ -24,15 +24,19 @@ import {
   Mic,
   MicOff,
   PhoneOff,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ConnectionAlert, ConnectionStatus } from "./livekit";
+import { ConnectionAlert } from "./livekit";
 
 interface InterviewHeaderProps {
   interviewTime: number;
   voiceEnabled: boolean;
   voiceConnected: boolean;
+  hasVoiceStarted?: boolean;
+  isVoiceDisconnected?: boolean;
   onVoiceToggle: () => void;
   onEndInterview: () => void;
   isEnding?: boolean;
@@ -44,6 +48,8 @@ export function InterviewHeader({
   interviewTime,
   voiceEnabled,
   voiceConnected,
+  hasVoiceStarted = false,
+  isVoiceDisconnected = false,
   onVoiceToggle,
   onEndInterview,
   isEnding = false,
@@ -88,9 +94,30 @@ export function InterviewHeader({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Connection Status - Only show when voice is enabled */}
-          {voiceEnabled && voiceConnected && !readOnly && (
-            <ConnectionStatus className="hidden sm:flex" />
+          {/* Connection Status - prop-driven, no LiveKit hook dependency */}
+          {hasVoiceStarted && !readOnly && (
+            <div className={`hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium ${
+              voiceConnected
+                ? "bg-green-500/10 text-green-500"
+                : isVoiceDisconnected
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-yellow-500/10 text-yellow-500"
+            }`}>
+              {voiceConnected ? (
+                <Wifi className="h-3.5 w-3.5" />
+              ) : isVoiceDisconnected ? (
+                <WifiOff className="h-3.5 w-3.5" />
+              ) : (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              )}
+              <span>
+                {voiceConnected
+                  ? t("livekit.voice_connected")
+                  : isVoiceDisconnected
+                    ? t("livekit.voice_off")
+                    : t("livekit.connecting")}
+              </span>
+            </div>
           )}
 
           {/* Mic Permission Warning */}
@@ -164,8 +191,8 @@ export function InterviewHeader({
         </div>
       </div>
 
-      {/* Connection Alert Banner */}
-      {voiceEnabled && voiceConnected && (
+      {/* Connection Alert Banner — only when LiveKit room is mounted (started + not fully disconnected) */}
+      {hasVoiceStarted && !isVoiceDisconnected && (
         <div className="px-4 pb-2">
           <ConnectionAlert />
         </div>

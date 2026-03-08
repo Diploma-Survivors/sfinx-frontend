@@ -16,17 +16,22 @@ import { cn } from "@/lib/utils";
 import type { InterviewMessage } from "@/types/interview";
 import {
   AlertCircle,
+  Bot,
   Check,
   Copy,
+  Loader2,
   Mic,
   MicOff,
   Plus,
   Send,
   ThumbsDown,
   ThumbsUp,
+  User,
+  WifiOff,
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { useApp } from "@/contexts/app-context";
 
 // ─── Voice Wave Indicator ────────────────────────────────────────────────────
 
@@ -37,35 +42,81 @@ function VoiceWaveIndicator({
   isActive: boolean;
   barCount?: number;
 }) {
+  const rafRef = useRef<number | null>(null);
+  const currentRef = useRef<number[]>(Array(barCount).fill(4));
+  const targetRef = useRef<number[]>(Array(barCount).fill(4));
+  const lastTargetUpdateRef = useRef(0);
   const [heights, setHeights] = useState<number[]>(Array(barCount).fill(4));
 
   useEffect(() => {
-    if (!isActive) {
-      setHeights(Array(barCount).fill(4));
-      return;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
 
-    const interval = setInterval(() => {
-      setHeights(
-        Array(barCount)
+    if (!isActive) {
+      // Smoothly return bars to flat at 60fps
+      const animateFlat = () => {
+        const current = currentRef.current;
+        const next = current.map((h) => {
+          const diff = 4 - h;
+          if (Math.abs(diff) < 0.3) return 4;
+          return h + diff * 0.15;
+        });
+        currentRef.current = next;
+        setHeights([...next]);
+        if (next.some((h) => Math.abs(h - 4) > 0.3)) {
+          rafRef.current = requestAnimationFrame(animateFlat);
+        }
+      };
+      rafRef.current = requestAnimationFrame(animateFlat);
+      return () => {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      };
+    }
+
+    const animate = (timestamp: number) => {
+      // Pick new random targets every ~200ms for variety
+      if (timestamp - lastTargetUpdateRef.current > 200) {
+        lastTargetUpdateRef.current = timestamp;
+        targetRef.current = Array(barCount)
           .fill(0)
           .map((_, i) => {
-            const centerFactor =
-              1 - (Math.abs(i - barCount / 2) / (barCount / 2)) * 0.5;
+            const center = barCount / 2;
+            const centerFactor = 1 - (Math.abs(i - center) / center) * 0.5;
             return Math.random() * 24 * centerFactor + 8;
-          }),
-      );
-    }, 120);
+          });
+      }
 
-    return () => clearInterval(interval);
+      // Lerp current → target each frame (60fps, no CSS transitions needed)
+      const next = currentRef.current.map(
+        (h, i) => h + (targetRef.current[i] - h) * 0.12,
+      );
+      currentRef.current = next;
+      setHeights([...next]);
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [isActive, barCount]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   return (
     <div className="flex items-end justify-center gap-[3px] h-10">
       {heights.map((h, i) => (
         <div
           key={i}
-          className="w-[3px] rounded-full bg-primary/60 transition-all duration-150 ease-out"
+          className="w-[3px] rounded-full bg-primary/60"
           style={{ height: `${h}px` }}
         />
       ))}
@@ -137,14 +188,16 @@ export function VoiceOrb({
         >
           {isMuted ? (
             <MicOff className="w-4 h-4 text-muted-foreground" />
+          ) : isAgentSpeaking ? (
+            <Bot className="w-4 h-4 text-primary" />
           ) : (
             <Mic className="w-4 h-4 text-primary" />
           )}
         </div>
       </div>
 
-      {/* Wave bars — always rendered, activity drives animation */}
-      <VoiceWaveIndicator isActive={isUserSpeaking && !isMuted} />
+      {/* Wave bars — animate for both user speaking and agent speaking */}
+      <VoiceWaveIndicator isActive={isAgentSpeaking || (isUserSpeaking && !isMuted)} />
 
       {/* Label — always rendered, text changes based on state */}
       <span className="text-xs text-muted-foreground">{label}</span>
@@ -167,7 +220,13 @@ interface VoiceModeChatProps {
   interviewStartedAt?: string;
   voiceIndicator?: ReactNode;
   isEnding?: boolean;
+  isDisconnected?: boolean;
+  isReconnecting?: boolean;
+  onReconnect?: () => void;
 }
+
+const PLACEHOLDER_AVATAR =
+  "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
 export function VoiceModeChat({
   messages,
@@ -181,8 +240,12 @@ export function VoiceModeChat({
   interviewStartedAt,
   voiceIndicator,
   isEnding = false,
+  isDisconnected = false,
+  isReconnecting = false,
+  onReconnect,
 }: VoiceModeChatProps) {
   const { t } = useTranslation("interview");
+  const { user } = useApp();
   const chatRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const userWasAtBottomRef = useRef(true);
@@ -235,6 +298,40 @@ export function VoiceModeChat({
 
   return (
     <div className="flex flex-col h-full bg-background rounded-xl border shadow-sm overflow-hidden">
+      {/* Header bar — AI avatar (left) + user avatar (right) */}
+      <div className="h-10 px-3 flex items-center border-b bg-muted/30 flex-shrink-0 gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+            <Bot className="w-3.5 h-3.5 text-primary" />
+          </div>
+          <span className="text-xs font-medium truncate">{t("chat.title")}</span>
+        </div>
+
+        <div className="flex-1" />
+
+        {user && (
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xs text-muted-foreground truncate hidden sm:block">
+              {user.fullName || user.username}
+            </span>
+            <div className="w-6 h-6 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 border border-border/40">
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.fullName}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_AVATAR;
+                  }}
+                />
+              ) : (
+                <User className="w-3.5 h-3.5 text-muted-foreground" />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Messages Area */}
       <div
         ref={chatRef}
@@ -248,65 +345,103 @@ export function VoiceModeChat({
           </div>
         )}
 
-        {messages.map((msg) => {
+        {messages.map((msg, index) => {
           const isUser = msg.role === "user";
+          const showAvatar =
+            index === 0 || messages[index - 1]?.role !== msg.role;
 
           return (
             <div
               key={msg.id}
-              className={cn(
-                "flex flex-col",
-                isUser ? "items-end" : "items-start",
-              )}
+              className={cn("flex gap-2", isUser ? "flex-row-reverse" : "")}
             >
-              <div
-                className={cn(
-                  "max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed",
-                  isUser
-                    ? "bg-primary text-primary-foreground rounded-br-md"
-                    : "bg-muted/60 text-foreground rounded-bl-md border border-border/30",
-                )}
-              >
-                {isUser ? (
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {`\u201C${msg.content}\u201D`}
-                  </p>
-                ) : (
-                  <ChatMarkdown content={msg.content} />
-                )}
-              </div>
+              {/* Avatar — only on first message of a consecutive group */}
+              {showAvatar ? (
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
+                    isUser
+                      ? "bg-primary/15 overflow-hidden border border-border/40"
+                      : "bg-secondary",
+                  )}
+                >
+                  {isUser ? (
+                    user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            PLACEHOLDER_AVATAR;
+                        }}
+                      />
+                    ) : (
+                      <User className="w-3 h-3 text-primary" />
+                    )
+                  ) : (
+                    <Bot className="w-3 h-3 text-secondary-foreground" />
+                  )}
+                </div>
+              ) : (
+                <div className="w-6 flex-shrink-0" />
+              )}
 
               <div
                 className={cn(
-                  "flex items-center gap-1.5 mt-1 px-1",
-                  isUser ? "flex-row-reverse" : "flex-row",
+                  "flex flex-col max-w-[80%]",
+                  isUser ? "items-end" : "items-start",
                 )}
               >
-                <span className="text-[10px] text-muted-foreground/60">
-                  {getRelativeTime(msg.createdAt)}
-                </span>
+                <div
+                  className={cn(
+                    "px-4 py-2.5 rounded-2xl text-sm leading-relaxed",
+                    isUser
+                      ? "bg-primary text-primary-foreground rounded-br-md"
+                      : "bg-muted/60 text-foreground rounded-bl-md border border-border/30",
+                  )}
+                >
+                  {isUser ? (
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {`\u201C${msg.content}\u201D`}
+                    </p>
+                  ) : (
+                    <ChatMarkdown content={msg.content} />
+                  )}
+                </div>
 
-                {!isUser && (
-                  <div className="flex items-center gap-0.5">
-                    <button
-                      onClick={() => handleCopy(msg.id, msg.content)}
-                      className="p-1 rounded-md hover:bg-muted/80 transition-colors group"
-                      title="Copy"
-                    >
-                      {copiedId === msg.id ? (
-                        <Check className="w-3 h-3 text-green-500" />
-                      ) : (
-                        <Copy className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
-                      )}
-                    </button>
-                    <button className="p-1 rounded-md hover:bg-muted/80 transition-colors group">
-                      <ThumbsUp className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
-                    </button>
-                    <button className="p-1 rounded-md hover:bg-muted/80 transition-colors group">
-                      <ThumbsDown className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
-                    </button>
-                  </div>
-                )}
+                <div
+                  className={cn(
+                    "flex items-center gap-1.5 mt-1 px-1",
+                    isUser ? "flex-row-reverse" : "flex-row",
+                  )}
+                >
+                  <span className="text-[10px] text-muted-foreground/60">
+                    {getRelativeTime(msg.createdAt)}
+                  </span>
+
+                  {!isUser && (
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        onClick={() => handleCopy(msg.id, msg.content)}
+                        className="p-1 rounded-md hover:bg-muted/80 transition-colors group"
+                        title="Copy"
+                      >
+                        {copiedId === msg.id ? (
+                          <Check className="w-3 h-3 text-green-500" />
+                        ) : (
+                          <Copy className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
+                        )}
+                      </button>
+                      <button className="p-1 rounded-md hover:bg-muted/80 transition-colors group">
+                        <ThumbsUp className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
+                      </button>
+                      <button className="p-1 rounded-md hover:bg-muted/80 transition-colors group">
+                        <ThumbsDown className="w-3 h-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );
@@ -333,6 +468,28 @@ export function VoiceModeChat({
           </div>
         )}
       </div>
+
+      {/* Disconnected Banner */}
+      {isDisconnected && !isReconnecting && (
+        <div className="px-3 py-2 border-t bg-destructive/5 flex items-center justify-between gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 text-xs text-destructive">
+            <WifiOff className="w-3.5 h-3.5 flex-shrink-0" />
+            <span>{t("voice_chat.disconnected")}</span>
+          </div>
+          <button
+            onClick={onReconnect}
+            className="text-xs px-2.5 py-1 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
+          >
+            {t("voice_chat.reconnect")}
+          </button>
+        </div>
+      )}
+      {isReconnecting && (
+        <div className="px-3 py-2 border-t bg-yellow-500/10 flex items-center gap-2 flex-shrink-0">
+          <Loader2 className="w-3.5 h-3.5 text-yellow-600 animate-spin flex-shrink-0" />
+          <span className="text-xs text-yellow-600">{t("livekit.reconnecting")}</span>
+        </div>
+      )}
 
       {/* Bottom Input Bar */}
       {!readOnly && (
