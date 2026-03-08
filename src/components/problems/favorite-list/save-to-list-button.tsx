@@ -21,7 +21,7 @@ import { favoriteListService } from "@/services/favorite-list-service";
 import useSWR, { mutate } from "swr";
 import { FavoriteList } from "@/types/favorite-list";
 import { Check, Plus, Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useApp } from "@/contexts/app-context";
 
@@ -39,6 +39,8 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
   );
   const [newListIsPublic, setNewListIsPublic] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [loadingListId, setLoadingListId] = useState<number | null>(null);
+  const processingLists = useRef<Set<number>>(new Set());
   const { user } = useApp();
 
   const { data: lists = [] } = useSWR<FavoriteList[]>(
@@ -74,8 +76,16 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
     e.stopPropagation();
     e.preventDefault();
 
+    if (processingLists.current.has(listId)) return;
+    processingLists.current.add(listId);
+    setLoadingListId(listId);
+
     const list = lists.find((l) => l.id === listId);
-    if (!list) return;
+    if (!list) {
+      processingLists.current.delete(listId);
+      setLoadingListId(null);
+      return;
+    }
 
     const isInList = list.problems?.some((p) => p.id === problemId);
 
@@ -92,6 +102,9 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
       toastService.error(
         error.response?.data?.message || t("list_update_error"),
       );
+    } finally {
+      processingLists.current.delete(listId);
+      setLoadingListId(null);
     }
   };
 
@@ -147,9 +160,10 @@ export default function SaveToListButton({ problemId }: SaveToListButtonProps) {
                   <button
                     key={list.id}
                     type="button"
+                    disabled={loadingListId === list.id}
                     onClick={(e) => handleToggleList(list.id, e)}
                     className={cn(
-                      "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted",
+                      "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed",
                       isInList && "bg-accent/10",
                     )}
                   >

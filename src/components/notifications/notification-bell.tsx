@@ -218,8 +218,7 @@ export function NotificationBell() {
                   key={notification.id}
                   className={cn(
                     "flex flex-col p-4 border-b border-border/40 transition-colors hover:bg-muted/30 cursor-pointer",
-                    !notification.isRead &&
-                    "bg-accent/5 border-l-2 border-l-accent",
+                    !notification.isRead && "bg-muted/90",
                   )}
                   onClick={() =>
                     handleMarkAsRead(notification.id, notification.isRead)
@@ -240,7 +239,11 @@ export function NotificationBell() {
                     <Link
                       href={notification.link}
                       className="text-xs text-primary font-medium mt-2 hover:underline"
-                      onClick={() => setIsOpen(false)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMarkAsRead(notification.id, notification.isRead);
+                        setIsOpen(false);
+                      }}
                     >
                       {t("view_details")}
                     </Link>

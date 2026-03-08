@@ -130,7 +130,10 @@ export default function ContestProblemWrapper({
                   key={tab.id}
                   variant={activeTab === tab.id ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    clearSubmitResults();
+                    setActiveTab(tab.id);
+                  }}
                   className={cn(
                     "h-8 text-xs font-medium gap-2 px-3",
                     activeTab === tab.id
