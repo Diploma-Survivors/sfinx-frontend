@@ -42,9 +42,10 @@ import { MessageSquare } from "lucide-react";
 interface DescriptionPanelProps {
   problem: Problem;
   width: number;
+  contestMode?: boolean;
 }
 
-export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
+export function DescriptionPanel({ problem, width, contestMode = false }: DescriptionPanelProps) {
   const { t } = useTranslation(["problems", "profile"]);
   const { similarProblems } = useProblemDetail();
   const sampleCases: SampleTestCase[] = problem.sampleTestcases || [];
@@ -128,15 +129,17 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                 </div>
               )}
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground gap-2"
-                onClick={() => scrollToSection(hintsRef)}
-              >
-                <Lightbulb className="w-4 h-4" />
-                {t("hint")}
-              </Button>
+              {!contestMode && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground gap-2"
+                  onClick={() => scrollToSection(hintsRef)}
+                >
+                  <Lightbulb className="w-4 h-4" />
+                  {t("hint")}
+                </Button>
+              )}
 
               <Button
                 variant="ghost"
@@ -158,15 +161,17 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
                 {t("report")}
               </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground gap-2"
-                onClick={handleStartInterview}
-              >
-                <MessageSquare className="w-4 h-4" />
-                {t("interview")}
-              </Button>
+              {!contestMode && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground gap-2"
+                  onClick={handleStartInterview}
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  {t("interview")}
+                </Button>
+              )}
             </div>
           </div>
 
@@ -278,7 +283,7 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
           </section>
 
           {/* Hints Section */}
-          {problem.hints && problem.hints.length > 0 && (
+          {!contestMode && problem.hints && problem.hints.length > 0 && (
             <section ref={hintsRef} className="scroll-mt-4">
               <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <Lightbulb className="w-5 h-5 text-yellow-500" />
@@ -349,7 +354,9 @@ export function DescriptionPanel({ problem, width }: DescriptionPanelProps) {
           )}
 
           {/* Discussion */}
-          <ProblemDiscussion problemId={problem.id.toString()} />
+          {!contestMode && (
+            <ProblemDiscussion problemId={problem.id.toString()} />
+          )}
         </div>
       </div>
 
