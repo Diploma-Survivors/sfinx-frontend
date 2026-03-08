@@ -48,7 +48,7 @@ interface UseInterviewReturn {
   error: Error | null;
 
   // Actions
-  startInterview: (problemId: number) => Promise<void>;
+  startInterview: (problemId: number, language?: string) => Promise<void>;
   loadInterview: (interviewId: string) => Promise<void>;
   connectVoice: () => Promise<void>;
   sendMessage: (content: string, options?: SendMessageOptions) => Promise<void>;
@@ -131,14 +131,14 @@ export function useInterview(
    * Start a new interview with the given problem
    */
   const startInterview = useCallback(
-    async (problemId: number) => {
+    async (problemId: number, language: string = 'en') => {
       if (isActiveRef.current) {
         setIsLoading(true);
         setError(null);
       }
 
       try {
-        const response = await InterviewService.startInterview(problemId);
+        const response = await InterviewService.startInterview(problemId, language);
         const data = response.data.data as StartInterviewResponse;
 
         // Fetch full interview details
