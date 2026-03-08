@@ -8,6 +8,7 @@ import {
 import { InterviewService } from '@/services/interview-service';
 import { toastService } from '@/services/toasts-service';
 import type {
+  EndInterviewRequest,
   Interview,
   InterviewEvaluation,
   InterviewMessage,
@@ -15,7 +16,9 @@ import type {
   MessageRole,
   StartInterviewResponse,
 } from '@/types/interview';
+import type { ApiError } from '@/types/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { AxiosError } from 'axios';
 
 export type InterviewPhase =
   | 'greeting'
@@ -49,7 +52,7 @@ interface UseInterviewReturn {
   loadInterview: (interviewId: string) => Promise<void>;
   connectVoice: () => Promise<void>;
   sendMessage: (content: string, options?: SendMessageOptions) => Promise<void>;
-  endInterview: () => Promise<void>;
+  endInterview: (sourceCode?: string, languageId?: number) => Promise<void>;
   addLocalMessage: (
     role: MessageRole,
     content: string,
@@ -364,7 +367,7 @@ export function useInterview(
   /**
    * End the interview and get evaluation
    */
-  const endInterview = useCallback(async () => {
+  const endInterview = useCallback(async (sourceCode?: string, languageId?: number) => {
     if (!interviewRef.current) {
       handleError(new Error('No active interview'));
       return;
@@ -376,8 +379,13 @@ export function useInterview(
     }
 
     try {
+      const requestData: EndInterviewRequest = {
+        sourceCode: sourceCode || '',
+        languageId: languageId || 11,
+      };
       const response = await InterviewService.endInterview(
-        interviewRef.current.id
+        interviewRef.current.id,
+        requestData
       );
       const evalData = response.data.data as InterviewEvaluation;
       if (isActiveRef.current) {
@@ -385,12 +393,16 @@ export function useInterview(
         setPhase('completed');
       }
     } catch (err) {
-      const error =
-        err instanceof Error ? err : new Error('Failed to end interview');
-      handleError(error);
+      const error = err as AxiosError<ApiError>;
+      handleError(
+        new Error(
+          error.response?.data?.message || 'Failed to end interview'
+        )
+      );
       if (isActiveRef.current) {
         setPhase('active');
       }
+      throw err;
     } finally {
       if (isActiveRef.current) {
         setIsLoading(false);

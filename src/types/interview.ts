@@ -84,3 +84,8 @@ export interface CodeSnapshot {
   language: string;
   timestamp: number;
 }
+
+export interface EndInterviewRequest {
+  sourceCode: string;
+  languageId: number;
+}
