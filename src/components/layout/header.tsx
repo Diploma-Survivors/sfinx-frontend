@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useApp } from '@/contexts/app-context';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { Bell, Search } from 'lucide-react';
-import { signOut } from 'next-auth/react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import { UserMenu } from './user-menu';
-import { NotificationBell } from '@/components/notifications/notification-bell';
-import { Suspense, useEffect, useState } from 'react';
+import { useApp } from "@/contexts/app-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Bell, Search } from "lucide-react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { UserMenu } from "./user-menu";
+import { NotificationBell } from "@/components/notifications/notification-bell";
+import { Suspense, useEffect, useState } from "react";
 
 function HeaderSearch({ t }: { t: any }) {
   const router = useRouter();
@@ -20,11 +20,11 @@ function HeaderSearch({ t }: { t: any }) {
   const pathname = usePathname();
 
   // Use local state hooked to searchParams so that typing doesn't feel laggy
-  const [qValue, setQValue] = useState(searchParams?.get('q') || '');
+  const [qValue, setQValue] = useState(searchParams?.get("q") || "");
 
   // Synchronize input if URL changes externally
   useEffect(() => {
-    setQValue(searchParams?.get('q') || '');
+    setQValue(searchParams?.get("q") || "");
   }, [searchParams]);
 
   return (
@@ -33,13 +33,13 @@ function HeaderSearch({ t }: { t: any }) {
       onSubmit={(e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const q = formData.get('q') as string;
+        const q = formData.get("q") as string;
         if (q?.trim()) {
           const targetUrl = `/search?q=${encodeURIComponent(q.trim())}`;
-          if (pathname === '/search') {
+          if (pathname === "/search") {
             router.push(targetUrl);
           } else {
-            window.open(targetUrl, '_blank');
+            window.open(targetUrl, "_blank");
           }
         }
       }}
@@ -50,7 +50,7 @@ function HeaderSearch({ t }: { t: any }) {
         value={qValue}
         onChange={(e) => setQValue(e.target.value)}
         type="search"
-        placeholder={t('search', 'Search...')}
+        placeholder={t("search", "Search...")}
         className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-primary/30 transition-all duration-200"
       />
     </form>
@@ -60,20 +60,21 @@ function HeaderSearch({ t }: { t: any }) {
 export default function Header() {
   const { user, clearUserData } = useApp();
   const pathname = usePathname();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation("common");
 
   const navItems = [
-    { name: t('problems'), href: '/problems' },
-    { name: t('contests'), href: '/contests' },
-    { name: t('ranking'), href: '/ranking' },
-    { name: t('discuss'), href: '/discuss' },
-    { name: t('interview'), href: '/interview' },
+    { name: t("problems"), href: "/problems" },
+    { name: t("contests"), href: "/contests" },
+    { name: t("ranking"), href: "/ranking" },
+    { name: t("discuss"), href: "/discuss" },
+    { name: t("interview"), href: "/interview" },
+    { name: t("study_plans"), href: "/study-plans" },
   ];
 
   const handleLogout = async () => {
     clearUserData();
     await signOut({
-      callbackUrl: '/login',
+      callbackUrl: "/login",
       redirect: true,
     });
   };
@@ -82,10 +83,19 @@ export default function Header() {
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
       <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-          <Image src="/logo.svg" alt="Logo" width={32} height={32} className="w-8 h-8" />
+        <Link
+          href="/"
+          className="flex items-center gap-2 transition-opacity hover:opacity-90"
+        >
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
           <span className="text-xl font-bold tracking-tight text-primary">
-            {t('app_name')}
+            {t("app_name")}
           </span>
         </Link>
 
@@ -94,7 +104,9 @@ export default function Header() {
           {/* Navigation - Desktop */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.href}
@@ -103,7 +115,7 @@ export default function Header() {
                     "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive
                       ? "text-primary bg-primary/10 font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
                   )}
                 >
                   {item.name}
@@ -114,12 +126,18 @@ export default function Header() {
 
           {/* Search & Notifications */}
           <div className="hidden md:flex items-center gap-3 ml-2">
-            <Suspense fallback={
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input type="search" disabled className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent" />
-              </div>
-            }>
+            <Suspense
+              fallback={
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    disabled
+                    className="w-[200px] pl-9 h-9 bg-muted/50 border-transparent"
+                  />
+                </div>
+              }
+            >
               <HeaderSearch t={t} />
             </Suspense>
             {user && <NotificationBell />}

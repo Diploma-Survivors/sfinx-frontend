@@ -28,6 +28,7 @@
     "ranking": "Ranking",
     "discuss": "Discuss",
     "interview": "Interview",
+    "study_plans": "Study Plans",
     "my_profile": "My Profile",
     "practice_history": "Practice History",
     "go_to_login": "Go to login",
@@ -94,5 +95,9 @@
     "search_hero_title": "Search SfinX",
     "search_hero_desc": "Enter a search query above to find problems, contests, discussions, or connect with other users.",
     "no_results_found": "No {{category}} found",
-    "no_results_desc": "We couldn't find anything matching \"{{query}}\""
+    "no_results_desc": "We couldn't find anything matching \"{{query}}\"",
+    "premium_content": "Premium Content",
+    "premium_content_desc": "This content is available exclusively for Premium users. Upgrade your plan to unlock this and many more premium features.",
+    "upgrade_to_premium": "Upgrade to Premium",
+    "maybe_later": "Maybe Later"
 }

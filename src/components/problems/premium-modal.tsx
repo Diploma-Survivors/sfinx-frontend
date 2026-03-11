@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Crown } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 interface PremiumModalProps {
     isOpen: boolean;
@@ -18,6 +19,8 @@ interface PremiumModalProps {
 }
 
 export function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
+    const { t } = useTranslation('common');
+
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="sm:max-w-md">
@@ -25,19 +28,19 @@ export function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                     <div className="rounded-full bg-yellow-500/10 p-3">
                         <Crown className="h-8 w-8 text-yellow-500" />
                     </div>
-                    <DialogTitle className="text-xl">Premium Content</DialogTitle>
+                    <DialogTitle className="text-xl">{t('premium_content')}</DialogTitle>
                     <DialogDescription className="text-center text-base">
-                        This problem is available exclusively for Premium users. Upgrade your plan to unlock this problem and many more premium features.
+                        {t('premium_content_desc')}
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex flex-col sm:flex-col gap-2 mt-4">
                     <Button asChild className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold">
                         <Link href="/pricing">
-                            Upgrade to Premium
+                            {t('upgrade_to_premium')}
                         </Link>
                     </Button>
                     <Button variant="ghost" onClick={onClose} className="w-full">
-                        Maybe Later
+                        {t('maybe_later')}
                     </Button>
                 </DialogFooter>
             </DialogContent>
