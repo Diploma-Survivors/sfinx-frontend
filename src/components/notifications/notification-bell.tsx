@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Bell, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -10,14 +8,17 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSocket } from "@/hooks/use-socket";
-import {
-  notificationService,
-  Notification,
-} from "@/services/notification.service";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { useApp } from "@/contexts/app-context";
+import { useSocket } from "@/hooks/use-socket";
+import { NotificationStrategyFactory } from "@/lib/notifications/notification-strategy";
+import { cn } from "@/lib/utils";
+import {
+  Notification,
+  notificationService,
+} from "@/services/notification.service";
+import { Bell } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function NotificationBell() {
@@ -29,6 +30,7 @@ export function NotificationBell() {
   const { socket } = useSocket("notifications");
   const { user } = useApp();
   const { t } = useTranslation("common");
+  const router = useRouter();
   const locale = user?.preferredLanguage || "en";
 
   const fetchNotifications = async () => {
@@ -43,7 +45,7 @@ export function NotificationBell() {
         const merged = [...newFromSocket, ...data.data];
         return merged.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
       });
       setHasFetched(true);
@@ -143,6 +145,18 @@ export function NotificationBell() {
     }
   };
 
+  const handleNotificationClick = async (notification: Notification) => {
+    const strategy = NotificationStrategyFactory.getStrategy(notification);
+    const link = strategy.getLink(notification);
+
+    await handleMarkAsRead(notification.id, notification.isRead);
+    setIsOpen(false);
+
+    if (link && link !== "#") {
+      router.push(link);
+    }
+  };
+
   const handleMarkAllAsRead = async () => {
     if (unreadCount === 0) return;
     try {
@@ -213,43 +227,39 @@ export function NotificationBell() {
             </div>
           ) : (
             <div className="flex flex-col">
-              {notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className={cn(
-                    "flex flex-col p-4 border-b border-border/40 transition-colors hover:bg-muted/30 cursor-pointer",
-                    !notification.isRead && "bg-muted/90",
-                  )}
-                  onClick={() =>
-                    handleMarkAsRead(notification.id, notification.isRead)
-                  }
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-medium text-sm text-foreground line-clamp-1">
-                      {notification.title}
-                    </span>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {getTimeAgo(notification.createdAt)}
-                    </span>
+              {notifications.map((notification) => {
+                const strategy =
+                  NotificationStrategyFactory.getStrategy(notification);
+                const link = strategy.getLink(notification);
+
+                return (
+                  <div
+                    key={notification.id}
+                    className={cn(
+                      "flex flex-col p-4 border-b border-border/40 transition-colors hover:bg-muted/30 cursor-pointer",
+                      !notification.isRead && "bg-muted/90",
+                    )}
+                    onClick={() => handleNotificationClick(notification)}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="font-medium text-sm text-foreground line-clamp-1">
+                        {notification.title}
+                      </span>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {getTimeAgo(notification.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                      {notification.content}
+                    </p>
+                    {link && link !== "#" && (
+                      <span className="text-xs text-primary font-medium mt-2">
+                        {t("view_details")}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                    {notification.content}
-                  </p>
-                  {notification.link && (
-                    <Link
-                      href={notification.link}
-                      className="text-xs text-primary font-medium mt-2 hover:underline"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleMarkAsRead(notification.id, notification.isRead);
-                        setIsOpen(false);
-                      }}
-                    >
-                      {t("view_details")}
-                    </Link>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </ScrollArea>

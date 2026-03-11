@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useDialog } from '@/components/providers/dialog-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -135,7 +136,10 @@ export default function ProblemCommentItem({
   };
 
   return (
-    <div className="space-y-4">
+    <div
+      id={`comment-${comment.id}`}
+      className={cn('space-y-4 highlight-target scroll-mt-20')}
+    >
       <div className="flex gap-3 group">
         <Avatar
           userId={comment.author.id}

@@ -27,7 +27,7 @@ import {
   MessageSquare,
   TrendingUp,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from './comment-input';
 import ProblemCommentItem from './problem-comment-item';
@@ -58,6 +58,34 @@ export function ProblemDiscussion({ problemId }: ProblemDiscussionProps) {
     reportComment,
     fetchReplies,
   } = useComments(problemId);
+
+  // Auto-expand and scroll to comment if hash is present
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash.startsWith('#comment-')) {
+      setIsOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading && comments.length > 0 && typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash.startsWith('#comment-')) {
+        const id = hash.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.add('is-highlighted');
+          // Small delay to ensure any dynamic content/layout shifts are settled
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+
+          setTimeout(() => {
+            element.classList.remove('is-highlighted');
+          }, 5000);
+        }
+      }
+    }
+  }, [isLoading, comments]);
 
   const handleCreateComment = async (
     content: string,

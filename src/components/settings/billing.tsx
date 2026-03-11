@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,18 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next";
-import Link from "next/link";
-import { Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { PaymentService } from "@/services/payments-service";
-import {
-  PaymentTransaction,
-  PaymentStatus,
-  CurrentPlan,
-} from "@/types/payment";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -28,8 +23,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { PaymentService } from "@/services/payments-service";
 import { toastService } from "@/services/toasts-service";
+import {
+  CurrentPlan,
+  PaymentStatus,
+  PaymentTransaction,
+} from "@/types/payment";
 
 export function BillingSettings() {
   const { t } = useTranslation("profile");
@@ -56,6 +56,29 @@ export function BillingSettings() {
 
     fetchData();
   }, []);
+
+  // Auto-scroll and highlight transaction if hash is present
+  useEffect(() => {
+    if (!loading && transactions.length > 0 && typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash.startsWith("#transaction-")) {
+        const id = hash.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          // Force manual highlight class since :target can be unreliable on async load
+          element.classList.add("is-highlighted");
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 300);
+
+          // Remove highlight class after animation finishes (optional, but pulse is 2.5s)
+          setTimeout(() => {
+            element.classList.remove("is-highlighted");
+          }, 5000);
+        }
+      }
+    }
+  }, [loading, transactions]);
 
   if (loading) {
     return (
@@ -151,7 +174,11 @@ export function BillingSettings() {
                         transaction.status === PaymentStatus.SUCCESS,
                     )
                     .map((transaction) => (
-                      <TableRow key={transaction.id}>
+                      <TableRow
+                        key={transaction.id}
+                        id={`transaction-${transaction.id}`}
+                        className="highlight-target scroll-mt-20"
+                      >
                         <TableCell className="font-medium">
                           {formatDate(
                             transaction.paymentDate || transaction.createdAt,

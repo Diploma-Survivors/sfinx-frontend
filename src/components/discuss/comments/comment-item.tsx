@@ -215,8 +215,9 @@ export function CommentItem({
 
   return (
     <div
+      id={`comment-${comment.id}`}
       className={cn(
-        "relative animate-in fade-in slide-in-from-top-1",
+        "relative animate-in fade-in slide-in-from-top-1 highlight-target scroll-mt-20",
         depth > 0 ? "mt-2" : "py-2 border-b border-border/40 last:border-0",
       )}
     >

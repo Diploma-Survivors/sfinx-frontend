@@ -50,7 +50,7 @@ export default function VerifyEmailPage() {
             try {
               await refreshUser();
             } catch (e) {
-              toastService.error("Failed to refresh user data");
+              toastService.error(t("sign_in_to_continue"));
             }
             return "success" as const;
           }

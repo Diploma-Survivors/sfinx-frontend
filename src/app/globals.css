@@ -191,13 +191,29 @@
   background: linear-gradient(#000000 0 0) left / 0% 100% no-repeat #374151;
 }
 
-@utility scrollbar-none {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-
-  /* Firefox */
-  &::-webkit-scrollbar {
-    display: none;
+@utility highlight-target {
+  &:target,
+  &.is-highlighted {
+    @apply ring-4 ring-primary ring-offset-4 bg-primary/5 transition-all duration-700;
+    animation: highlight-pulse 2.5s ease-in-out;
+    border-radius: 0.5rem;
   }
 }
+
+@keyframes highlight-pulse {
+  0% {
+    box-shadow: 0 0 0 0px var(--color-primary);
+    background-color: var(--color-primary-transparent, rgba(16, 185, 129, 0.1));
+  }
+  30% {
+    box-shadow: 0 0 0 6px var(--color-primary);
+    background-color: var(--color-primary-transparent, rgba(16, 185, 129, 0.2));
+  }
+  100% {
+    box-shadow: 0 0 0 0px var(--color-primary);
+    background-color: transparent;
+  }
+}
+
+
+
