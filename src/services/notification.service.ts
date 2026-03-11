@@ -7,6 +7,10 @@ export enum NotificationType {
   REPLY = "REPLY",
   CONTEST = "CONTEST",
   MENTION = "MENTION",
+  STUDY_PLAN = "STUDY_PLAN",
+  PAYMENT = "PAYMENT",
+  SUBMISSION = "SUBMISSION",
+  DISCUSS = "DISCUSS",
 }
 
 export interface Notification {
@@ -16,9 +20,8 @@ export interface Notification {
   type: NotificationType;
   title: string;
   content: string;
-  link?: string | null;
   isRead: boolean;
-  metadata?: any | null;
+  metadata?: Record<string, any> | null;
   createdAt: string;
   updatedAt: string;
 }

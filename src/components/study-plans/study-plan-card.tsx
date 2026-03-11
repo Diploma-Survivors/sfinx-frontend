@@ -31,7 +31,7 @@ interface StudyPlanCardProps {
     totalProblems?: number;
     isEnrolled?: boolean;
     solvedCount?: number;
-    lastActivityAt: Date | null;
+    lastActivityAt?: Date | null;
     enrollmentStatus?: EnrollmentStatus | null;
     currentDay?: number;
     completedAt?: Date | null;

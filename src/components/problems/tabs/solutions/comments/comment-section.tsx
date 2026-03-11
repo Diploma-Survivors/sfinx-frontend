@@ -69,6 +69,26 @@ export default function CommentSection({ solutionId }: CommentSectionProps) {
   };
 
   useEffect(() => {
+    if (!isLoading && comments.length > 0 && typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash.startsWith("#comment-")) {
+        const id = hash.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.add("is-highlighted");
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 300);
+
+          setTimeout(() => {
+            element.classList.remove("is-highlighted");
+          }, 5000);
+        }
+      }
+    }
+  }, [isLoading, comments]);
+
+  useEffect(() => {
     fetchComments();
   }, [solutionId]);
 

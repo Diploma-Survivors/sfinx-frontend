@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 interface CommentItemProps {
   comment: SolutionComment;
@@ -148,7 +149,12 @@ export default function CommentItem({
   };
 
   return (
-    <div className="flex gap-3 group">
+    <div
+      id={`comment-${comment.id}`}
+      className={cn(
+        "flex gap-3 group highlight-target scroll-mt-20 p-2 rounded-lg transition-all",
+      )}
+    >
       <Avatar
         userId={comment.authorId}
         className="w-8 h-8 border border-slate-200 dark:border-slate-700 mt-1"
