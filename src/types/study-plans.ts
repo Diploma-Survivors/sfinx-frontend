@@ -32,11 +32,11 @@ export interface StudyPlanCardResponseDto {
   difficulty: StudyPlanDifficulty;
   coverImageUrl: string | null;
   estimatedDays: number;
+  totalProblems: number;
   isPremium: boolean;
 }
 
 export interface StudyPlanListItemResponseDto extends StudyPlanCardResponseDto {
-  totalProblems: number;
   isEnrolled: boolean;
   solvedCount: number;
   enrollmentStatus: EnrollmentStatus | null;
@@ -61,7 +61,6 @@ export interface StudyPlanDetailResponseDto extends StudyPlanCardResponseDto {
   enrollmentCount: number;
   topics: Topic[];
   tags: Tag[];
-  totalProblems: number;
   isEnrolled: boolean;
   solvedCount: number;
   enrollmentStatus: EnrollmentStatus | null;
@@ -71,7 +70,6 @@ export interface StudyPlanDetailResponseDto extends StudyPlanCardResponseDto {
 export interface EnrolledPlanResponseDto extends StudyPlanCardResponseDto {
   enrollmentStatus: EnrollmentStatus;
   currentDay: number;
-  totalProblems: number;
   solvedCount: number;
   lastActivityAt: Date | null;
   completedAt: Date | null;
@@ -82,7 +80,6 @@ export interface StudyPlanProgressResponseDto extends StudyPlanCardResponseDto {
   enrollmentStatus: EnrollmentStatus;
   currentDay: number;
   solvedCount: number;
-  totalProblems: number;
   progressPercentage: number;
   completedAt: Date | null;
   enrolledAt: Date;
