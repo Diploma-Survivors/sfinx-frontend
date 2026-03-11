@@ -104,7 +104,6 @@ export default function StudyPlanDetailPage() {
             <StudyPlanCurriculum
               days={plan.days}
               isEnrolled={plan.isEnrolled}
-              isPremiumRequired={plan.isPremium}
             />
           </TabsContent>
 

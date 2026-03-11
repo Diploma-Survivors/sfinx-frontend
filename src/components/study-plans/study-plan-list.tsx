@@ -1,7 +1,7 @@
-import StudyPlanCard from "./study-plan-card";
-import type { StudyPlanListItemResponseDto } from "@/types/study-plans";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { StudyPlanListItemResponseDto } from "@/types/study-plans";
 import { useTranslation } from "react-i18next";
+import StudyPlanCard from "./study-plan-card";
 
 interface StudyPlanListProps {
   plans: StudyPlanListItemResponseDto[];
@@ -16,7 +16,6 @@ export default function StudyPlanList({
   isLoading,
   hasMore,
   onLoadMore,
-  totalCount,
 }: StudyPlanListProps) {
   const { t } = useTranslation("study-plans");
 

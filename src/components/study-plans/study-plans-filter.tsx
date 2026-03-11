@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -6,14 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Search, RotateCcw } from "lucide-react";
 import type { FilterStudyPlanDto } from "@/types/study-plans";
 import { StudyPlanDifficulty } from "@/types/study-plans";
+import { RotateCcw, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils"; // Optional if needed for complex classes
 
 interface StudyPlansFilterProps {
   filters: FilterStudyPlanDto;

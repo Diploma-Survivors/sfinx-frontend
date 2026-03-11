@@ -1,4 +1,7 @@
-import { Notification, NotificationType } from "@/services/notification.service";
+import {
+  Notification,
+  NotificationType,
+} from "@/services/notification.service";
 
 /**
  * Notification events matching NOTIFICATION_SYSTEM.md
@@ -32,8 +35,8 @@ export interface NotificationStrategy {
 class PaymentSuccessStrategy implements NotificationStrategy {
   getLink(notification: Notification): string {
     const { transactionId } = notification.metadata || {};
-    return transactionId 
-      ? `/settings?tab=billing#transaction-${transactionId}` 
+    return transactionId
+      ? `/settings?tab=billing#transaction-${transactionId}`
       : "/settings?tab=billing";
   }
 }
@@ -60,8 +63,8 @@ class ProblemCommentReplyStrategy implements NotificationStrategy {
   getLink(notification: Notification): string {
     const { problemId, commentId } = notification.metadata || {};
     if (!problemId) return "/problems";
-    return commentId 
-      ? `/problems/${problemId}/description#comment-${commentId}` 
+    return commentId
+      ? `/problems/${problemId}/description#comment-${commentId}`
       : `/problems/${problemId}/description`;
   }
 }
@@ -78,7 +81,9 @@ class PostCommentStrategy implements NotificationStrategy {
   getLink(notification: Notification): string {
     const { postId, commentId } = notification.metadata || {};
     if (!postId) return "/discuss";
-    return commentId ? `/discuss/${postId}#comment-${commentId}` : `/discuss/${postId}`;
+    return commentId
+      ? `/discuss/${postId}#comment-${commentId}`
+      : `/discuss/${postId}`;
   }
 }
 
@@ -86,7 +91,9 @@ class PostCommentReplyStrategy implements NotificationStrategy {
   getLink(notification: Notification): string {
     const { postId, commentId } = notification.metadata || {};
     if (!postId) return "/discuss";
-    return commentId ? `/discuss/${postId}#comment-${commentId}` : `/discuss/${postId}`;
+    return commentId
+      ? `/discuss/${postId}#comment-${commentId}`
+      : `/discuss/${postId}`;
   }
 }
 
@@ -95,8 +102,8 @@ class SolutionCommentStrategy implements NotificationStrategy {
   getLink(notification: Notification): string {
     const { problemId, solutionId, commentId } = notification.metadata || {};
     if (!problemId || !solutionId) return "/problems";
-    return commentId 
-      ? `/problems/${problemId}/solutions/${solutionId}#comment-${commentId}` 
+    return commentId
+      ? `/problems/${problemId}/solutions/${solutionId}#comment-${commentId}`
       : `/problems/${problemId}/solutions/${solutionId}`;
   }
 }
@@ -105,8 +112,8 @@ class SolutionCommentReplyStrategy implements NotificationStrategy {
   getLink(notification: Notification): string {
     const { problemId, solutionId, commentId } = notification.metadata || {};
     if (!problemId || !solutionId) return "/problems";
-    return commentId 
-      ? `/problems/${problemId}/solutions/${solutionId}#comment-${commentId}` 
+    return commentId
+      ? `/problems/${problemId}/solutions/${solutionId}#comment-${commentId}`
       : `/problems/${problemId}/solutions/${solutionId}`;
   }
 }
@@ -135,7 +142,7 @@ class StudyPlanDayCompletedStrategy implements NotificationStrategy {
 
 // --- Defaults ---
 class DefaultStrategy implements NotificationStrategy {
-  getLink(): string {
+  getLink(notification: Notification): string {
     return "#";
   }
 }
@@ -154,37 +161,37 @@ export class NotificationStrategyFactory {
       switch (upperEvent) {
         case NotificationEvent.PAYMENT_SUCCESS:
           return new PaymentSuccessStrategy();
-        
+
         case NotificationEvent.NEW_PROBLEM_REPORT:
           return new NewProblemReportStrategy();
-        
+
         case NotificationEvent.PROBLEM_SOLVED:
           return new ProblemSolvedStrategy();
-        
+
         case NotificationEvent.POST_PUBLISHED:
           return new PostPublishedStrategy();
-        
+
         case NotificationEvent.POST_COMMENT:
           return new PostCommentStrategy();
-        
+
         case NotificationEvent.POST_COMMENT_REPLY:
           return new PostCommentReplyStrategy();
-        
+
         case NotificationEvent.SOLUTION_COMMENT:
           return new SolutionCommentStrategy();
-        
+
         case NotificationEvent.SOLUTION_COMMENT_REPLY:
           return new SolutionCommentReplyStrategy();
-        
+
         case NotificationEvent.PROBLEM_COMMENT_REPLY:
           return new ProblemCommentReplyStrategy();
-        
+
         case NotificationEvent.STUDY_PLAN_COMPLETED:
           return new StudyPlanCompletedStrategy();
-        
+
         case NotificationEvent.STUDY_PLAN_MILESTONE:
           return new StudyPlanMilestoneStrategy();
-        
+
         case NotificationEvent.STUDY_PLAN_DAY_COMPLETED:
           return new StudyPlanDayCompletedStrategy();
       }
@@ -193,7 +200,7 @@ export class NotificationStrategyFactory {
     // Fallback to type-based matching for robustness
     switch (type) {
       case NotificationType.STUDY_PLAN:
-        return new StudyPlanDayCompletedStrategy(); 
+        return new StudyPlanDayCompletedStrategy();
       case NotificationType.PAYMENT:
         return new PaymentSuccessStrategy();
       case NotificationType.SUBMISSION:

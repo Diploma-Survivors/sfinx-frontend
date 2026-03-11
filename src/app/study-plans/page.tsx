@@ -3,18 +3,7 @@
 import StudyPlanCard from "@/components/study-plans/study-plan-card";
 import StudyPlanList from "@/components/study-plans/study-plan-list";
 import StudyPlansFilter from "@/components/study-plans/study-plans-filter";
-import useStudyPlans from "@/hooks/use-study-plans";
-import { StudyPlanSortBy } from "@/types/study-plans";
-import { Filter, Bookmark, ChevronRight, Compass } from "lucide-react";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import {
   Select,
   SelectContent,
@@ -22,8 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useApp } from "@/contexts/app-context";
-import Link from "next/link";
+import useStudyPlans from "@/hooks/use-study-plans";
+import { StudyPlanSortBy } from "@/types/study-plans";
+import { Bookmark, Compass, Filter } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function StudyPlansPage() {
   const { t } = useTranslation("study-plans");

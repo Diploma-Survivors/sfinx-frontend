@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Bell, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -10,17 +8,18 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSocket } from "@/hooks/use-socket";
-import {
-  notificationService,
-  Notification,
-} from "@/services/notification.service";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { useApp } from "@/contexts/app-context";
-import { useTranslation } from "react-i18next";
+import { useSocket } from "@/hooks/use-socket";
 import { NotificationStrategyFactory } from "@/lib/notifications/notification-strategy";
+import { cn } from "@/lib/utils";
+import {
+  Notification,
+  notificationService,
+} from "@/services/notification.service";
+import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -46,7 +45,7 @@ export function NotificationBell() {
         const merged = [...newFromSocket, ...data.data];
         return merged.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
       });
       setHasFetched(true);

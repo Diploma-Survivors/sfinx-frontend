@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,18 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next";
-import Link from "next/link";
+import { formatDate } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { cn, formatDate } from "@/lib/utils";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { PaymentService } from "@/services/payments-service";
-import {
-  PaymentTransaction,
-  PaymentStatus,
-  CurrentPlan,
-} from "@/types/payment";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -28,8 +23,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { PaymentService } from "@/services/payments-service";
 import { toastService } from "@/services/toasts-service";
+import {
+  CurrentPlan,
+  PaymentStatus,
+  PaymentTransaction,
+} from "@/types/payment";
 
 export function BillingSettings() {
   const { t } = useTranslation("profile");
@@ -70,7 +70,7 @@ export function BillingSettings() {
           setTimeout(() => {
             element.scrollIntoView({ behavior: "smooth", block: "center" });
           }, 300);
-          
+
           // Remove highlight class after animation finishes (optional, but pulse is 2.5s)
           setTimeout(() => {
             element.classList.remove("is-highlighted");
@@ -174,7 +174,7 @@ export function BillingSettings() {
                         transaction.status === PaymentStatus.SUCCESS,
                     )
                     .map((transaction) => (
-                      <TableRow 
+                      <TableRow
                         key={transaction.id}
                         id={`transaction-${transaction.id}`}
                         className="highlight-target scroll-mt-20"
