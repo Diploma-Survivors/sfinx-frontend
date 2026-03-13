@@ -21,7 +21,8 @@ export interface SubscriptionPlan {
     id: number;
     name: string;
     description: string;
-    priceUsd: number;
+    basePrice: number; // Base price in VND (before fees)
+    prices: Record<string, number>; // Final price per currency (fees included)
     durationMonths: number;
     isActive: boolean;
     features: SubscriptionFeature[]; // Array of feature objects
@@ -30,16 +31,13 @@ export interface SubscriptionPlan {
 
 export interface PaymentTransaction {
     id: number;
-    userId: number;
-    planId: number;
     amount: number;
-    amountVnd: number;
     currency: Currency;
+    provider: string;
     status: PaymentStatus;
-    paymentDate?: string; // ISO Datev
-    description?: string;
-    plan?: SubscriptionPlan;
-    createdAt: string;
+    planName: string;
+    paymentDate: string;
+    transactionId: string;
 }
 
 export interface CreatePaymentResponse {
@@ -50,7 +48,8 @@ export interface CurrentPlan {
     planId: number;
     name: string;
     description: string;
-    price: string;
+    basePrice: number;
+    prices: Record<string, number>;
     type: string; // 'MONTHLY', 'YEARLY', etc.
     startDate: string;
     expiresAt: string;

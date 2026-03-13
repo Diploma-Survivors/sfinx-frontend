@@ -1,5 +1,5 @@
 import clientApi from '@/lib/apis/axios-client';
-import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, Currency, PaymentStatus, CurrentPlan, PaymentMethodInfo } from '@/types/payment';
+import { PaymentTransaction, SubscriptionPlan, SubscriptionFeature, CurrentPlan, PaymentMethodInfo } from '@/types/payment';
 import { ApiResponse } from '@/types/api';
 
 export const PaymentService = {
@@ -31,31 +31,8 @@ export const PaymentService = {
 
 
     async getPaymentHistory(): Promise<PaymentTransaction[]> {
-        const response = await clientApi.get<ApiResponse<any[]>>('/payments/history');
-
-        // Transform backend response to frontend PaymentTransaction type
-        return response.data.data.map(item => ({
-            id: item.id,
-            userId: 0, // Not provided by backend
-            planId: 0, // Not provided by backend
-            amount: item.amount,
-            amountVnd: item.amount * 25000, // Approximate conversion
-            currency: item.currency,
-            status: item.status,
-            paymentDate: item.paymentDate,
-            createdAt: item.paymentDate,
-            description: item.planName,
-            plan: {
-                id: 0,
-                name: item.planName,
-                description: '',
-                priceUsd: item.amount,
-                durationMonths: 0,
-                isActive: true,
-                features: [],
-                type: 'MONTHLY'
-            }
-        }));
+        const response = await clientApi.get<ApiResponse<PaymentTransaction[]>>('/payments/history');
+        return response.data.data;
     },
 
     async getCurrentPlan(): Promise<CurrentPlan | null> {
