@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/card";
 import { PaymentService } from "@/services/payments-service";
 import type { SubscriptionPlan } from "@/types/payment";
+import { Currency } from "@/types/payment";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { toastService } from "@/services/toasts-service";
@@ -39,6 +40,7 @@ export default function PricingPage() {
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>(Currency.VND);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -67,7 +69,8 @@ export default function PricingPage() {
           id: 0,
           name: t("free"),
           description: t("free_plan_desc"),
-          priceUsd: 0,
+          basePrice: 0,
+          prices: { VND: 0, USD: 0 },
           durationMonths: 0,
           isActive: true,
           features: [
@@ -266,6 +269,25 @@ export default function PricingPage() {
                   "Unlock your full potential with our premium features. Choose the plan that fits your journey.",
               })}
             </p>
+
+            {/* Currency Selector */}
+            <div className="flex items-center justify-center gap-2 mt-6">
+              {Object.values(Currency).map((curr) => (
+                <button
+                  key={curr}
+                  type="button"
+                  onClick={() => setSelectedCurrency(curr)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium transition-all border",
+                    selectedCurrency === curr
+                      ? "bg-primary text-primary-foreground border-primary shadow-md"
+                      : "bg-background text-muted-foreground border-border hover:border-primary/50"
+                  )}
+                >
+                  {curr}
+                </button>
+              ))}
+            </div>
           </motion.div>
 
           <motion.div
@@ -275,7 +297,7 @@ export default function PricingPage() {
             className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto"
           >
             {plans.map((plan) => {
-              const isPremiumPlan = plan.priceUsd > 0;
+              const isPremiumPlan = plan.basePrice > 0;
               const isPopular = plan.id === 3 || plan.durationMonths === 12; // Check duration for language independence
               const isCurrentPlan = isPrenium && isPremiumPlan; // Simplified logic: if user is premium, all premium plans show as active/owned contextually
 
@@ -330,7 +352,9 @@ export default function PricingPage() {
                     <CardContent className="flex-1 space-y-6">
                       <div className="flex items-baseline">
                         <span className="text-4xl font-bold tracking-tight text-foreground">
-                          ${plan.priceUsd}
+                          {selectedCurrency === Currency.VND
+                            ? `${(plan.prices?.[selectedCurrency] ?? 0).toLocaleString('vi-VN')}₫`
+                            : `$${(plan.prices?.[selectedCurrency] ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                         </span>
                         <span className="ml-1 text-sm font-medium text-muted-foreground">
                           /

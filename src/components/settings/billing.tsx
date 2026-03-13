@@ -180,17 +180,15 @@ export function BillingSettings() {
                         className="highlight-target scroll-mt-20"
                       >
                         <TableCell className="font-medium">
-                          {formatDate(
-                            transaction.paymentDate || transaction.createdAt,
-                          )}
+                          {formatDate(transaction.paymentDate)}
                         </TableCell>
                         <TableCell>
-                          {transaction.description || transaction.plan?.name}
+                          {transaction.planName}
                         </TableCell>
                         <TableCell>
-                          {new Intl.NumberFormat("en-US", {
+                          {new Intl.NumberFormat("vi-VN", {
                             style: "currency",
-                            currency: "USD",
+                            currency: "VND",
                           }).format(transaction.amount)}
                         </TableCell>
                         <TableCell>
