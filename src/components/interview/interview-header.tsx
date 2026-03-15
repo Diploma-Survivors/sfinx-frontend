@@ -41,6 +41,7 @@ interface InterviewHeaderProps {
   isEnding?: boolean;
   problem?: ProblemSnapshot | null;
   readOnly?: boolean;
+  scheduledEndAt?: string;
 }
 
 export function InterviewHeader({
@@ -54,20 +55,60 @@ export function InterviewHeader({
   isEnding = false,
   problem,
   readOnly = false,
+  scheduledEndAt,
 }: InterviewHeaderProps) {
   const { t } = useTranslation("interview");
   const [micPermission, setMicPermission] =
     useState<PermissionState>("unknown");
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [isWarning, setIsWarning] = useState(false);
 
   // Check microphone permission on mount and when voiceEnabled changes
   useEffect(() => {
     checkMicrophonePermission().then(setMicPermission);
   }, [voiceEnabled]);
 
+  // Countdown timer effect
+  useEffect(() => {
+    if (!scheduledEndAt) return;
+
+    const calculateTimeLeft = () => {
+      const now = Date.now();
+      const end = new Date(scheduledEndAt).getTime();
+      return Math.max(0, end - now);
+    };
+
+    setTimeLeft(calculateTimeLeft());
+
+    const interval = setInterval(() => {
+      const remaining = calculateTimeLeft();
+      setTimeLeft(remaining);
+      setIsWarning(remaining <= 5 * 60 * 1000 && remaining > 0);
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [scheduledEndAt]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const formatCountdown = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const showMicWarning = voiceEnabled && micPermission === "denied";
@@ -76,10 +117,24 @@ export function InterviewHeader({
     <header className="border-b bg-card flex-shrink-0">
       <div className="h-12 px-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 font-mono text-base font-semibold text-primary">
-            <Clock className="w-4 h-4" />
-            <span>{formatTime(interviewTime)}</span>
-          </div>
+          {scheduledEndAt ? (
+            <div className={`flex items-center gap-1.5 font-mono text-base font-semibold ${
+              isWarning ? 'text-red-600 animate-pulse' : 'text-primary'
+            }`}>
+              <Clock className="w-4 h-4" />
+              <span>{formatCountdown(timeLeft)}</span>
+              {isWarning && (
+                <span className="text-xs ml-1 hidden sm:inline">
+                  {t('timer.timeRunningOut')}
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 font-mono text-base font-semibold text-primary">
+              <Clock className="w-4 h-4" />
+              <span>{formatTime(interviewTime)}</span>
+            </div>
+          )}
           <div className="h-5 w-px bg-border" />
           <div className="min-w-0">
             <h1 className="text-sm font-medium truncate">
