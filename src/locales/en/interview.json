@@ -19,6 +19,22 @@
     "on": "Voice On",
     "off": "Voice Off"
   },
+  "customization": {
+    "title": "Customize Your Mock Interview",
+    "subtitle": "You can customize the personality and the difficulty of the interviewer.",
+    "mode": "Interview Mode",
+    "difficulty": "Difficulty",
+    "personality": "Personality",
+    "mode_short": "30 minutes",
+    "mode_standard": "45 minutes",
+    "mode_long": "60 minutes",
+    "difficulty_entry": "Entry Level",
+    "difficulty_experienced": "Experienced",
+    "difficulty_senior": "Senior",
+    "personality_easy_going": "😊 Easy Going",
+    "personality_strict": "😐 Strict",
+    "personality_jackass": "😤 Jackass"
+  },
   "start": "Start Interview",
   "header": {
     "problem": "Problem",

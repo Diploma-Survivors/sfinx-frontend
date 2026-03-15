@@ -15,6 +15,11 @@ import type {
   LiveKitTokenResponse,
   MessageRole,
 } from '@/types/interview';
+import {
+  InterviewMode,
+  InterviewDifficulty,
+  InterviewerPersonality,
+} from '@/types/interview';
 import type { ApiError } from '@/types/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AxiosError } from 'axios';
@@ -47,7 +52,13 @@ interface UseInterviewReturn {
   error: Error | null;
 
   // Actions
-  startInterview: (problemId: number, language?: string) => Promise<void>;
+  startInterview: (
+    problemId: number,
+    language?: string,
+    mode?: InterviewMode,
+    difficulty?: InterviewDifficulty,
+    personality?: InterviewerPersonality
+  ) => Promise<void>;
   loadInterview: (interviewId: string) => Promise<void>;
   connectVoice: () => Promise<void>;
   sendMessage: (content: string, options?: SendMessageOptions) => Promise<void>;
@@ -132,14 +143,26 @@ export function useInterview(
    * Start a new interview with the given problem
    */
   const startInterview = useCallback(
-    async (problemId: number, language: string = 'en') => {
+    async (
+      problemId: number,
+      language: string = 'en',
+      mode: InterviewMode = InterviewMode.STANDARD,
+      difficulty: InterviewDifficulty = InterviewDifficulty.ENTRY,
+      personality: InterviewerPersonality = InterviewerPersonality.EASY_GOING
+    ) => {
       if (isActiveRef.current) {
         setIsLoading(true);
         setError(null);
       }
 
       try {
-        const response = await InterviewService.startInterview(problemId, language);
+        const response = await InterviewService.startInterview(
+          problemId,
+          language,
+          mode,
+          difficulty,
+          personality
+        );
         const interviewData = response.data.data as Interview;
 
         if (isActiveRef.current) {

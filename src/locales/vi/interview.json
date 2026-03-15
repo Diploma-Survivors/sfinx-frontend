@@ -19,6 +19,22 @@
     "on": "Bật giọng nói",
     "off": "Tắt giọng nói"
   },
+  "customization": {
+    "title": "Tùy chỉnh buổi phỏng vấn của bạn",
+    "subtitle": "Bạn có thể tùy chỉnh tính cách và độ khó của ngườii phỏng vấn.",
+    "mode": "Chế độ phỏng vấn",
+    "difficulty": "Độ khó",
+    "personality": "Tính cách",
+    "mode_short": "30 phút",
+    "mode_standard": "45 phút",
+    "mode_long": "60 phút",
+    "difficulty_entry": "Mới vào nghề",
+    "difficulty_experienced": "Có kinh nghiệm",
+    "difficulty_senior": "Cấp cao",
+    "personality_easy_going": "😊 Thân thiện",
+    "personality_strict": "😐 Nghiêm khắc",
+    "personality_jackass": "😤 Khó tính"
+  },
   "start": "Bắt đầu phỏng vấn",
   "header": {
     "problem": "Bài toán",

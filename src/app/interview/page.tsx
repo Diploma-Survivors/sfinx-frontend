@@ -6,6 +6,7 @@ import {
   InterviewGreetingSkeleton,
   InterviewHeader,
   VoiceModeChat,
+  InterviewCustomizationModal,
 } from "@/components/interview";
 import { InterviewFeedback } from "@/components/interview/interview-feedback";
 import {
@@ -27,7 +28,7 @@ import { SubmissionsService } from "@/services/submissions-service";
 import { toastService } from "@/services/toasts-service";
 import { setProblem } from "@/store/slides/problem-slice";
 import { selectWorkspace, updateCurrentCode } from "@/store/slides/workspace-slice";
-import type { InterviewLanguage } from "@/types/interview";
+import type { InterviewLanguage, InterviewMode, InterviewDifficulty, InterviewerPersonality } from "@/types/interview";
 import { MessageRole } from "@/types/interview";
 import { SortBy, SortOrder } from "@/types/problems";
 import type { Problem } from "@/types/problems";
@@ -103,10 +104,10 @@ export default function LiveInterviewPage() {
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [isCustomizationModalOpen, setIsCustomizationModalOpen] = useState(false);
   const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
   const [isLoadingProblem, setIsLoadingProblem] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<InterviewLanguage>("en");
-  
 
   const workspace = useSelector(selectWorkspace);
   const currentLanguageId = interview?.problemId
@@ -241,6 +242,7 @@ export default function LiveInterviewPage() {
     }
   }, [voiceEnabled, connectVoice, clearLiveKitToken]);
 
+  // Opens the customization modal after auth checks
   const handleStartInterview = useCallback(async () => {
     if (!isLoggedin) {
       toastService.error(t("login_required_action"));
@@ -255,7 +257,19 @@ export default function LiveInterviewPage() {
       return;
     }
     
+    // Open customization modal
+    setIsCustomizationModalOpen(true);
+  }, [isLoggedin, isEmailVerified, user, t]);
+
+  // Actually starts the interview with selected customization
+  const handleConfirmCustomization = useCallback(async (
+    mode: InterviewMode,
+    difficulty: InterviewDifficulty,
+    personality: InterviewerPersonality
+  ) => {
     setIsStarting(true);
+    setIsCustomizationModalOpen(false);
+    
     try {
       let problem: Problem;
       
@@ -278,7 +292,7 @@ export default function LiveInterviewPage() {
         setTestCases([{ id: 1, input: "", expectedOutput: "" }]);
       }
       
-      await startInterview(problem.id, selectedLanguage);
+      await startInterview(problem.id, selectedLanguage, mode, difficulty, personality);
       dispatch(setProblem(problem));
 
       // Initialize workspace with starter code if empty
@@ -302,7 +316,7 @@ export default function LiveInterviewPage() {
     } finally {
       setIsStarting(false);
     }
-  }, [startInterview, dispatch, selectedProblem, selectedLanguage, isLoggedin, isEmailVerified, user, t]);
+  }, [startInterview, dispatch, selectedProblem, selectedLanguage, t]);
 
   const handleSendMessage = useCallback(async () => {
     if (!inputText.trim()) return;
@@ -481,6 +495,12 @@ export default function LiveInterviewPage() {
         <PremiumModal
           isOpen={isPremiumModalOpen}
           onClose={() => setIsPremiumModalOpen(false)}
+        />
+        <InterviewCustomizationModal
+          isOpen={isCustomizationModalOpen}
+          onClose={() => setIsCustomizationModalOpen(false)}
+          onConfirm={handleConfirmCustomization}
+          isLoading={isStarting}
         />
       </div>
       
