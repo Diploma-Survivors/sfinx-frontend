@@ -195,6 +195,6 @@
   "email_verification_required_action": "Vui lòng xác minh email của bạn để bắt đầu phỏng vấn.",
   "timer": {
     "timeRunningOut": "Sắp hết giờ!",
-    "expired": "Thờigian phỏng vấn đã hết. Đang hoàn tất đánh giá..."
+    "expired": "Thời gian phỏng vấn đã hết. Đang hoàn tất đánh giá..."
   }
 }
