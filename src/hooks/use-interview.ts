@@ -299,8 +299,8 @@ export function useInterview(
   }, [handleError]);
 
   /**
-   * Send a text message to the AI
-   * Code is sent with every message so the AI has full context
+   * Send a text message to the AI.
+   * The full response is fetched first, then revealed with a typewriter animation.
    */
   const sendMessage = useCallback(
     async (content: string, options?: SendMessageOptions) => {
@@ -339,14 +339,42 @@ export function useInterview(
         const aiMessage = response.data.data as InterviewMessage;
 
         if (isActiveRef.current) {
+          // Add confirmed user message + AI placeholder with empty content
           setMessages((prev) => {
             const filtered = prev.filter((m) => m.id !== tempId);
             const userMessage: InterviewMessage = {
               ...tempUserMessage,
               id: `user-${Date.now()}`,
             };
-            return [...filtered, userMessage, aiMessage];
+            return [...filtered, userMessage, { ...aiMessage, content: '' }];
           });
+
+          // Typewriter: scale duration with text length (15ms/char, capped 2–6s)
+          const fullText = aiMessage.content;
+          const durationMs = Math.max(2000, Math.min(6000, fullText.length * 15));
+          const startTime = performance.now();
+          let pos = 0;
+
+          const tick = () => {
+            if (!isActiveRef.current) return;
+            const progress = Math.min((performance.now() - startTime) / durationMs, 1);
+            const newPos = Math.ceil(progress * fullText.length);
+            if (newPos > pos) {
+              pos = newPos;
+              setMessages((prev) => {
+                const idx = prev.findIndex((m) => m.id === aiMessage.id);
+                if (idx < 0) return prev;
+                const updated = [...prev];
+                updated[idx] = { ...updated[idx], content: fullText.slice(0, pos) };
+                return updated;
+              });
+            }
+            if (pos < fullText.length) {
+              requestAnimationFrame(tick);
+            }
+          };
+
+          requestAnimationFrame(tick);
         }
       } catch (err) {
         if (isActiveRef.current) {
