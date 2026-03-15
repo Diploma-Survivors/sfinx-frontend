@@ -192,5 +192,9 @@
     "reconnect": "Kết nối lại với AI"
   },
   "login_required_action": "Bạn cần đăng nhập để bắt đầu phỏng vấn.",
-  "email_verification_required_action": "Vui lòng xác minh email của bạn để bắt đầu phỏng vấn."
+  "email_verification_required_action": "Vui lòng xác minh email của bạn để bắt đầu phỏng vấn.",
+  "timer": {
+    "timeRunningOut": "Sắp hết giờ!",
+    "expired": "Thời gian phỏng vấn đã hết. Đang hoàn tất đánh giá..."
+  }
 }

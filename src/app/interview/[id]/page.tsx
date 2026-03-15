@@ -522,6 +522,7 @@ export default function InterviewSessionPage() {
               isEnding={isLoading}
               problem={interview.problemSnapshot}
               readOnly={isReadOnly}
+              scheduledEndAt={interview.scheduledEndAt}
             />
 
             {isReadOnly && (

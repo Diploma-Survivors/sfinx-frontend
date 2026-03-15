@@ -578,6 +578,7 @@ export default function LiveInterviewPage() {
               onEndInterview={handleEndInterview}
               isEnding={isLoading}
               problem={interview.problemSnapshot}
+              scheduledEndAt={interview.scheduledEndAt}
             />
 
             <div
