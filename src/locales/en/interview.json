@@ -192,5 +192,9 @@
     "reconnect": "Reconnect to agent"
   },
   "login_required_action": "You need to be logged in to start an interview.",
-  "email_verification_required_action": "Please verify your email to start an interview."
+  "email_verification_required_action": "Please verify your email to start an interview.",
+  "timer": {
+    "timeRunningOut": "Time running out!",
+    "expired": "Interview time has expired. Finalizing evaluation..."
+  }
 }

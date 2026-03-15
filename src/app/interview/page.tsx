@@ -7,6 +7,7 @@ import {
   InterviewHeader,
   VoiceModeChat,
   InterviewCustomizationModal,
+  InterviewTimer,
 } from "@/components/interview";
 import { InterviewFeedback } from "@/components/interview/interview-feedback";
 import {
@@ -569,7 +570,25 @@ export default function LiveInterviewPage() {
             />
           )}
 
-          <div className="flex flex-col h-[calc(100vh-64px)] bg-background overflow-hidden">
+          {/* Timer Header */}
+          {interview?.scheduledEndAt && interview.status === 'active' && (
+            <InterviewTimer
+              scheduledEndAt={interview.scheduledEndAt}
+              onTimeExpired={() => {
+                toastService.info(t('timer.expired'));
+                // Poll for status change - will redirect when status becomes completed
+                const checkStatus = setInterval(() => {
+                  // Refresh interview data
+                  window.location.reload();
+                }, 5000);
+
+                // Stop polling after 60 seconds
+                setTimeout(() => clearInterval(checkStatus), 60000);
+              }}
+            />
+          )}
+
+          <div className={`flex flex-col h-[calc(100vh-64px)] bg-background overflow-hidden ${interview?.scheduledEndAt && interview.status === 'active' ? 'pt-12' : ''}`}>
             <InterviewHeader
               interviewTime={interviewTime}
               voiceEnabled={voiceEnabled}

@@ -58,6 +58,7 @@ export interface Interview {
   personality: InterviewerPersonality;
   startedAt: string;
   endedAt?: string;
+  scheduledEndAt?: string;
   messages?: InterviewMessage[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   evaluation?: any;
