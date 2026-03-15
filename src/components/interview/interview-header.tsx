@@ -87,11 +87,15 @@ export function InterviewHeader({
 
       if (remaining <= 0) {
         clearInterval(interval);
+        // Auto-end interview when time expires
+        if (!readOnly && onEndInterview) {
+          onEndInterview();
+        }
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [scheduledEndAt]);
+  }, [scheduledEndAt, onEndInterview, readOnly]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
