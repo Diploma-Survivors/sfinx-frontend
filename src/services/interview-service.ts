@@ -9,6 +9,11 @@ import type {
   LiveKitTokenResponse,
   SendMessageRequest,
 } from '@/types/interview';
+import {
+  InterviewMode,
+  InterviewDifficulty,
+  InterviewerPersonality,
+} from '@/types/interview';
 import type { AxiosResponse } from 'axios';
 
 /**
@@ -16,11 +21,17 @@ import type { AxiosResponse } from 'axios';
  */
 async function startInterview(
   problemId: number,
-  language: string = 'en'
+  language: string = 'en',
+  mode: InterviewMode = InterviewMode.STANDARD,
+  difficulty: InterviewDifficulty = InterviewDifficulty.ENTRY,
+  personality: InterviewerPersonality = InterviewerPersonality.EASY_GOING
 ): Promise<AxiosResponse<ApiResponse<Interview>>> {
   return clientApi.post<ApiResponse<Interview>>('/ai-interviews', {
     problemId,
     language,
+    mode,
+    difficulty,
+    personality,
   });
 }
 

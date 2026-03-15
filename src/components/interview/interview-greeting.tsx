@@ -12,7 +12,6 @@ import {
   Trophy,
   Volume2,
 } from "lucide-react";
-import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const LANGUAGE_OPTIONS: {
@@ -64,13 +63,13 @@ export function InterviewGreeting({
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
             backgroundRepeat: "repeat",
           }}
-        ></div>
-        <div className="absolute -top-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-primary/20 blur-[120px] mix-blend-screen animate-pulse-ring opacity-60"></div>
-        <div className="absolute -bottom-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[100px] mix-blend-screen animate-float opacity-50"></div>
+        />
+        <div className="absolute -top-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-primary/20 blur-[120px] mix-blend-screen animate-pulse-ring opacity-60" />
+        <div className="absolute -bottom-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[100px] mix-blend-screen animate-float opacity-50" />
         <div
           className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] rounded-full bg-primary/5 blur-[100px] mix-blend-screen opacity-40 animate-float"
           style={{ animationDelay: "2s" }}
-        ></div>
+        />
       </div>
 
       <div className="w-full max-w-5xl relative z-10 flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-between">
@@ -114,7 +113,7 @@ export function InterviewGreeting({
         <div className="w-full max-w-md flex flex-col shrink-0">
           <Card className="w-full p-8 flex flex-col gap-6 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border-border/40 shadow-2xl shadow-primary/5 rounded-[2rem] relative overflow-hidden">
             {/* Card inner glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] rounded-full pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] rounded-full pointer-events-none" />
 
             <div className="space-y-2">
               <h2 className="text-2xl font-bold tracking-tight">
@@ -131,18 +130,18 @@ export function InterviewGreeting({
             {/* Random Problem Notice - only show when no specific problem is selected */}
             {!problemDisplay && (
               <div className="flex items-start gap-4 p-5 rounded-2xl bg-primary/10 border border-primary/20 shadow-inner relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              <Trophy className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="font-semibold text-foreground">
-                  {t("greeting.random_problem_selection")}
-                </p>
-                <p className="text-muted-foreground text-xs mt-1.5 leading-relaxed">
-                  {t("greeting.random_problem_desc")}{" "}
-                  {t("greeting.challenge_curated_desc")}
-                </p>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <Trophy className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-semibold text-foreground">
+                    {t("greeting.random_problem_selection")}
+                  </p>
+                  <p className="text-muted-foreground text-xs mt-1.5 leading-relaxed">
+                    {t("greeting.random_problem_desc")}{" "}
+                    {t("greeting.challenge_curated_desc")}
+                  </p>
+                </div>
               </div>
-            </div>
             )}
 
             {/* Language Selector */}
@@ -180,7 +179,7 @@ export function InterviewGreeting({
               disabled={isLoading}
               className="w-full flex items-center justify-between p-5 rounded-2xl border border-border/40 hover:bg-white/50 dark:hover:bg-black/30 transition-all duration-300 disabled:opacity-50 group cursor-pointer shadow-sm relative overflow-hidden"
             >
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
               <div className="flex items-center gap-4 relative z-10">
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${voiceEnabled ? "bg-primary/20 border-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.2)]" : "bg-muted border-transparent group-hover:bg-muted/80"} border`}
@@ -212,7 +211,7 @@ export function InterviewGreeting({
               className="w-full h-14 text-lg font-semibold rounded-2xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 mt-2 relative overflow-hidden group"
               disabled={isLoading}
             >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
               <span className="relative z-10 flex items-center justify-center">
                 {isLoading ? (
                   <>
@@ -270,9 +269,9 @@ export function InterviewGreetingSkeleton() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
             backgroundRepeat: "repeat",
           }}
-        ></div>
-        <div className="absolute -top-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-muted/20 blur-[120px] mix-blend-screen opacity-60"></div>
-        <div className="absolute -bottom-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-muted/10 blur-[100px] mix-blend-screen opacity-50"></div>
+        />
+        <div className="absolute -top-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-muted/20 blur-[120px] mix-blend-screen opacity-60" />
+        <div className="absolute -bottom-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-muted/10 blur-[100px] mix-blend-screen opacity-50" />
       </div>
 
       <div className="w-full max-w-5xl relative z-10 flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-between">

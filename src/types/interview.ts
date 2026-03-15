@@ -4,6 +4,24 @@ export enum InterviewStatus {
   ABANDONED = 'abandoned',
 }
 
+export enum InterviewMode {
+  SHORT = '30min',
+  STANDARD = '45min',
+  LONG = '60min',
+}
+
+export enum InterviewDifficulty {
+  ENTRY = 'entry',
+  EXPERIENCED = 'experienced',
+  SENIOR = 'senior',
+}
+
+export enum InterviewerPersonality {
+  EASY_GOING = 'easy_going',
+  STRICT = 'strict',
+  JACKASS = 'jackass',
+}
+
 export enum MessageRole {
   USER = 'user',
   ASSISTANT = 'assistant',
@@ -35,6 +53,9 @@ export interface Interview {
   problemSnapshot: ProblemSnapshot;
   language: InterviewLanguage;
   status: InterviewStatus;
+  mode: InterviewMode;
+  difficulty: InterviewDifficulty;
+  personality: InterviewerPersonality;
   startedAt: string;
   endedAt?: string;
   messages?: InterviewMessage[];
